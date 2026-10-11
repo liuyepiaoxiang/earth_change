@@ -1,0 +1,165 @@
+{
+  "version": 1,
+  "generatedAt": "2026-10-11",
+  "note": "确定性 Nelder-Mead 三阶段校准（carbon→climate→slr）；重跑 pnpm calibrate 应得到相同结果",
+  "values": {
+    "lambda": 0.8230550442531939,
+    "gamma_ocean": 0.537614427391903,
+    "c_s": 6.660384079123241,
+    "c_d": 136.69671588304823,
+    "c0_ref": 280,
+    "a_ch4": 0.02812591446057076,
+    "a_n2o": 0.12,
+    "ch4_ref": 722,
+    "n2o_ref": 273,
+    "beta_land": 12.999799809127373,
+    "k_ocean": 0.01550990823164851,
+    "chi_temp": 0.19999556831183526,
+    "ppm_per_gtc": 0.4708,
+    "k_thermal": 0.002000058725140834,
+    "k_glacier": 0.0005841985801455766,
+    "amp_glacier": 1.5,
+    "g0_glacier": 0.4,
+    "b0_gris": 0.00011443707814812347,
+    "b1_gris": 0.0005000050030350758,
+    "b2_gris": 0.00011795468262656315,
+    "amp_gris": 2,
+    "c0_ais": 0.00021986427979298761,
+    "c1_ais": 0.00010001149418828791,
+    "lw_rate": 0.0003
+  },
+  "ranges": {
+    "lambda": {
+      "min": 0.75,
+      "max": 1.85
+    },
+    "gamma_ocean": {
+      "min": 0.4,
+      "max": 1.5
+    },
+    "c_s": {
+      "min": 5,
+      "max": 14
+    },
+    "c_d": {
+      "min": 70,
+      "max": 160
+    },
+    "c0_ref": {
+      "min": 278,
+      "max": 285
+    },
+    "a_ch4": {
+      "min": 0.028,
+      "max": 0.045
+    },
+    "a_n2o": {
+      "min": 0.09,
+      "max": 0.15
+    },
+    "ch4_ref": {
+      "min": 715,
+      "max": 730
+    },
+    "n2o_ref": {
+      "min": 268,
+      "max": 278
+    },
+    "beta_land": {
+      "min": 5,
+      "max": 13
+    },
+    "k_ocean": {
+      "min": 0.01,
+      "max": 0.035
+    },
+    "chi_temp": {
+      "min": 0.04,
+      "max": 0.2
+    },
+    "ppm_per_gtc": {
+      "min": 0.4708,
+      "max": 0.4708
+    },
+    "k_thermal": {
+      "min": 0.002,
+      "max": 0.008
+    },
+    "k_glacier": {
+      "min": 0.0003,
+      "max": 0.0008
+    },
+    "amp_glacier": {
+      "min": 1.2,
+      "max": 1.8
+    },
+    "g0_glacier": {
+      "min": 0.36,
+      "max": 0.44
+    },
+    "b0_gris": {
+      "min": 0.0001,
+      "max": 0.0004
+    },
+    "b1_gris": {
+      "min": 0.0005,
+      "max": 0.002
+    },
+    "b2_gris": {
+      "min": 0.0001,
+      "max": 0.0005
+    },
+    "amp_gris": {
+      "min": 1.5,
+      "max": 2.5
+    },
+    "c0_ais": {
+      "min": 0,
+      "max": 0.0003
+    },
+    "c1_ais": {
+      "min": 0.0001,
+      "max": 0.0006
+    },
+    "lw_rate": {
+      "min": 0.0001,
+      "max": 0.0005
+    }
+  },
+  "stages": [
+    {
+      "stage": "carbon",
+      "ids": [
+        "beta_land",
+        "k_ocean",
+        "chi_temp"
+      ],
+      "objective": 11.9103
+    },
+    {
+      "stage": "climate",
+      "ids": [
+        "lambda",
+        "gamma_ocean",
+        "c_s",
+        "c_d",
+        "a_ch4"
+      ],
+      "objective": 0.2002
+    },
+    {
+      "stage": "slr",
+      "ids": [
+        "k_thermal",
+        "k_glacier",
+        "b0_gris",
+        "b1_gris",
+        "b2_gris",
+        "c0_ais",
+        "c1_ais"
+      ],
+      "objective": 0.0883
+    }
+  ],
+  "scenarioScale": {}
+}

@@ -91,7 +91,7 @@ try {
   const a = { 1750: 0.003, 1850: 0.09, 1900: 0.55, 1925: 0.9, 1950: 1.6, 1970: 3.6, 1980: 5.2, 1990: 5.9, 2000: 6.5, 2010: 8.3, 2020: 9.5, 2024: 10.1 };
   emis = []; for (let y = 1750; y <= 2024; y++) emis.push({ year: y, gtc: +interp(a, y).toFixed(3) });
 }
-const lulucA = { 1750: 0.05, 1800: 0.3, 1850: 0.5, 1900: 0.9, 1950: 1.3, 1980: 1.7, 2000: 1.6, 2020: 1.3, 2024: 1.2 };
+const lulucA = { 1750: 0.05, 1800: 0.3, 1850: 0.55, 1900: 1.0, 1950: 1.35, 1980: 1.65, 2000: 1.55, 2020: 1.3, 2024: 1.15 };
 if (!(emis.at(-1).gtc > 9 && emis.at(-1).gtc < 11.5)) throw new Error("2024 化石排放超预期: " + emis.at(-1).gtc);
 writeFileSync(join(HIST, "emissions_1750_2024.csv"),
   "year,efossil,eluluc\n" + emis.map((r) => `${r.year},${r.gtc},${interp(lulucA, r.year).toFixed(3)}`).join("\n") + "\n");
