@@ -26,6 +26,9 @@ importers:
       '@future-earth/engine':
         specifier: workspace:*
         version: link:../../packages/engine
+      '@future-earth/spec':
+        specifier: workspace:*
+        version: link:../../packages/spec
       next:
         specifier: ^14.2.5
         version: 14.2.35(@playwright/test@1.64.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)

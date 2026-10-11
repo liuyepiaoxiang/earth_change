@@ -36,6 +36,33 @@ export default function Home() {
         }}
       >
         <strong style={{ color: "#e0f2fe" }}>🌍 未来地球引擎</strong>
+        <nav style={{ display: "flex", gap: 6 }}>
+          <span
+            style={{
+              padding: "4px 10px",
+              borderRadius: 6,
+              fontSize: 13,
+              border: "1px solid #38bdf8",
+              background: "#0c4a6e",
+              color: "#e0f2fe",
+            }}
+          >
+            地球
+          </span>
+          <a
+            href="/overview"
+            style={{
+              padding: "4px 10px",
+              borderRadius: 6,
+              fontSize: 13,
+              border: "1px solid #334155",
+              color: "#94a3b8",
+              textDecoration: "none",
+            }}
+          >
+            要素总览
+          </a>
+        </nav>
         <ScenarioSelector value={scenario} onChange={setScenario} />
         <button
           onClick={() => setUncertain((v) => !v)}
