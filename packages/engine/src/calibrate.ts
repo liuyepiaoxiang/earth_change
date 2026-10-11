@@ -1,5 +1,6 @@
 /** 用法：pnpm calibrate —— 分阶段确定性校准，产出 params.json（提交入库） */
 import { writeFileSync, mkdirSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { PARAMETER_DEFAULTS, PARAMETERS } from "@future-earth/spec";
 import { loadCO2, loadTemperature } from "@future-earth/data";
 import { runSim } from "./solver.js";
@@ -120,8 +121,11 @@ function main() {
   };
   writeFileSync(new URL("../params.json", import.meta.url), JSON.stringify(out, null, 2) + "\n");
   mkdirSync(new URL("./generated/", import.meta.url), { recursive: true });
+  // 指纹在校准期预计算（node:crypto 不可进浏览器 bundle，index.ts 须保持纯 TS）
+  const fingerprint = "sha256:" + createHash("sha256").update(JSON.stringify(values)).digest("hex").slice(0, 16);
   writeFileSync(new URL("./generated/params.gen.ts", import.meta.url),
-    "// 自动生成：pnpm calibrate —— 请勿手改\nexport const CALIBRATED_PARAMS = " + JSON.stringify(values) + " as const;\n", "utf8");
+    "// 自动生成：pnpm calibrate —— 请勿手改\nexport const CALIBRATED_PARAMS = " + JSON.stringify(values) + " as const;\n"
+    + "export const PARAMS_FINGERPRINT = " + JSON.stringify(fingerprint) + ";\n", "utf8");
   const m = runHistorical(values as Params).records.at(-1)!;
   console.log(`校准后 2024: ΔT=${m.tempAnomaly.toFixed(2)}°C  CO₂=${m.co2.toFixed(1)}ppm  SLR=${m.seaLevel.toFixed(3)}m（自1850）`);
 }

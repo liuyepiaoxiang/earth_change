@@ -1,8 +1,7 @@
-import { createHash } from "node:crypto";
 import { runSim } from "./solver.js";
 import { makeHistoricalDrivers, makeScenarioDrivers, initialState } from "./scenario.js";
 import { PARAMETER_DEFAULTS, type ScenarioId } from "@future-earth/spec";
-import { CALIBRATED_PARAMS } from "./generated/params.gen.js";
+import { CALIBRATED_PARAMS, PARAMS_FINGERPRINT } from "./generated/params.gen.js";
 import type { Params, SimResult } from "./types.js";
 
 const MODEL_VERSION = "0.1.0";
@@ -22,7 +21,7 @@ export function runScenario(id: ScenarioId, horizon = 2500): SimResult {
   }).records;
   return {
     schemaVersion: 1, modelVersion: MODEL_VERSION, scenario: id,
-    paramsFingerprint: "sha256:" + createHash("sha256").update(JSON.stringify(CALIBRATED_PARAMS)).digest("hex").slice(0, 16),
+    paramsFingerprint: PARAMS_FINGERPRINT,
     years: recs.map((r) => r.year),
     metrics: {
       tempAnomaly: recs.map((r) => +r.tempAnomaly.toFixed(3)),
@@ -37,3 +36,12 @@ export function runScenario(id: ScenarioId, horizon = 2500): SimResult {
     },
   };
 }
+
+// 降尺度纯函数：web 客户端直接复用（同源实现，避免前端重写公式）
+export {
+  patternAmp, localDTs, scaledPrecip,
+  isCityFlooded, isLandAboveSea, classifyBiome,
+} from "./equations/downscale.js";
+export type { WarmingPatternBand } from "./equations/downscale.js";
+export type { SimResult } from "./types.js";
+export type { ScenarioId } from "@future-earth/spec";
