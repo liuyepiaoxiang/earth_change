@@ -136,7 +136,7 @@ export default function GlobeView({
 
   useEffect(() => {
     const loader = new TextureLoader();
-    loader.load("/elevation_10min.png", (tex) => {
+    loader.load("/elevation_5min.png", (tex) => {
       // 打包数据纹理必须最近邻采样：线性插值会让 R/G 通道独立混合、破坏 uint16 解码
       tex.magFilter = NearestFilter;
       tex.minFilter = NearestFilter;

@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 // pnpm workspace：node_modules/@future-earth/data 符号链接到 packages/data
-const src = join(root, "node_modules", "@future-earth", "data", "datasets", "static", "elevation_10min.png");
-const dest = join(root, "public", "elevation_10min.png");
+const src = join(root, "node_modules", "@future-earth", "data", "datasets", "static", "elevation_5min.png");
+const dest = join(root, "public", "elevation_5min.png");
 copyFileSync(src, dest);
-console.log("synced elevation_10min.png → public/");
+console.log("synced elevation_5min.png → public/");
