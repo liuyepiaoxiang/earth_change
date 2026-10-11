@@ -33,6 +33,9 @@ export function runScenario(id: ScenarioId, horizon = 2500): SimResult {
         iceSheet: recs.map((r) => +r.slIceSheet.toFixed(4)),
         landWater: recs.map((r) => +r.slLandWater.toFixed(4)),
       },
+      biomass: recs.map((r) => +r.biomass.toFixed(1)),
+      soilMoisture: recs.map((r) => +r.soilMoisture.toFixed(1)),
+      permafrost: recs.map((r) => +r.permafrost.toFixed(1)),
     },
   };
 }

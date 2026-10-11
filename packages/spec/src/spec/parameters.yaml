@@ -31,6 +31,6 @@
 - { id: r_veg, symbol: "r_v", name_zh: 植被内禀净增长率, unit: "1/yr", default: 0.015, min: 0.005, max: 0.03, source: "logistic 净速率（死亡/呼吸已并入），稳态=B₀", impl: v0 }
 - { id: k_biomass, symbol: "K_B", name_zh: 植被生物量承载力, unit: "GtC", default: 550, min: 450, max: 700, source: "1850 年稳态 = B₀（植被生物量观测）", impl: v0 }
 - { id: fire_k, symbol: "k_f", name_zh: 火灾异常系数, unit: "GtC/(yr·K)", default: 0.3, min: 0.1, max: 0.8, source: "气候-火灾反馈文献量级（异常口径）", impl: v0 }
-- { id: k_pf, symbol: "k_pf", name_zh: 冻土融化速率, unit: "GtC/(yr·K)", default: 30, min: 10, max: 80, source: "NCSCD 库量级 + AR6 冻土反馈区间", impl: v0 }
+- { id: k_pf, symbol: "k_pf", name_zh: 冻土融化速率, unit: "GtC/(yr·K)", default: 0.3, min: 0.05, max: 1.5, source: "AR6: 冻土碳累计释放 2100 年 10-100 GtC → 年速率 0.1-1 量级（v2.1 修正：原 30 为量级错误）", impl: v0 }
 - { id: t_pf, symbol: "T_pf", name_zh: 冻土融化阈值异常, unit: "K", default: 1.0, min: 0.5, max: 2.0, source: "多年冻土起始融化异常区间", impl: v0 }
 - { id: r_pf, symbol: "r_pf", name_zh: 融化碳释放比, unit: "1/yr", default: 0.02, min: 0.005, max: 0.05, source: "已融碳池年释放比（百年尺度）", impl: v0 }

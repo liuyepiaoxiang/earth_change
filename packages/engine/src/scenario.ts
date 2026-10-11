@@ -38,7 +38,7 @@ export function makeScenarioDrivers(id: "ssp126" | "ssp245" | "ssp370" | "ssp585
   });
 }
 
-/** 1850 年初始状态（CO₂ 取冰芯 1850 值；温度/海平面异常归零） */
+/** 1850 年初始状态（CO₂ 取冰芯 1850 值；温度/海平面异常归零；v2 箱 = 工业化前稳态：B₀=550、W₀=800、冻土库 1400 未融） */
 export function initialState(co2_1850 = 285.2): EarthState {
-  return { co2: co2_1850, ts: 0, td: 0, sThermal: 0, sGlacier: 0, sGrIS: 0, sAIS: 0, sLandWater: 0 };
+  return { co2: co2_1850, ts: 0, td: 0, sThermal: 0, sGlacier: 0, sGrIS: 0, sAIS: 0, sLandWater: 0, b: 550, w: 800, mPf: 1400, pTh: 0 };
 }

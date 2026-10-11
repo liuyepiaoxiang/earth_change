@@ -2,6 +2,10 @@ import * as forcing from "./equations/forcing.js";
 import * as carbon from "./equations/carbon.js";
 import * as ocean from "./equations/ocean.js";
 import * as sealevel from "./equations/sealevel.js";
+import * as water from "./equations/water.js";
+import * as bio from "./equations/bio.js";
+import * as fire from "./equations/fire.js";
+import * as permafrost from "./equations/permafrost.js";
 import type { Drivers, EarthState, Params, YearRecord } from "./types.js";
 
 export interface RunOptions {
@@ -13,10 +17,10 @@ export interface RunOptions {
 }
 export interface RunOutput {
   records: YearRecord[];
-  carbon: { cumEmissions: number; cumAtmos: number; cumLand: number; cumOcean: number; residualRatio: number };
+  carbon: { cumEmissions: number; cumFeedback: number; cumAtmos: number; cumLand: number; cumOcean: number; residualRatio: number };
 }
 
-const KEYS = ["co2", "ts", "td", "sThermal", "sGlacier", "sGrIS", "sAIS", "sLandWater"] as const;
+const KEYS = ["co2", "ts", "td", "sThermal", "sGlacier", "sGrIS", "sAIS", "sLandWater", "b", "w", "mPf", "pTh"] as const;
 const axpy = (a: EarthState, h: number, k: EarthState): EarthState => {
   const out = {} as EarthState;
   for (const key of KEYS) out[key] = a[key] + h * k[key];
@@ -29,11 +33,32 @@ const step = (s: EarthState, h: number, k1: EarthState, k2: EarthState, k3: Eart
   return out;
 };
 
-/** 完整右端项（SPEC §6.1 因果链） */
+/** v2 生物圈/冻土通量（ADR-003 异常口径）：火灾与冻土释放（GtC/yr，超出 GCP 基线的气候反馈）+
+ *  水循环箱式诊断。rhs 与碳守恒累积共用同一实现。 */
+export function v2Fluxes(s: EarthState, p: Params): { fireF: number; ePf: number; pLand: number; eLand: number; dW: number; dMpf: number } {
+  const pLand = water.precipitation(s.ts);
+  const eLand = water.evaporation(s.ts);
+  const dW = pLand - eLand - water.runoff(s.w, pLand, eLand);
+  const v = s.b / 550;
+  const drought = Math.max(0, (800 - s.w) / 8);
+  const pFire = fire.fireProbability(s.ts, drought, v);
+  const fireF = fire.fireFlux(pFire, s.ts, v, p.fire_k);
+  const dMpf = permafrost.permafrostThaw(s.mPf, s.ts, p.k_pf, p.t_pf);
+  const ePf = permafrost.permafrostRelease(s.pTh, p.r_pf);
+  return { fireF, ePf, pLand, eLand, dW, dMpf };
+}
+
+/** 完整右端项（SPEC §6.1 因果链 + ADR-003 v2 耦合） */
 export function rhs(s: EarthState, d: Drivers, p: Params): EarthState {
   const F = forcing.fTotal(s.co2, d.ch4, d.n2o, d.fOther, p);
+  const { fireF, ePf, pLand, eLand, dW, dMpf } = v2Fluxes(s, p);
+  const feedbackC = fireF + ePf; // GtC/yr，气候驱动异常（接 eq_15 排放侧）
   return {
-    co2: d.prescribedCo2 !== undefined ? 0 : (d.efossil + d.eluluc - carbon.landSink(s.co2, p) - carbon.oceanSink(s.co2, s.ts, p)) * p.ppm_per_gtc,
+    // 排放驱动段：反馈碳进入大气收支；浓度驱动段：导数仅为反馈碳（钉住+累积机制见 runSim）
+    co2:
+      d.prescribedCo2 !== undefined
+        ? feedbackC * p.ppm_per_gtc
+        : (d.efossil + d.eluluc + feedbackC - carbon.landSink(s.co2, p) - carbon.oceanSink(s.co2, s.ts, p)) * p.ppm_per_gtc,
     ts: ocean.dTs(F, s.ts, s.td, p),
     td: ocean.dTd(s.ts, s.td, p),
     sThermal: sealevel.dSth(s.ts, s.td, p),
@@ -41,6 +66,10 @@ export function rhs(s: EarthState, d: Drivers, p: Params): EarthState {
     sGrIS: sealevel.dSgris(s.ts, p),
     sAIS: sealevel.dSais(s.ts, p),
     sLandWater: p.lw_rate,
+    b: bio.biomassDdt(s.b, s.ts, pLand, s.w, s.co2, p.r_veg, p.k_biomass, fireF),
+    w: dW,
+    mPf: dMpf,
+    pTh: -dMpf - ePf,
   };
 }
 
@@ -51,17 +80,20 @@ export function runSim(o: RunOptions): RunOutput {
   let s: EarthState = { ...o.initialState };
   const co2Start = s.co2;
   const records: YearRecord[] = [];
-  let cumE = 0, cumL = 0, cumO = 0;
+  let cumE = 0, cumFB = 0, cumL = 0, cumO = 0;
   for (let y = o.startYear; y < o.endYear; y++) {
     for (let i = 0; i < sub; i++) {
       const t = y + i * h;
       const d0 = o.driversAt(t);
-      if (d0.prescribedCo2 !== undefined) s = { ...s, co2: d0.prescribedCo2 }; // 浓度驱动模式：钉住 CO₂
+      // 浓度驱动模式：钉住 AR6 路径 + 累积气候反馈碳（火灾/冻土）抬升浓度——
+      // 反馈排放叠加在浓度路径之上（简单模式加冻土反馈的标准做法）
+      if (d0.prescribedCo2 !== undefined) s = { ...s, co2: d0.prescribedCo2 + (cumFB * p.ppm_per_gtc) };
       const k1 = rhs(s, d0, p);
       const mid = axpy(s, h / 2, k1);
       // 碳收支诊断：用中点状态的汇速率累积（质量守恒检查用）
       cumL += h * carbon.landSink(mid.co2, p);
       cumO += h * carbon.oceanSink(mid.co2, mid.ts, p);
+      cumFB += h * (v2Fluxes(mid, p).fireF + permafrost.permafrostRelease(mid.pTh, p.r_pf));
       const k2 = rhs(mid, o.driversAt(t + h / 2), p);
       const k3 = rhs(axpy(s, h / 2, k2), o.driversAt(t + h / 2), p);
       const k4 = rhs(axpy(s, h, k3), o.driversAt(t + h), p);
@@ -75,9 +107,10 @@ export function runSim(o: RunOptions): RunOutput {
       seaLevel: sealevel.seaLevelSum(s), slThermal: s.sThermal, slGlacier: s.sGlacier,
       slIceSheet: s.sGrIS + s.sAIS, slLandWater: s.sLandWater,
       oceanUptake: carbon.oceanSink(s.co2, s.ts, p), landSink: carbon.landSink(s.co2, p),
+      biomass: s.b, soilMoisture: s.w, permafrost: s.mPf,
     });
   }
   const cumAtmos = (s.co2 - co2Start) / p.ppm_per_gtc;
-  const residual = Math.abs(cumE - cumAtmos - cumL - cumO);
-  return { records, carbon: { cumEmissions: cumE, cumAtmos, cumLand: cumL, cumOcean: cumO, residualRatio: residual / Math.max(cumE, 1e-9) } };
+  const residual = Math.abs(cumE + cumFB - cumAtmos - cumL - cumO);
+  return { records, carbon: { cumEmissions: cumE, cumFeedback: cumFB, cumAtmos, cumLand: cumL, cumOcean: cumO, residualRatio: residual / Math.max(cumE + cumFB, 1e-9) } };
 }

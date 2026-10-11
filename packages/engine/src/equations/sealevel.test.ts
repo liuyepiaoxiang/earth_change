@@ -7,7 +7,7 @@ const p = {
   b0_gris: 0.0002, b1_gris: 0.001, b2_gris: 0.0002, amp_gris: 2.0,
   c0_ais: 0.0001, c1_ais: 0.0002, lw_rate: 0.0003,
 } as Params;
-const s = { co2: 422, ts: 1.4, td: 0.8, sThermal: 0.1, sGlacier: 0.1, sGrIS: 0.02, sAIS: 0.015, sLandWater: 0.005 };
+const s = { co2: 422, ts: 1.4, td: 0.8, sThermal: 0.1, sGlacier: 0.1, sGrIS: 0.02, sAIS: 0.015, sLandWater: 0.005, b: 550, w: 800, mPf: 1400, pTh: 0 };
 
 describe("海平面方程", () => {
   it("eq_14: 表层暖于深层 → 热膨胀为正", () => {

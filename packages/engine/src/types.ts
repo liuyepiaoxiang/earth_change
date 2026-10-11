@@ -1,4 +1,5 @@
-/** v0 地球状态向量（SPEC §6.3）：温度为相对 1850 的异常（K），海平面各项为自起算年累计上升（m） */
+/** v2 地球状态向量（SPEC §6.3 + ADR-003 聚合箱扩展）：温度为相对 1850 的异常（K），
+ *  海平面各项为自起算年累计上升（m），生物圈/冻土箱为全球聚合量 */
 export interface EarthState {
   co2: number;       // ppm
   ts: number;        // 表层温度异常 K（大气+海洋混合层）
@@ -8,6 +9,10 @@ export interface EarthState {
   sGrIS: number;     // 格陵兰海平面 m
   sAIS: number;      // 南极海平面 m
   sLandWater: number;// 陆地水海平面 m
+  b: number;         // 植被生物量 GtC（v2 箱，初值 550 = 稳态）
+  w: number;         // 土壤水分 mm（v2 箱，初值 800）
+  mPf: number;       // 多年冻土碳 GtC（v2 箱，初值 1400）
+  pTh: number;       // 已融冻土碳池 GtC（释放源，初值 0）
 }
 /** 外部驱动（每年插值） */
 export interface Drivers {
@@ -24,6 +29,7 @@ export interface YearRecord {
   year: number; co2: number; tempAnomaly: number; oceanDeep: number; forcing: number;
   seaLevel: number; slThermal: number; slGlacier: number; slIceSheet: number; slLandWater: number;
   oceanUptake: number; landSink: number;
+  biomass: number; soilMoisture: number; permafrost: number; // v2 箱诊断
 }
 export interface SimResult {
   schemaVersion: 1; modelVersion: string; scenario: string; paramsFingerprint: string;
@@ -31,5 +37,6 @@ export interface SimResult {
   metrics: {
     tempAnomaly: number[]; co2: number[];
     seaLevel: { total: number[]; thermal: number[]; glacier: number[]; iceSheet: number[]; landWater: number[] };
+    biomass?: number[]; soilMoisture?: number[]; permafrost?: number[]; // v2 箱（GtC / mm / GtC，V2-06 起提供）
   };
 }
