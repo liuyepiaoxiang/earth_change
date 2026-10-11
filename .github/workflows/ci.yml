@@ -33,3 +33,8 @@ jobs:
 
       - name: Next.js 构建
         run: pnpm --filter web build
+
+      - name: E2E（Playwright：S1 API / S2 交互 / R1 图层回归）
+        run: |
+          pnpm --filter web exec playwright install --with-deps chromium
+          pnpm --filter web exec playwright test

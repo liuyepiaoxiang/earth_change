@@ -1,8 +1,9 @@
 import { z } from "zod";
 
 const QuerySchema = z.object({
-  scenario: z.enum(["ssp126", "ssp245", "ssp370", "ssp585"]).default("ssp245"),
-  horizon: z.coerce.number().int().min(2026).max(2500).default(2500),
+  // 两参数均为必填：公开 API 隐含默认值会让 URL 与缓存键不显式（SPEC §8.4）
+  scenario: z.enum(["ssp126", "ssp245", "ssp370", "ssp585"]),
+  horizon: z.coerce.number().int().min(2026).max(2500),
 });
 
 export type SimulateQuery = z.infer<typeof QuerySchema>;

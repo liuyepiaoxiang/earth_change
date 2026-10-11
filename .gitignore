@@ -12,3 +12,6 @@ packages/data/datasets/_tmp/
 apps/web/public/elevation_10min.png
 # 本地工具状态
 .video_agent/
+# Playwright 产物
+apps/web/test-results/
+apps/web/playwright-report/
