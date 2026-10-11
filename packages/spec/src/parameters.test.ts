@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { loadSpec } from "./index.js";
+import { loadSpec } from "./load-spec.js";
 
 describe("parameters", () => {
   it("v0 参数默认值都在先验范围内", () => {

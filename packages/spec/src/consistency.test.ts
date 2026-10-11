@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { loadSpec } from "./index.js";
+import { loadSpec } from "./load-spec.js";
 import { V0_EQUATIONS, V0_EQUATION_COUNT, type EquationId } from "./generated/spec-types.js";
 
 describe("spec 内部一致性", () => {

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { loadSpec } from "./index.js";
+import { loadSpec } from "./load-spec.js";
 
 describe("equations", () => {
   const spec = loadSpec();
