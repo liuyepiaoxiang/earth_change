@@ -29,11 +29,11 @@ describe("环境响应函数（fCO2/fT/fW/fP）", () => {
 });
 
 describe("eq_33/34 生长与死亡（logistic 净形式）", () => {
-  it("承载力：B=K → 生长为 0（稳态）；B<K 正增长；B>K 负增长", () => {
+  it("承载力：B=K → 净生长 0（稳态）；B<K 正；B>K 钳 0（净减少由死亡分项承担）", () => {
     const k = carryingCapacity(550, 1);
     expect(growth(550, k, 1, 1, 1, 1)).toBeCloseTo(0, 9);
     expect(growth(300, k, 1, 1, 1, 1)).toBeGreaterThan(0);
-    expect(growth(700, k, 1, 1, 1, 1)).toBe(0); // logistic max(0,·) 钳制：超载无净增长（净减少由死亡分项承担）
+    expect(growth(700, k, 1, 1, 1, 1)).toBe(0);
   });
 
   it("eq_34 死亡诊断分项线性", () => {
@@ -41,40 +41,40 @@ describe("eq_33/34 生长与死亡（logistic 净形式）", () => {
   });
 
   it("eq_36 NPP：1850 稳态 ≈ npp_max（观测 50–60 GtC/yr 量级）", () => {
-    // B=B₀、f 全 1 → npp = 50×1×1×1×1×1
     expect(npp(550, nppMax, 1, 1, 1, 1)).toBeCloseTo(nppMax, 9);
   });
 });
 
-describe("eq_35/18 生物量动力学", () => {
-  const fAll = { fT: 1, fP: 1, fW: 1, fCO2: 1 };
-
+describe("eq_35/18 生物量动力学（净形式同源）", () => {
   it("1850 稳态：B=B₀、环境基线 → dB/dt ≈ 0（无火灾）", () => {
     expect(vegetationDdt(550, 1, 1, 1, 1)).toBeCloseTo(0, 9);
-    expect(biomassDdt(550, nppMax, 1, 1, 1, 1, 0.015, 550, 0)).toBeCloseTo(0, 9);
+    expect(biomassDdt(550, 1, 1, 1, 1, 0.015, 550, 0)).toBeCloseTo(0, 9);
   });
 
   it("CO₂ 施肥 → 承载力升 → 正增长（植被碳汇）", () => {
-    const d = biomassDdt(550, nppMax, 1, 1, 1, fCo2(560), 0.015, 550, 0);
-    expect(d).toBeGreaterThan(0);
+    expect(biomassDdt(550, 1, 1, 1, fCo2(560), 0.015, 550, 0)).toBeGreaterThan(0);
   });
 
   it("火灾通量线性扣减", () => {
-    const a = biomassDdt(550, nppMax, 1, 1, 1, 1, 0.015, 550, 0);
-    const b = biomassDdt(550, nppMax, 1, 1, 1, 1, 0.015, 550, 0.5);
+    const a = biomassDdt(550, 1, 1, 1, 1, 0.015, 550, 0);
+    const b = biomassDdt(550, 1, 1, 1, 1, 0.015, 550, 0.5);
     expect(a - b).toBeCloseTo(0.5, 9);
   });
 
   it("B→0 非负守卫：火灾通量不会把库推成负值", () => {
-    expect(biomassDdt(0.1, nppMax, 1, 1, 1, 1, 0.015, 550, 5)).toBeGreaterThanOrEqual(-5);
+    expect(biomassDdt(0.1, 1, 1, 1, 1, 0.015, 550, 5)).toBeGreaterThanOrEqual(-5);
   });
 
   it("长期积分收敛到施肥后稳态（K 随 CO₂ 上移）", () => {
     let b = 550;
-    const c = 560; // CO₂ 倍增 → K = 550×fCo2(560) ≈ 550×1.277 ≈ 702
+    const c = 560; // CO₂ 倍增 → K = 550×fCo2(560) ≈ 702
     for (let i = 0; i < 500; i++) {
-      b = Math.max(0, b + biomassDdt(b, nppMax, 1, 1, 1, fCo2(c), 0.015, 550, 0));
+      b = Math.max(0, b + biomassDdt(b, 1, 1, 1, fCo2(c), 0.015, 550, 0));
     }
     expect(b).toBeCloseTo(carryingCapacity(550, fCo2(c)), 0);
+  });
+
+  it("eq_35 与 eq_18 同源：dV/dt = dB/dt / B₀", () => {
+    expect(vegetationDdt(400, 1.2, 1, 1.1, 1.3)).toBeCloseTo(biomassDdt(400, 1.2, 1, 1.1, 1.3, 0.015, 550, 0) / 550, 9);
   });
 });

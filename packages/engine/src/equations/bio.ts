@@ -50,18 +50,16 @@ export function npp(b: number, nppMax: number, fT: number, fCO2: number, fP: num
   return Math.max(0, nppMax * v * fT * fCO2 * fP * fW);
 }
 
-/** eq_35: dV/dt = Growth − Death（相对覆盖动力学，返回 dV/dt，1/yr） */
+//** eq_35: dV/dt = (1/B₀)·dB/dt —— 与 eq_18 净形式同源（火灾由调用方并入； death 分项 eq_34 为独立诊断） */
 export function vegetationDdt(
-  b: number, fT: number, fP: number, fW: number, fCO2: number, rVeg = 0.015, kBiomass = B0, m = 0.015,
+  b: number, fT: number, fP: number, fW: number, fCO2: number, rVeg = 0.015, kBiomass = B0, fireFlux = 0,
 ): number {
-  const v = b / B0;
-  return growth(b, kBiomass * fCO2, fT, fP, fW, fCO2, rVeg) / B0 - (m * v);
+  return biomassDdt(b, fT, fP, fW, fCO2, rVeg, kBiomass, fireFlux) / B0;
 }
 
 /** eq_18: 生物量碳收支 dB/dt = NPP − Rh − ΔFire（NPP 内含自养呼吸净额，Rh 已并入 logistic 净速率） */
 export function biomassDdt(
   b: number,
-  nppMax: number,
   fT: number,
   fP: number,
   fW: number,
