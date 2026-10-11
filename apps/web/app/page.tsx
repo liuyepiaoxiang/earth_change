@@ -3,7 +3,7 @@ import { useMemo, useState } from "react";
 import { loadCities, loadWarmingPattern } from "@future-earth/data";
 import type { CityRow } from "@future-earth/data";
 import type { ScenarioId } from "@future-earth/engine";
-import { metricsAt, useSimulation } from "../lib/sim";
+import { metricsAt, metricsUncAt, useSimulation } from "../lib/sim";
 import ScenarioSelector from "../components/ScenarioSelector";
 import MetricsBar from "../components/MetricsBar";
 import Timeline from "../components/Timeline";
@@ -15,11 +15,13 @@ const centerStyle = { height: "100%", display: "grid", placeItems: "center", col
 export default function Home() {
   const [scenario, setScenario] = useState<ScenarioId>("ssp245");
   const [year, setYear] = useState(2100);
+  const [uncertain, setUncertain] = useState(false);
   const [city, setCity] = useState<CityRow | null>(null);
-  const { sim, error } = useSimulation(scenario);
+  const { sim, error } = useSimulation(scenario, uncertain);
   const cities = useMemo(() => loadCities(), []);
   const pattern = useMemo(() => loadWarmingPattern(), []);
   const snap = sim ? metricsAt(sim, year) : null;
+  const unc = sim ? metricsUncAt(sim, year) : null;
 
   return (
     <main style={{ height: "100vh", display: "grid", gridTemplateRows: "auto 1fr auto" }}>
@@ -35,7 +37,23 @@ export default function Home() {
       >
         <strong style={{ color: "#e0f2fe" }}>🌍 未来地球引擎</strong>
         <ScenarioSelector value={scenario} onChange={setScenario} />
-        <MetricsBar snap={snap} />
+        <button
+          onClick={() => setUncertain((v) => !v)}
+          aria-pressed={uncertain}
+          title="种子化确定性蒙特卡洛：参数先验采样 → p10/p90 区间（约 1 秒）"
+          style={{
+            padding: "4px 10px",
+            borderRadius: 6,
+            cursor: "pointer",
+            fontSize: 13,
+            border: `1px solid ${uncertain ? "#a78bfa" : "#334155"}`,
+            background: uncertain ? "#4c1d95" : "transparent",
+            color: uncertain ? "#ede9fe" : "#94a3b8",
+          }}
+        >
+          ±区间
+        </button>
+        <MetricsBar snap={snap} unc={unc} />
       </header>
 
       <section style={{ position: "relative", minHeight: 0 }}>

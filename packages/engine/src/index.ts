@@ -43,5 +43,8 @@ export {
   isCityFlooded, isLandAboveSea, classifyBiome,
 } from "./equations/downscale.js";
 export type { WarmingPatternBand } from "./equations/downscale.js";
+// 不确定性量化（v1）
+export { runScenarioMc, PERTURBED_IDS } from "./mc.js";
+export type { McResult, McBand } from "./mc.js";
 export type { SimResult } from "./types.js";
 export type { ScenarioId } from "@future-earth/spec";

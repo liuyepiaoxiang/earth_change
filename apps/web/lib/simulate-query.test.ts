@@ -15,6 +15,13 @@ describe("parseSimulateQuery", () => {
   it("非法情景 → Error", () => {
     expect(parseSimulateQuery("http://x/api/simulate?scenario=rcp45")).toBeInstanceOf(Error);
   });
+  it("uncertainty=mc 合法；非法值 → Error", () => {
+    const q = parseSimulateQuery("http://x/api/simulate?scenario=ssp245&horizon=2100&uncertainty=mc");
+    expect((q as { uncertainty?: string }).uncertainty).toBe("mc");
+    expect(
+      parseSimulateQuery("http://x/api/simulate?scenario=ssp245&horizon=2100&uncertainty=bogus"),
+    ).toBeInstanceOf(Error);
+  });
   it("horizon 越界 → Error", () => {
     expect(parseSimulateQuery("http://x/api/simulate?horizon=3000")).toBeInstanceOf(Error);
     expect(parseSimulateQuery("http://x/api/simulate?horizon=1900")).toBeInstanceOf(Error);
