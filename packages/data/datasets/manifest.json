@@ -54,6 +54,18 @@
       "bytes": 103200,
       "retrieved": "2026-10-11",
       "source": "gen-bundle 固化"
+    },
+    "static/cities_top500.csv": {
+      "sha256": "9216a87b312780ffe5e7288115fb9c87d6e958c6bf9a43f01747ad822b2df85f",
+      "bytes": 25192,
+      "retrieved": "2026-10-11",
+      "source": "GeoNames + WorldClim 2.1"
+    },
+    "static/warming_pattern_lat.csv": {
+      "sha256": "f221f33ac78cb9615e69ee94153a7d280ea906ddddefdd9cb20b72ddf0afc217",
+      "bytes": 119,
+      "retrieved": "2026-10-11",
+      "source": "GISTEMP ZonAnn 回归"
     }
   }
 }

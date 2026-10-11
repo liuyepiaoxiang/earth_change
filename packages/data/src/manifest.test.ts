@@ -14,7 +14,8 @@ describe("manifest 完整性（fs 级，仅 node 环境）", () => {
         const p = join(dir, e.name);
         return e.isDirectory() ? walk(p) : [relative(DS, p).split("\\").join("/")];
       });
-    const files = walk(DS).filter((f) => f !== "manifest.json");
+    // _tmp/ 是抓取脚本的下载暂存区（正常结束会自删），不属于数据集，不做 manifest 校验
+    const files = walk(DS).filter((f) => f !== "manifest.json" && !f.startsWith("_tmp/"));
     for (const f of files) {
       expect(m.entries[f], f).toBeDefined();
       const h = createHash("sha256").update(readFileSync(join(DS, f), "utf8")).digest("hex");
