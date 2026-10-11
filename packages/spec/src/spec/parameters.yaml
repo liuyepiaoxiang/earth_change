@@ -20,8 +20,8 @@
 - { id: amp_glacier, symbol: "A_g", name_zh: 冰川区升温放大, unit: "1", default: 1.5, min: 1.2, max: 1.8, source: "山地冰川区升温高于全球", impl: v0 }
 - { id: g0_glacier, symbol: "G0", name_zh: 冰川总储量(海平面当量), unit: "m SLE", default: 0.40, min: 0.36, max: 0.44, source: "Farinotti 2019 / RGI", impl: v0 }
 - { id: b0_gris, symbol: "b0", name_zh: 格陵兰基线损失率, unit: "m SLE/yr", default: 0.0002, min: 0.0001, max: 0.0004, source: "GRACE ~0.75mm/yr 量级", impl: v0 }
-- { id: b1_gris, symbol: "b1", name_zh: 格陵兰线性敏感度, unit: "m SLE/(yr·K)", default: 0.001, min: 0.0005, max: 0.002, source: "Fettweis SMB 拟合量级", impl: v0 }
-- { id: b2_gris, symbol: "b2", name_zh: 格陵兰二次敏感度, unit: "m SLE/(yr·K²)", default: 0.0002, min: 0.0001, max: 0.0005, source: "Fettweis SMB 拟合量级", impl: v0 }
+- { id: b1_gris, symbol: "b1", name_zh: 格陵兰线性敏感度, unit: "m SLE/(yr·K)", default: 0.0003, min: 0.0001, max: 0.001, source: "Fettweis SMB 拟合量级", impl: v0 }
+- { id: b2_gris, symbol: "b2", name_zh: 格陵兰二次敏感度, unit: "m SLE/(yr·K²)", default: 0.00008, min: 0.00003, max: 0.0003, source: "Fettweis SMB 拟合量级", impl: v0 }
 - { id: amp_gris, symbol: "A_Gr", name_zh: 格陵兰区升温放大, unit: "1", default: 2.0, min: 1.5, max: 2.5, source: "北极放大", impl: v0 }
 - { id: c0_ais, symbol: "c0", name_zh: 南极基线损失率, unit: "m SLE/yr", default: 0.0001, min: 0.0, max: 0.0003, source: "GRACE AIS ~0.3-0.4mm/yr", impl: v0 }
 - { id: c1_ais, symbol: "c1", name_zh: 南极非线性敏感度, unit: "m SLE/(yr·K^1.5)", default: 0.0002, min: 0.0001, max: 0.0006, source: "DeConto/AR6 量级", impl: v0 }

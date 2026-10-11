@@ -14,6 +14,7 @@ export interface Drivers {
   year: number; efossil: number; eluluc: number; // GtC/yr
   ch4: number; n2o: number;                      // ppb
   fOther: number;                                // W/m² 其他有效辐射强迫
+  prescribedCo2?: number;                        // 浓度驱动模式（情景时段）：直接给定 CO₂ ppm
 }
 import type { ParameterId } from "@future-earth/spec";
 /** 全参数字典（键由规格生成，访问即类型安全） */

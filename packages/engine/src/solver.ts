@@ -33,7 +33,7 @@ const step = (s: EarthState, h: number, k1: EarthState, k2: EarthState, k3: Eart
 export function rhs(s: EarthState, d: Drivers, p: Params): EarthState {
   const F = forcing.fTotal(s.co2, d.ch4, d.n2o, d.fOther, p);
   return {
-    co2: (d.efossil + d.eluluc - carbon.landSink(s.co2, p) - carbon.oceanSink(s.co2, s.ts, p)) * p.ppm_per_gtc,
+    co2: d.prescribedCo2 !== undefined ? 0 : (d.efossil + d.eluluc - carbon.landSink(s.co2, p) - carbon.oceanSink(s.co2, s.ts, p)) * p.ppm_per_gtc,
     ts: ocean.dTs(F, s.ts, s.td, p),
     td: ocean.dTd(s.ts, s.td, p),
     sThermal: sealevel.dSth(s.ts, s.td, p),
@@ -55,7 +55,9 @@ export function runSim(o: RunOptions): RunOutput {
   for (let y = o.startYear; y < o.endYear; y++) {
     for (let i = 0; i < sub; i++) {
       const t = y + i * h;
-      const k1 = rhs(s, o.driversAt(t), p);
+      const d0 = o.driversAt(t);
+      if (d0.prescribedCo2 !== undefined) s = { ...s, co2: d0.prescribedCo2 }; // 浓度驱动模式：钉住 CO₂
+      const k1 = rhs(s, d0, p);
       const mid = axpy(s, h / 2, k1);
       // 碳收支诊断：用中点状态的汇速率累积（质量守恒检查用）
       cumL += h * carbon.landSink(mid.co2, p);

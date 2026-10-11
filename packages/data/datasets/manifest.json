@@ -20,32 +20,32 @@
       "source": "NASA GISTEMP v4 (1880 起)"
     },
     "historical/forcing_natural_1850_2024.csv": {
-      "sha256": "61c0dbacff8292f6c9b6c07dcbfc1919a2c879e62ddee9f942ea0e0d7f7d46ae",
+      "sha256": "c305487bfc80869b402ab52f761cee3bf90ffcdf1e703e74767dfad90391101b",
       "bytes": 4330,
       "retrieved": "2026-10-11",
       "source": "gen-forcing 合成（AR6/Riahi/Meinshausen 锚点）"
     },
     "scenarios/ssp126.json": {
-      "sha256": "b8970bb8dbae17573ae8d5ddd8300e8375000dc7737a79304fce48f58ddb0aa6",
-      "bytes": 14574,
+      "sha256": "b2424f2ba72c56baa931ae3cee88184be816294d11a687073d64d5b9fa8637f6",
+      "bytes": 17316,
       "retrieved": "2026-10-11",
       "source": "gen-forcing 合成（AR6/Riahi/Meinshausen 锚点）"
     },
     "scenarios/ssp245.json": {
-      "sha256": "4104da1f5b12efa62985ad3d7fad5aa05b40a6f51f48a6597d2770a11a1996a8",
-      "bytes": 15398,
+      "sha256": "2550b41c8d76d730c7550a97a2ea9512839dd036cf785f5d30afeb1af64b43cf",
+      "bytes": 18119,
       "retrieved": "2026-10-11",
       "source": "gen-forcing 合成（AR6/Riahi/Meinshausen 锚点）"
     },
     "scenarios/ssp370.json": {
-      "sha256": "740f779ac53325751a879a8fbfc701bb2ee8e3e34e822fec9d54d67ac32ae85e",
-      "bytes": 15524,
+      "sha256": "913f29fb5645b80899abf7cb5073b4133ff1b0ae7a89dd20638f848338e75b1a",
+      "bytes": 18589,
       "retrieved": "2026-10-11",
       "source": "gen-forcing 合成（AR6/Riahi/Meinshausen 锚点）"
     },
     "scenarios/ssp585.json": {
-      "sha256": "e9b59e03a4f76f5af15b6767268f18a7e759d20d7b1e8f467cdc7661913f5caf",
-      "bytes": 15536,
+      "sha256": "1813d840e077d272f40985ec114ab34f5a262ade77a29ed3ddae45876b96ae73",
+      "bytes": 18147,
       "retrieved": "2026-10-11",
       "source": "gen-forcing 合成（AR6/Riahi/Meinshausen 锚点）"
     },

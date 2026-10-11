@@ -24,16 +24,17 @@ export function makeHistoricalDrivers(): (year: number) => Drivers {
   });
 }
 
-/** 情景驱动 2025-2500；scale 为化石+LULUC 排放的端点校正因子（校准阶段确定） */
-export function makeScenarioDrivers(id: "ssp126" | "ssp245" | "ssp370" | "ssp585", scale = 1): (year: number) => Drivers {
+/** 情景驱动 2025-2500（浓度驱动模式：CO₂ 走 Meinshausen 2020 浓度路径；排放序列保留供展示/诊断） */
+export function makeScenarioDrivers(id: "ssp126" | "ssp245" | "ssp370" | "ssp585"): (year: number) => Drivers {
   const s = loadScenario(id);
   return (year) => ({
     year,
-    efossil: interpSeries(s.years, s.efossil, year) * scale,
-    eluluc: interpSeries(s.years, s.eluluc, year) * scale,
+    efossil: interpSeries(s.years, s.efossil, year),
+    eluluc: interpSeries(s.years, s.eluluc, year),
     ch4: interpSeries(s.years, s.ch4, year),
     n2o: interpSeries(s.years, s.n2o, year),
     fOther: interpSeries(s.years, s.fOther, year),
+    prescribedCo2: interpSeries(s.years, s.co2Conc, year),
   });
 }
 

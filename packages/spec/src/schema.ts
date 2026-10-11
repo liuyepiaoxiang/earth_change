@@ -67,6 +67,7 @@ export const ScenarioSchema = z.object({
   name_zh: z.string(),
   target_co2_2100_ppm: z.number(),
   co2_emission_anchors_gtc: z.record(z.string(), z.number()),
+  co2_conc_anchors_ppm: z.record(z.string(), z.number()),
   luluc_anchors_gtc: z.record(z.string(), z.number()),
   ch4_anchors_ppb: z.record(z.string(), z.number()),
   n2o_anchors_ppb: z.record(z.string(), z.number()),

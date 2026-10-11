@@ -75,7 +75,12 @@ const STAGES: Stage[] = [
       const m = runHistorical(p).records;
       const obs = tempObs.filter((r) => r.year >= 1900);
       const mod = obs.map((r) => m.find((x) => x.year === r.year)!.tempAnomaly);
-      return rmse(mod, obs.map((r) => r.anomaly)) + 0.5 * Math.abs(m.at(-1)!.tempAnomaly - tempObs.at(-1)!.anomaly);
+      // 瞬态/平衡双重约束（两层 EBM: TCR≈F2x/(λ+γ), ECS=F2x/λ；AR6: TCR~1.9, ECS~3.1）
+      const F2x = 5.35 * Math.log(2);
+      const tcr = F2x / (p.lambda + p.gamma_ocean);
+      const ecs = F2x / p.lambda;
+      return rmse(mod, obs.map((r) => r.anomaly)) + 0.5 * Math.abs(m.at(-1)!.tempAnomaly - tempObs.at(-1)!.anomaly)
+        + 2.0 * Math.abs(tcr - 1.9) + 2.0 * Math.abs(ecs - 3.1);
     },
   },
   {
@@ -112,7 +117,7 @@ function main() {
   const out = {
     version: 1, generatedAt: new Date().toISOString().slice(0, 10),
     note: "确定性 Nelder-Mead 三阶段校准（carbon→climate→slr）；重跑 pnpm calibrate 应得到相同结果",
-    values, ranges: RANGE, stages: log, scenarioScale: {} as Record<string, number>,
+    values, ranges: RANGE, stages: log,
   };
   writeFileSync(new URL("../params.json", import.meta.url), JSON.stringify(out, null, 2) + "\n");
   const m = runHistorical(values as Params).records.at(-1)!;
