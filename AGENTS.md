@@ -49,6 +49,7 @@ node packages/data/scripts/gen-bundle.mjs  # datasets → datasets.gen.ts（改�
 - API horizon 合法域 [2026, 2500] 整数，scenario ∈ 4 个 SSP（锚点在 `scenarios.yaml`）
 - **CI 已建立**（`.github/workflows/ci.yml`：install → gen:spec → typecheck → test → web build，node 20 + pnpm 9）；本地改动后仍建议先跑 `pnpm test` + `pnpm --filter web build`
 - **底图显隐不要走 `globeImageUrl` prop**：three-globe 该 setter 的 OFF 分支不清 map 也不置 needsUpdate，ON 分支设 `color = null` 会被渲染器 uniform 刷新跳过——关→开后 diffuse 残留黑色、永远渲染黑球。正确做法是纹理自己加载一次，在自定义材质上成对切换 `map`/`color` 并显式 `needsUpdate`（见 GlobeView 的 applyBasemap）
+- **three 必须保持单实例 0.186.1**：web 曾与 globe.gl 内部存在 0.165/0.186 双实例——0.165 的 DataTexture 缺 `updateRanges`，被 0.186 渲染器上传时抛 TypeError，渲染循环死亡（球体消失）。已统一 web 依赖为 0.186.1（@types/three 0.186.0）。**禁止降级 three 或引入第二个实例**；单实例下跨包传纹理/材质对象才安全
 - 改任何 `packages/data/datasets/` 下的数据文件后，**必须重跑 `node packages/data/scripts/gen-bundle.mjs`**——运行时 loaders 读生成模块，不重跑则改动对引擎/前端不可见（B3/B4 曾因此空数据静默上线）
 
 ## 领域约定
