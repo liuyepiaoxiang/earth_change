@@ -1,1 +1,67 @@
-[]
+# ---- 第 1 组：辐射与能量平衡（v1 显式化；v0 由 forcing 数据 + 两层 EBM 隐式涵盖）----
+- { id: eq_01, name_en: Incoming Solar, name_zh: 太阳入射, domain: forcing, formula: "Q_in = (S0/4)(1+δS)", inputs: [solar.irradiance], outputs: [atmosphere.radiative_forcing], parameters: [], notes: "", impl: v1 }
+- { id: eq_02, name_en: Reflected Solar, name_zh: 反射太阳辐射, domain: forcing, formula: "Q_ref = α·Q_in", inputs: [cryosphere.sea_ice_area, cryosphere.snow_mass], outputs: [atmosphere.radiative_forcing], parameters: [], notes: "", impl: v1 }
+- { id: eq_03, name_en: Absorbed Solar, name_zh: 吸收太阳辐射, domain: forcing, formula: "Q_abs = (1-α)·Q_in", inputs: [solar.irradiance], outputs: [atmosphere.radiative_forcing], parameters: [], notes: "", impl: v1 }
+- { id: eq_04, name_en: Outgoing Longwave, name_zh: 射出长波, domain: forcing, formula: "Q_out = ε·σ·Te⁴", inputs: [atmosphere.temperature], outputs: [atmosphere.radiative_forcing], parameters: [], notes: "", impl: v1 }
+- { id: eq_05, name_en: Net Radiation, name_zh: 净辐射, domain: forcing, formula: "N = Q_abs - Q_out", inputs: [], outputs: [atmosphere.radiative_forcing], parameters: [], notes: "", impl: v1 }
+# ---- 第 2 组：温度 ----
+- { id: eq_06, name_en: Global Mean Temperature, name_zh: 全球平均温度, domain: atmosphere, formula: "Ca·dTa/dt = N - λ·Ta", inputs: [atmosphere.radiative_forcing], outputs: [atmosphere.temperature], parameters: [lambda], notes: "v0 为两层形式下的表层诊断", impl: v0 }
+- { id: eq_07, name_en: CO2 Forcing, name_zh: CO₂辐射强迫, domain: atmosphere, formula: "F_CO2 = 5.35·ln(C/C0)", inputs: [atmosphere.co2], outputs: [atmosphere.forcing_co2], parameters: [c0_ref], notes: "Myhre 1998", impl: v0 }
+- { id: eq_08, name_en: GHG Forcing, name_zh: 温室气体总强迫, domain: atmosphere, formula: "F_GHG = F_CO2 + a_CH4·(√M-√M0) + a_N2O·(√N-√N0)", inputs: [atmosphere.forcing_co2, atmosphere.ch4, atmosphere.n2o], outputs: [atmosphere.forcing_ghg], parameters: [a_ch4, a_n2o, ch4_ref, n2o_ref], notes: "Myhre 简化式", impl: v0 }
+- { id: eq_09, name_en: Total Forcing, name_zh: 总辐射强迫, domain: atmosphere, formula: "F_total = F_GHG + F_other", inputs: [atmosphere.forcing_ghg, atmosphere.forcing_other], outputs: [atmosphere.radiative_forcing], parameters: [], notes: "F_other 含火山/太阳/气溶胶/土地利用", impl: v0 }
+- { id: eq_10, name_en: Single-Layer Temperature, name_zh: 单层温度响应, domain: atmosphere, formula: "Ca·dTa/dt = F_total - λ·Ta - γ(Ta-To)", inputs: [atmosphere.radiative_forcing], outputs: [atmosphere.temperature], parameters: [lambda, gamma_ocean, c_s], notes: "v0 由 eq_11/12 两层形式涵盖，保留为诊断式", impl: v1 }
+# ---- 第 3 组：海洋（两层 EBM）----
+- { id: eq_11, name_en: Surface Layer Energy, name_zh: 表层能量平衡, domain: ocean, formula: "Cs·dTs/dt = F_total - λ·Ts - γ·(Ts - Td)", inputs: [atmosphere.radiative_forcing, ocean.temp_deep], outputs: [atmosphere.temperature], parameters: [lambda, gamma_ocean, c_s], notes: "Geoffroy 2013 两层 EBM", impl: v0 }
+- { id: eq_12, name_en: Deep Layer Energy, name_zh: 深层能量平衡, domain: ocean, formula: "Cd·dTd/dt = γ·(Ts - Td)", inputs: [atmosphere.temperature], outputs: [ocean.temp_deep], parameters: [gamma_ocean, c_d], notes: "", impl: v0 }
+- { id: eq_13, name_en: Ocean Heat Content, name_zh: 海洋热含量, domain: ocean, formula: "H_o = Cs·Ts + Cd·Td", inputs: [atmosphere.temperature, ocean.temp_deep], outputs: [ocean.heat_content], parameters: [c_s, c_d], notes: "诊断量", impl: v0 }
+- { id: eq_14, name_en: Thermal Expansion, name_zh: 热膨胀, domain: ocean, formula: "dS_th/dt = k_th·γ·(Ts - Td)", inputs: [atmosphere.temperature, ocean.temp_deep], outputs: [sea.level_thermal], parameters: [k_thermal, gamma_ocean], notes: "k_th 为热膨胀效率", impl: v0 }
+# ---- 第 4 组：碳循环 ----
+- { id: eq_15, name_en: Atmospheric CO2 Budget, name_zh: 大气碳收支, domain: atmosphere, formula: "dC/dt = (E_fossil + E_luluc - S_land - S_ocean)·κ", inputs: [human.emissions_fossil, human.emissions_luluc, ocean.carbon_uptake, bio.biomass], outputs: [atmosphere.co2], parameters: [ppm_per_gtc], notes: "κ=ppm/GtC 换算", impl: v0 }
+- { id: eq_16, name_en: Land Sink, name_zh: 陆地碳汇, domain: biosphere, formula: "S_land = β_L·ln(C/C0)", inputs: [atmosphere.co2], outputs: [atmosphere.co2], parameters: [beta_land, c0_ref], notes: "CO₂ 施肥；v2 扩展为 NPP-Rh", impl: v0 }
+- { id: eq_17, name_en: Ocean Sink, name_zh: 海洋碳汇, domain: ocean, formula: "S_ocean = k_oc·(C - C0) - χ·Ts", inputs: [atmosphere.co2, atmosphere.temperature], outputs: [ocean.carbon_uptake], parameters: [k_ocean, chi_temp, c0_ref], notes: "含溶解度温度反馈", impl: v0 }
+- { id: eq_18, name_en: Biomass Budget, name_zh: 生物量碳收支, domain: biosphere, formula: "dB/dt = NPP - R_plant - Fire", inputs: [bio.npp, bio.fire_probability], outputs: [bio.biomass], parameters: [], notes: "", impl: v2 }
+# ---- 第 5 组：水循环（v1）----
+- { id: eq_19, name_en: Precipitation, name_zh: 降水, domain: hydrosphere, formula: "P = f(T, q, Ocean, Circulation)", inputs: [hydrosphere.evaporation], outputs: [hydrosphere.precipitation], parameters: [], notes: "", impl: v1 }
+- { id: eq_20, name_en: Evaporation, name_zh: 蒸发, domain: hydrosphere, formula: "E = ke·(qs - qa)", inputs: [atmosphere.temperature], outputs: [hydrosphere.evaporation], parameters: [], notes: "", impl: v1 }
+- { id: eq_21, name_en: Water Balance, name_zh: 水量平衡, domain: hydrosphere, formula: "dW/dt = P - E - R", inputs: [], outputs: [pedo.soil_moisture], parameters: [], notes: "", impl: v1 }
+- { id: eq_22, name_en: Runoff, name_zh: 径流, domain: hydrosphere, formula: "R = P - E - I", inputs: [hydrosphere.precipitation], outputs: [hydrosphere.runoff], parameters: [], notes: "I=入渗", impl: v1 }
+- { id: eq_23, name_en: Soil Water, name_zh: 土壤水, domain: pedosphere, formula: "dWs/dt = P - ET - I + Capillary", inputs: [hydrosphere.precipitation], outputs: [pedo.soil_moisture], parameters: [], notes: "", impl: v1 }
+# ---- 第 6 组：冰雪 ----
+- { id: eq_24, name_en: Snow Budget, name_zh: 积雪收支, domain: cryosphere, formula: "dMsnow/dt = Psnow - Melt", inputs: [hydrosphere.precipitation], outputs: [cryosphere.snow_mass], parameters: [], notes: "", impl: v1 }
+- { id: eq_25, name_en: Glacier Mass Balance, name_zh: 冰川质量平衡, domain: cryosphere, formula: "dMg/dt = Accumulation - Ablation", inputs: [atmosphere.temperature], outputs: [cryosphere.glacier_mass], parameters: [], notes: "v0 为全球聚合箱", impl: v0 }
+- { id: eq_26, name_en: Degree-Day Melt, name_zh: 度日融化, domain: cryosphere, formula: "dsG/dt = k_g·max(A_g·Ts, 0)·max(1 - sG/G0, 0)", inputs: [atmosphere.temperature], outputs: [sea.level_glacier], parameters: [k_glacier, amp_glacier, g0_glacier], notes: "DDF 思想的聚合实现", impl: v0 }
+- { id: eq_27, name_en: Ice Sheet Mass, name_zh: 冰盖质量, domain: cryosphere, formula: "GrIS: ds/dt = b0 + b1·Δ + b2·Δ² (Δ=A_Gr·Ts); AIS: ds/dt = c0 + c1·Ts^1.5", inputs: [atmosphere.temperature], outputs: [sea.level_ice_sheet], parameters: [b0_gris, b1_gris, b2_gris, amp_gris, c0_ais, c1_ais], notes: "简化 SMB+动力项", impl: v0 }
+- { id: eq_28, name_en: Sea Ice Area, name_zh: 海冰面积, domain: cryosphere, formula: "dA/dt = f(To, Ta, A)", inputs: [atmosphere.temperature, ocean.temp_deep], outputs: [cryosphere.sea_ice_area], parameters: [], notes: "经验/logistic", impl: v1 }
+# ---- 第 7 组：冰-反照率反馈（v1）----
+- { id: eq_29, name_en: Surface Albedo, name_zh: 地表反照率, domain: forcing, formula: "α = α0 + ki·Aice + ks·Asnow - kv·V", inputs: [cryosphere.sea_ice_area, cryosphere.snow_mass, bio.vegetation_fraction], outputs: [atmosphere.radiative_forcing], parameters: [], notes: "", impl: v1 }
+- { id: eq_30, name_en: Ice-Albedo Feedback, name_zh: 冰-反照率反馈, domain: forcing, formula: "Ice↓ ⇒ α↓ ⇒ Qabs↑ ⇒ T↑ ⇒ Ice↓", inputs: [atmosphere.temperature], outputs: [atmosphere.temperature], parameters: [], notes: "结构关系（回路 L2）", impl: v1 }
+# ---- 第 8 组：海平面 ----
+- { id: eq_31, name_en: Sea Level Sum, name_zh: 海平面加总, domain: ocean, formula: "S = S_th + S_g + S_i + S_lw", inputs: [sea.level_thermal, sea.level_glacier, sea.level_ice_sheet, sea.level_land_water], outputs: [sea.level], parameters: [], notes: "", impl: v0 }
+- { id: eq_32, name_en: Sea Level Rate, name_zh: 海平面变率, domain: ocean, formula: "dS/dt = Σ dS_i/dt", inputs: [sea.level_thermal, sea.level_glacier, sea.level_ice_sheet, sea.level_land_water], outputs: [sea.level], parameters: [], notes: "诊断式", impl: v0 }
+# ---- 第 9 组：植被（v2）----
+- { id: eq_33, name_en: Vegetation Growth, name_zh: 植被增长, domain: biosphere, formula: "Growth = rV·fT·fP·fW·fCO2", inputs: [atmosphere.co2, pedo.soil_moisture], outputs: [bio.vegetation_fraction], parameters: [], notes: "", impl: v2 }
+- { id: eq_34, name_en: Vegetation Death, name_zh: 植被死亡, domain: biosphere, formula: "Death = mV + Drought + HeatStress + Fire", inputs: [bio.fire_probability], outputs: [bio.vegetation_fraction], parameters: [], notes: "", impl: v2 }
+- { id: eq_35, name_en: Vegetation Dynamics, name_zh: 植被动态, domain: biosphere, formula: "dV/dt = Growth - Death", inputs: [], outputs: [bio.vegetation_fraction], parameters: [], notes: "", impl: v2 }
+- { id: eq_36, name_en: NPP, name_zh: 净初级生产力, domain: biosphere, formula: "NPP = V·NPPmax·fT·fP·fCO2", inputs: [atmosphere.co2, bio.vegetation_fraction, hydrosphere.precipitation], outputs: [bio.npp], parameters: [], notes: "", impl: v2 }
+# ---- 第 10 组：火灾（v2）----
+- { id: eq_37, name_en: Fire Probability, name_zh: 火灾概率, domain: biosphere, formula: "P_fire = σ(aT + b·Drought + c·Fuel - d·Humidity)", inputs: [atmosphere.temperature, bio.biomass, pedo.soil_moisture], outputs: [bio.fire_probability], parameters: [], notes: "", impl: v2 }
+- { id: eq_38, name_en: Fire Loss, name_zh: 火灾损失, domain: biosphere, formula: "FireLoss = P_fire·Biomass", inputs: [bio.fire_probability, bio.biomass], outputs: [bio.biomass], parameters: [], notes: "", impl: v2 }
+# ---- 第 11 组：冻土（v2）----
+- { id: eq_39, name_en: Permafrost Thaw, name_zh: 冻土融化, domain: cryosphere, formula: "dM_pf/dt = Freeze - Thaw, Thaw = k_pf·(T-T_pf)+", inputs: [atmosphere.temperature], outputs: [cryosphere.permafrost_carbon], parameters: [], notes: "", impl: v2 }
+- { id: eq_40, name_en: Permafrost Carbon Release, name_zh: 冻土碳释放, domain: cryosphere, formula: "E_pf = r_pf·M_pf_thawed", inputs: [cryosphere.permafrost_carbon], outputs: [atmosphere.co2, atmosphere.ch4], parameters: [], notes: "", impl: v2 }
+# ---- 第 12 组：地貌（v3）----
+- { id: eq_41, name_en: Slope, name_zh: 坡度, domain: geosphere, formula: "Slope = |∇Z|", inputs: [geo.elevation], outputs: [geo.slope], parameters: [], notes: "", impl: v3 }
+- { id: eq_42, name_en: River Erosion, name_zh: 河流侵蚀, domain: geosphere, formula: "E_river = K·Q^m·S^n", inputs: [hydrosphere.river_discharge, geo.slope], outputs: [pedo.erosion_rate], parameters: [], notes: "", impl: v3 }
+- { id: eq_43, name_en: Surface Erosion, name_zh: 地表侵蚀, domain: pedosphere, formula: "E_soil = Kr·R + Kw·W + Ks·Wind", inputs: [hydrosphere.runoff], outputs: [pedo.erosion_rate], parameters: [], notes: "", impl: v3 }
+- { id: eq_44, name_en: Vegetation Erosion Shield, name_zh: 植被抗侵蚀, domain: pedosphere, formula: "E_eff = E_soil·(1 - c·V)", inputs: [bio.vegetation_fraction], outputs: [pedo.erosion_rate], parameters: [], notes: "", impl: v3 }
+- { id: eq_45, name_en: Sediment Budget, name_zh: 沉积收支, domain: geosphere, formula: "dSed/dt = T_in - T_out", inputs: [], outputs: [geo.sediment_flux], parameters: [], notes: "", impl: v3 }
+- { id: eq_46, name_en: Sediment Transport, name_zh: 河流输沙, domain: geosphere, formula: "Q_sed = Ks·Q^a·S^b", inputs: [hydrosphere.river_discharge, geo.slope], outputs: [geo.sediment_flux], parameters: [], notes: "", impl: v3 }
+- { id: eq_47, name_en: Elevation Change, name_zh: 高程变化, domain: geosphere, formula: "dZ/dt = Deposition - Erosion", inputs: [geo.sediment_flux, pedo.erosion_rate], outputs: [geo.elevation], parameters: [], notes: "", impl: v3 }
+- { id: eq_48, name_en: Coastal Erosion, name_zh: 海岸侵蚀, domain: geosphere, formula: "E_coast = Kw·Wave^a·Storm^b·SLR^c", inputs: [sea.level], outputs: [geo.coastline_position], parameters: [], notes: "", impl: v3 }
+# ---- 第 13 组：淹没与群系（v0 城市级 / v3 全网格）----
+- { id: eq_49, name_en: Inundation, name_zh: 淹没判定, domain: surface, formula: "Land(x,y,t) = 1 if Z(x,y) > S(t) else 0", inputs: [sea.level, geo.elevation], outputs: [surface.inundation_mask], parameters: [], notes: "v0 为城市点级；v3 为全网格", impl: v0 }
+- { id: eq_50, name_en: Biome Classification, name_zh: 生物群系判定, domain: biosphere, formula: "Biome = argmax_i Suitability_i(T, P)", inputs: [downscale.city_climate, hydrosphere.precipitation], outputs: [bio.biome_class], parameters: [], notes: "v0 为城市级温湿查表；v3 扩展土壤项", impl: v0 }
+# ---- 第 14 组：降尺度（v0 新增）----
+- { id: eq_51, name_en: Temperature Pattern Scaling, name_zh: 温度模式缩放, domain: atmosphere, formula: "ΔT(x,t) = ΔT_global(t)·Π(lat(x))", inputs: [atmosphere.temperature, downscale.warming_pattern], outputs: [downscale.city_climate], parameters: [], notes: "Pattern Scaling，IPCC AR6 标准技术", impl: v0 }
+- { id: eq_52, name_en: Precipitation Scaling, name_zh: 降水标量缩放, domain: hydrosphere, formula: "P(x,t) = P0(x)·(1 + 0.02·ΔT_global(t))", inputs: [atmosphere.temperature], outputs: [downscale.city_climate], parameters: [], notes: "v0 仅全球标量，区域格局 v1", impl: v0 }
+- { id: eq_53, name_en: City Inundation, name_zh: 城市淹没判定, domain: surface, formula: "flooded(city,t) = elevation(city) ≤ SLR(t)", inputs: [sea.level, geo.elevation], outputs: [surface.inundation_mask], parameters: [], notes: "城市点级判定", impl: v0 }
