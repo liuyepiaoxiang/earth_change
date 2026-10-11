@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { makeRng, sampleParamOverrides, runScenarioMc, PERTURBED_IDS } from "./mc.js";
 import { PARAMETERS } from "@future-earth/spec";
+import type { Params } from "./types.js";
 
 describe("种子化 PRNG", () => {
   it("同种子序列逐位一致，不同种子序列不同", () => {
@@ -25,17 +26,15 @@ describe("种子化 PRNG", () => {
 });
 
 describe("参数采样", () => {
-  const base = PARAMETERS.reduce((acc, p) => ({ ...acc, [p.id]: p.default }), {}) as Parameters<(typeof PARAMETERS)[number]> extends never
-    ? never
-    : Record<string, number>;
+  const base = PARAMETERS.reduce((acc, p) => ({ ...acc, [p.id]: p.default }), {} as Params);
 
   it("所有样本落在文献先验 [min, max] 内", () => {
     const rng = makeRng(1);
     const ranges = new Map(PARAMETERS.map((p) => [p.id, p]));
     for (let i = 0; i < 200; i++) {
-      const o = sampleParamOverrides(rng, base as never);
+      const o = sampleParamOverrides(rng, base);
       for (const [pid, v] of Object.entries(o)) {
-        const r = ranges.get(pid as keyof typeof o)!;
+        const r = ranges.get(pid as keyof Params)!;
         expect(v).toBeGreaterThanOrEqual(r!.min);
         expect(v).toBeLessThanOrEqual(r!.max);
       }
@@ -43,7 +42,7 @@ describe("参数采样", () => {
   });
 
   it("采样键与扰动名单一致", () => {
-    const o = sampleParamOverrides(makeRng(2), base as never);
+    const o = sampleParamOverrides(makeRng(2), base);
     expect(Object.keys(o).sort()).toEqual([...PERTURBED_IDS].sort());
   });
 });
