@@ -2,6 +2,7 @@
   "name": "future-earth-engine",
   "private": true,
   "engines": { "node": ">=20" },
+  "packageManager": "pnpm@9.15.9",
   "scripts": {
     "gen:spec": "tsx packages/spec/scripts/gen-types.ts",
     "calibrate": "tsx packages/engine/src/calibrate.ts",

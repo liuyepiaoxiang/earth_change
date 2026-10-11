@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # pnpm 版本读自根 package.json 的 packageManager 字段
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: 安装依赖
+        run: pnpm install --frozen-lockfile
+
+      - name: 生成规格类型（校验 YAML ↔ 生成物一致）
+        run: pnpm gen:spec
+
+      - name: 类型检查
+        run: pnpm typecheck
+
+      - name: 全部测试（含 G1–G5 黄金验收门）
+        run: pnpm test
+
+      - name: Next.js 构建
+        run: pnpm --filter web build

@@ -4,7 +4,9 @@ dist/
 turbo.log
 .vercel/
 next-env.d.ts
-.next/
-.vercel/
 *.tsbuildinfo
 
+# 抓取脚本下载暂存区（fetch-static.mjs 正常结束会自删）
+packages/data/datasets/_tmp/
+# 本地工具状态
+.video_agent/

@@ -178,6 +178,8 @@ earth_change/
 | `cities_top2000.csv` | 城市：名称/国家/经纬度/人口/高程 | GeoNames / CC-BY 4.0 | ~200 KB |
 | `baseline_climate.csv` | 网格年均 T/P 基准气候态 | WorldClim 2.1 / CC-BY-SA | ~5 MB |
 
+> **v0 实际交付（2026-10-11 回填）**：DEM 网格层降级，底图用 NASA Blue Marble 纹理；城市实现为 GeoNames top500 + WorldClim 逐城基准气候（tbase/pbase 并入 `cities_top500.csv`），不再单设网格 `baseline_climate.csv`；纬度带实现为 8 带（GISTEMP ZonAnn 1960–2024 回归，南半球海洋带 amp=0.282 属真实结果）。淹没不做网格渲染，见 §8.2 偏差。
+
 ### 5.4 manifest 机制
 
 `manifest.json` 记录每个数据集：来源 URL、引用方式、许可、抓取日期、文件校验和。加载器校验 manifest ↔ 实际文件，不一致 → 构建/测试失败。**所有数据静态打包进仓库**（总量 < 20 MB，Vercel 无持久化文件系统，此为必须决策）。
@@ -303,6 +305,8 @@ G4 通过而 G1–G3 不通过 = 「蒙对答案」，故历史门为前置必�
 | 温度色斑 | pattern scaling 网格 → 着色多边形/点云 |
 | 淹没 | 自定义 shader 对高度图纹理逐像素比较 `elevation < SLR(t)`，GPU 实时 |
 | 城市点 | 2000 城市标记，点击弹出 CityPanel |
+
+> **v0 偏差回填（2026-10-11）**：淹没 shader 层未实现——v0 以城市点级判定呈现（`isCityFlooded`，城市点高度 = 高程 vs SLR 差值），GPU 高度图 shader 层留 v1；城市规模为 top500（GeoNames），非 2000。GlobeView 分层结构已预留扩展位。
 
 ### 8.3 交互性能模型
 
