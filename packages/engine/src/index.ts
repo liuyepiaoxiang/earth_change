@@ -43,6 +43,8 @@ export {
   isCityFlooded, isLandAboveSea, classifyBiome,
 } from "./equations/downscale.js";
 export type { WarmingPatternBand } from "./equations/downscale.js";
+// 海冰与冰-反照率诊断（eq_28–30，ADR-001）
+export { seaIceArea, surfaceAlbedo, iceAlbedoFeedback } from "./equations/seaice.js";
 // 不确定性量化（v1）
 export { runScenarioMc, PERTURBED_IDS } from "./mc.js";
 export type { McResult, McBand } from "./mc.js";

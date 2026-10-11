@@ -5,6 +5,7 @@ import * as carbon from "./equations/carbon.js";
 import * as ocean from "./equations/ocean.js";
 import * as sealevel from "./equations/sealevel.js";
 import * as downscale from "./equations/downscale.js";
+import * as seaice from "./equations/seaice.js";
 
 type EqFn = (...args: never[]) => unknown;
 
@@ -31,4 +32,8 @@ export const REGISTRY: Partial<Record<EquationId, EqFn>> = {
   eq_51: downscale.localDTs as EqFn,
   eq_52: downscale.scaledPrecip as EqFn,
   eq_53: downscale.isCityFlooded as EqFn,
+  // 诊断式（ADR-001）：海冰与冰-反照率，UI 直接调用，不接入 solver RHS
+  eq_28: seaice.seaIceArea as EqFn,
+  eq_29: seaice.surfaceAlbedo as EqFn,
+  eq_30: seaice.iceAlbedoFeedback as EqFn,
 };
