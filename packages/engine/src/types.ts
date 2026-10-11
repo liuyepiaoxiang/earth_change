@@ -15,7 +15,9 @@ export interface Drivers {
   ch4: number; n2o: number;                      // ppb
   fOther: number;                                // W/m² 其他有效辐射强迫
 }
-export type Params = Record<string, number>;
+import type { ParameterId } from "@future-earth/spec";
+/** 全参数字典（键由规格生成，访问即类型安全） */
+export type Params = Record<ParameterId, number>;
 
 export interface YearRecord {
   year: number; co2: number; tempAnomaly: number; oceanDeep: number; forcing: number;

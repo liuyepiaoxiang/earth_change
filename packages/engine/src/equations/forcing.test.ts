@@ -1,7 +1,8 @@
 import { describe, it, expect } from "vitest";
+import type { Params } from "../types.js";
 import { fCO2, fGHG, fTotal } from "./forcing.js";
 
-const p = { c0_ref: 280, a_ch4: 0.036, a_n2o: 0.12, ch4_ref: 722, n2o_ref: 273 };
+const p = { c0_ref: 280, a_ch4: 0.036, a_n2o: 0.12, ch4_ref: 722, n2o_ref: 273  } as Params;
 
 describe("辐射强迫方程", () => {
   it("eq_07: CO₂ 倍增 → 5.35·ln2 ≈ 3.708 W/m²", () => {
