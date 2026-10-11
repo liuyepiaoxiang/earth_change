@@ -85,13 +85,15 @@ describe("温度连续覆盖层 LUT（F14，替代点云）", () => {
     expect(lut[row * 4 + 3]).toBe(Math.round(0.78 * 255));
   });
 
-  it("等温线行存在且为深色（每 1°C 一条）", () => {
+  it("等温线行存在且 alpha 更低（每 1°C 一条）", () => {
     const lut = buildTempLut(2.81, bands, { isothermStep: 1, height: 512 });
-    let dark = 0;
+    const normalA = Math.round(0.78 * 255);
+    let lineRows = 0;
     for (let row = 0; row < 512; row++) {
-      if (lut[row * 4] === 15 && lut[row * 4 + 1] === 23 && lut[row * 4 + 2] === 42) dark++;
+      if (lut[row * 4 + 3]! < normalA) lineRows++;
     }
-    expect(dark).toBeGreaterThan(0); // +1..+5°C 与 0 基线均应产生纬线
+    expect(lineRows).toBeGreaterThan(0); // +1..+5°C 与 0 基线均应产生纬线
+    expect(lineRows).toBeLessThan(100); // 线应纤细（<20% 行数）
   });
 
   it("dtGlobal 变化 → LUT 颜色变化（时间轴联动）", () => {

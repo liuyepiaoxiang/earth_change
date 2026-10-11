@@ -204,9 +204,9 @@ export default function GlobeView({
   // 温度连续覆盖层 LUT（F14）：随 ΔT 全局值/纬度带数据重建（512 像素 CPU 计算，微秒级）
   useEffect(() => {
     const bands = pattern.length ? pattern : [{ latMin: -90, latMax: 90, amp: 1 }];
-    const data = buildTempLut(snap.tempAnomaly, bands, { isothermStep: 1, opacity: 0.78 });
+    const data = buildTempLut(snap.tempAnomaly, bands, { isothermStep: 1, opacity: 0.78, height: 1024 });
     const old = tempTex.current;
-    const tex = new DataTexture(data, 1, 512, RGBAFormat);
+    const tex = new DataTexture(data, 1, 1024, RGBAFormat);
     tex.magFilter = LinearFilter; // 纬度方向线性插值 → 连续色带
     tex.minFilter = LinearFilter;
     tex.needsUpdate = true;

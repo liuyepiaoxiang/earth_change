@@ -113,12 +113,13 @@ export function buildTempLut(
     const lat = -90 + (row / (H - 1)) * 180;
     const dt = dtGlobal * patternAmpInterp(lat, bands);
     const [r, g, b] = tempColorRgb(dt);
-    // 等温线：|ΔT − k·step| < 线宽/2 → 深色细线（含 0 基线）
-    const isLine = step > 0 && Math.abs(dt - Math.round(dt / step) * step) < (step / H) * 90 * 0.6;
-    const a = Math.round((isLine ? Math.min(0.92, opacity + 0.2) : opacity) * 255);
-    data[row * 4] = isLine ? 15 : r;
-    data[row * 4 + 1] = isLine ? 23 : g;
-    data[row * 4 + 2] = isLine ? 42 : b;
+    // 等温线：|ΔT − k·step| < 线宽/2 → 局部色加深 45% + 降 alpha（观感为融入色场的
+    // 纤细等值线，而非灰色间隔带——v1.2 二次修正：固定深色在球面放大后成宽灰带）
+    const isLine = step > 0 && Math.abs(dt - Math.round(dt / step) * step) < (step / H) * 90 * 0.22;
+    const a = Math.round((isLine ? opacity * 0.5 : opacity) * 255);
+    data[row * 4] = isLine ? r * 0.55 : r;
+    data[row * 4 + 1] = isLine ? g * 0.55 : g;
+    data[row * 4 + 2] = isLine ? b * 0.55 : b;
     data[row * 4 + 3] = a;
   }
   return data;
