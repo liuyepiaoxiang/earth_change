@@ -3,3 +3,8 @@ node_modules/
 dist/
 turbo.log
 .vercel/
+next-env.d.ts
+.next/
+.vercel/
+*.tsbuildinfo
+
