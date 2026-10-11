@@ -1,5 +1,13 @@
 import { describe, it, expect } from "vitest";
-import { tempColorRgb, tempColorHex, tempColorCssGradient, TEMP_STOPS, TEMP_DOMAIN } from "./colormap";
+import {
+  tempColorRgb,
+  tempColorHex,
+  tempColorCssGradient,
+  buildTempLut,
+  patternAmpInterp,
+  TEMP_STOPS,
+  TEMP_DOMAIN,
+} from "./colormap";
 
 describe("温度发散色阶（F13 可视化规范）", () => {
   it("中性锚点：ΔT=0 为近白（三通道高且接近），非饱和色", () => {
@@ -43,5 +51,52 @@ describe("温度发散色阶（F13 可视化规范）", () => {
     expect(g.endsWith("%)")).toBe(true);
     expect(TEMP_DOMAIN[0]).toBe(-3);
     expect(TEMP_DOMAIN[1]).toBe(8);
+  });
+});
+
+describe("温度连续覆盖层 LUT（F14，替代点云）", () => {
+  const bands = [
+    { latMin: 64, latMax: 90, amp: 2.738 },
+    { latMin: 44, latMax: 64, amp: 1.575 },
+    { latMin: 24, latMax: 44, amp: 1.232 },
+    { latMin: 0, latMax: 24, amp: 0.906 },
+    { latMin: -24, latMax: 0, amp: 0.839 },
+    { latMin: -44, latMax: -24, amp: 0.747 },
+    { latMin: -64, latMax: -44, amp: 0.282 },
+    { latMin: -90, latMax: -64, amp: 0.617 },
+  ];
+
+  it("patternAmpInterp：带中心精确、锚点间连续、端点钳制", () => {
+    expect(patternAmpInterp(77, bands)).toBeCloseTo(2.738, 9);
+    expect(patternAmpInterp(-54, bands)).toBeCloseTo(0.282, 9);
+    const mid = patternAmpInterp(64, bands); // 54 与 77 锚点之间
+    expect(mid).toBeGreaterThan(1.575);
+    expect(mid).toBeLessThan(2.738);
+    expect(patternAmpInterp(-90, bands)).toBeCloseTo(0.617, 9);
+    expect(patternAmpInterp(90, bands)).toBeCloseTo(2.738, 9);
+  });
+
+  it("LUT 行颜色与 tempColorRgb 同源（非等温线行）", () => {
+    const lut = buildTempLut(2.81, bands, { isothermStep: 0, height: 512 });
+    const row = 400; // lat ≈ 50.2°
+    const lat = -90 + (row / 511) * 180;
+    const dt = 2.81 * patternAmpInterp(lat, bands);
+    expect([lut[row * 4]!, lut[row * 4 + 1]!, lut[row * 4 + 2]!]).toEqual(tempColorRgb(dt));
+    expect(lut[row * 4 + 3]).toBe(Math.round(0.78 * 255));
+  });
+
+  it("等温线行存在且为深色（每 1°C 一条）", () => {
+    const lut = buildTempLut(2.81, bands, { isothermStep: 1, height: 512 });
+    let dark = 0;
+    for (let row = 0; row < 512; row++) {
+      if (lut[row * 4] === 15 && lut[row * 4 + 1] === 23 && lut[row * 4 + 2] === 42) dark++;
+    }
+    expect(dark).toBeGreaterThan(0); // +1..+5°C 与 0 基线均应产生纬线
+  });
+
+  it("dtGlobal 变化 → LUT 颜色变化（时间轴联动）", () => {
+    const a = buildTempLut(1.0, bands, { isothermStep: 0 });
+    const b = buildTempLut(4.0, bands, { isothermStep: 0 });
+    expect(Array.from(a.slice(0, 400 * 4))).not.toEqual(Array.from(b.slice(0, 400 * 4)));
   });
 });

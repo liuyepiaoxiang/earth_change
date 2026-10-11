@@ -1,9 +1,9 @@
 "use client";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
-import { MeshPhongMaterial, NearestFilter, SRGBColorSpace, Texture, TextureLoader } from "three";
+import { DataTexture, LinearFilter, MeshPhongMaterial, NearestFilter, RGBAFormat, SRGBColorSpace, Texture, TextureLoader } from "three";
 import { isCityFlooded, localDTs } from "@future-earth/engine";
-import { tempColorHex } from "../lib/colormap";
+import { buildTempLut, patternAmpInterp, tempColorHex } from "../lib/colormap";
 import type { WarmingPatternBand } from "@future-earth/engine";
 import type { CityRow, PatternBand } from "@future-earth/data";
 import type { MetricsSnapshot } from "../lib/sim";
@@ -19,7 +19,6 @@ const Globe = dynamic(() => import("react-globe.gl"), {
 
 const centerStyle = { height: "100%", display: "grid", placeItems: "center", color: "#475569" } as const;
 
-type GridPoint = { kind: "grid"; lat: number; lng: number; dt: number };
 type CityPoint = {
   kind: "city";
   lat: number;
@@ -30,7 +29,7 @@ type CityPoint = {
   alt: number;
   radius: number;
 };
-type GlobePoint = GridPoint | CityPoint;
+type GlobePoint = CityPoint;
 
 /** 城市点半径按 √人口 归一化时的分母 */
 const maxPop = (cities: CityRow[]) => Math.max(...cities.map((c) => c.population), 1);
@@ -41,30 +40,25 @@ const getLat = (d: object) => (d as GlobePoint).lat;
 const getLng = (d: object) => (d as GlobePoint).lng;
 const getColor = (d: object) => {
   const p = d as GlobePoint;
-  return p.kind === "grid" ? tempColorHex(p.dt) : p.flooded ? "#38bdf8" : "#eab308";
+  return p.flooded ? "#38bdf8" : "#eab308";
 };
 const getAltitude = (d: object) => {
   const p = d as GlobePoint;
-  return p.kind === "grid" ? 0.008 : p.alt;
+  return p.alt;
 };
 const getRadius = (d: object) => {
   const p = d as GlobePoint;
-  return p.kind === "grid" ? 1.9 : p.radius;
+  return p.radius;
 };
 const getLabel = (d: object) => {
-  const p = d as GlobePoint;
-  if (p.kind === "grid") {
-    return `<div style="font:12px system-ui;color:#e2e8f0">ΔT +${p.dt.toFixed(2)}°C（${p.lat}°, ${p.lng}°）</div>`;
-  }
-  const c = p.city;
+  const c = (d as GlobePoint).city;
   return (
     `<div style="font:12px system-ui;color:#e2e8f0"><b>${c.name}</b>（${c.country}，人口 ${(c.population / 10000).toFixed(0)} 万）` +
-    `<br/>高程 ${c.elevation} m · 本地 ΔT +${p.dtLocal.toFixed(2)}°C${p.flooded ? " · 已淹没" : ""}</div>`
+    `<br/>高程 ${c.elevation} m · 本地 ΔT +${(d as GlobePoint).dtLocal.toFixed(2)}°C${(d as GlobePoint).flooded ? " · 已淹没" : ""}</div>`
   );
 };
 const onPointClick = (point: object, onSelectCity: (c: CityRow) => void) => {
-  const p = point as GlobePoint;
-  if (p.kind === "city") onSelectCity(p.city);
+  onSelectCity((point as GlobePoint).city);
 };
 
 export default function GlobeView({
@@ -83,12 +77,16 @@ export default function GlobeView({
   const [layers, setLayers] = useState<LayerState>(DEFAULT_LAYERS);
   const toggleLayer = (key: keyof LayerState) => setLayers((s) => ({ ...s, [key]: !s[key] }));
 
-  // 淹没 shader 的共享 uniform（对象引用跨渲染稳定，直接改 .value 即可驱动 GPU）
+  // 淹没/温度场 shader 的共享 uniform（对象引用跨渲染稳定，直接改 .value 即可驱动 GPU）
   const uSlr = useRef({ value: 0 });
   const uFlood = useRef({ value: 1 });
   const uDem = useRef<{ value: Texture | null }>({ value: null });
   const uPrec = useRef<{ value: Texture | null }>({ value: null });
   const uPrecOn = useRef({ value: 0 });
+  const uTempLut = useRef<{ value: Texture | null }>({ value: null });
+  const uTempOn = useRef({ value: 0 });
+  const uTempReady = useRef({ value: 0 });
+  const tempTex = useRef<Texture | null>(null);
 
   // 自定义地球材质：注入 DEM 高程采样，elev ∈ (0, SLR] 的陆地渲染为水色（SPEC §8.2 淹没层）
   const globeMaterial = useMemo(() => {
@@ -101,15 +99,21 @@ export default function GlobeView({
       shader.uniforms.uDem = uDem.current;
       shader.uniforms.uPrec = uPrec.current;
       shader.uniforms.uPrecOn = uPrecOn.current;
+      shader.uniforms.uTempLut = uTempLut.current;
+      shader.uniforms.uTempOn = uTempOn.current;
+      shader.uniforms.uTempReady = uTempReady.current;
       shader.fragmentShader = shader.fragmentShader
         .replace(
           "#include <common>",
           `#include <common>
            uniform sampler2D uDem;
            uniform sampler2D uPrec;
+           uniform sampler2D uTempLut;
            uniform float uSlr;
            uniform float uFlood;
-           uniform float uPrecOn;`,
+           uniform float uPrecOn;
+           uniform float uTempOn;
+           uniform float uTempReady;`,
         )
         .replace(
           "#include <map_fragment>",
@@ -126,6 +130,11 @@ export default function GlobeView({
                vec3 pc = pt < 0.5 ? mix(dry, semi, pt * 2.0) : mix(semi, wet, (pt - 0.5) * 2.0);
                diffuseColor.rgb = mix(diffuseColor.rgb, pc, 0.8);
              }
+           }
+           if (uTempOn > 0.5 && uTempReady > 0.5) {
+             // 温度连续覆盖层（F14）：纬度 LUT 采样 + 等温线（LUT alpha 内嵌）
+             vec4 T = texture2D(uTempLut, vec2(0.5, vUv.y));
+             diffuseColor.rgb = mix(diffuseColor.rgb, T.rgb, T.a);
            }
            if (uFlood > 0.5) {
              vec2 d = texture2D(uDem, vUv).rg;
@@ -165,6 +174,24 @@ export default function GlobeView({
   useEffect(() => {
     uPrecOn.current.value = layers.prec ? 1 : 0;
   }, [layers.prec]);
+  useEffect(() => {
+    uTempOn.current.value = layers.temperature ? 1 : 0;
+  }, [layers.temperature]);
+
+  // 温度连续覆盖层 LUT（F14）：随 ΔT 全局值/纬度带数据重建（512 像素 CPU 计算，微秒级）
+  useEffect(() => {
+    const bands = pattern.length ? pattern : [{ latMin: -90, latMax: 90, amp: 1 }];
+    const data = buildTempLut(snap.tempAnomaly, bands, { isothermStep: 1, opacity: 0.78 });
+    const old = tempTex.current;
+    const tex = new DataTexture(data, 1, 512, RGBAFormat);
+    tex.magFilter = LinearFilter; // 纬度方向线性插值 → 连续色带
+    tex.minFilter = LinearFilter;
+    tex.needsUpdate = true;
+    tempTex.current = tex;
+    uTempLut.current.value = tex;
+    uTempReady.current.value = 1;
+    if (old) old.dispose();
+  }, [snap, pattern]);
 
   // 底图显隐由本材质自管，不走 globeImageUrl prop：three-globe 该 setter 的 OFF 分支不清 map
   // 也不置 needsUpdate，ON 分支设 color=null 会被 uniform 刷新跳过——关→开后 diffuse 残留
@@ -209,38 +236,27 @@ export default function GlobeView({
     return () => ro.disconnect();
   }, []);
 
-  const points = useMemo<GlobePoint[]>(() => {
+  // 点层 = 仅城市点（温度场已升级为连续覆盖层 F14，点云网格移除）
+  const points = useMemo<CityPoint[]>(() => {
+    if (!layers.cities) return [];
     const dtGlobal = snap.tempAnomaly;
     const slr = snap.seaLevel.total;
     const bands = pattern.length ? pattern : undefined;
-    const grid: GridPoint[] = [];
-    if (layers.temperature) {
-      for (let i = 0; i < 36; i++) {
-        const lat = -87.5 + i * 5;
-        for (let j = 0; j < 72; j++) {
-          const lng = -177.5 + j * 5;
-          grid.push({ kind: "grid", lat, lng, dt: localDTs(dtGlobal, lat, bands) });
-        }
-      }
-    }
-    const cityPts: CityPoint[] = layers.cities
-      ? cities.map((c) => {
-          const flooded = isCityFlooded(c.elevation, slr);
-          const aboveM = Math.max(0, c.elevation - slr);
-          return {
-            kind: "city",
-            lat: c.lat,
-            lng: c.lon,
-            city: c,
-            dtLocal: localDTs(dtGlobal, c.lat, bands),
-            flooded,
-            alt: flooded ? 0.016 : Math.min(0.14, 0.012 + (aboveM / 8848) * 0.12),
-            radius: 0.22 + 0.5 * Math.sqrt(c.population / maxPop(cities)),
-          };
-        })
-      : [];
-    return [...grid, ...cityPts];
-  }, [snap, cities, pattern, layers]);
+    return cities.map((c) => {
+      const flooded = isCityFlooded(c.elevation, slr);
+      const aboveM = Math.max(0, c.elevation - slr);
+      return {
+        kind: "city" as const,
+        lat: c.lat,
+        lng: c.lon,
+        city: c,
+        dtLocal: localDTs(dtGlobal, c.lat, bands),
+        flooded,
+        alt: flooded ? 0.016 : Math.min(0.14, 0.012 + (aboveM / 8848) * 0.12),
+        radius: 0.22 + 0.5 * Math.sqrt(c.population / maxPop(cities)),
+      };
+    });
+  }, [snap, cities, pattern, layers.cities]);
 
   return (
     <div ref={ref} style={{ position: "absolute", inset: 0 }}>

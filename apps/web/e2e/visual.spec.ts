@@ -25,9 +25,9 @@ test.describe("S3 淹没视觉（像素统计对照）", () => {
     await page.goto("/");
     await expect(page.getByRole("button", { name: "SSP5-8.5" })).toBeVisible({ timeout: 20_000 });
 
-    // 统一视角与状态：SSP5-8.5、关温度点云（避免点云遮挡）、关城市点（纯 shader 淹没）
+    // 统一视角与状态：SSP5-8.5、关温度场（避免点云遮挡）、关城市点（纯 shader 淹没）
     await page.getByRole("button", { name: "SSP5-8.5" }).click();
-    await page.getByRole("button", { name: /温度点云/ }).click();
+    await page.getByRole("button", { name: /温度场/ }).click();
     await page.getByRole("button", { name: /城市点/ }).click();
     await page.waitForTimeout(1500);
 
@@ -56,8 +56,8 @@ test.describe("S4 画布点选城市", () => {
     await page.goto("/");
     await expect(page.locator("header")).toContainText("ppm", { timeout: 20_000 });
 
-    // 露出城市点：关温度点云与淹没模拟
-    await page.getByRole("button", { name: /温度点云/ }).click();
+    // 露出城市点：关温度场与淹没模拟
+    await page.getByRole("button", { name: /温度场/ }).click();
     await page.getByRole("button", { name: /淹没模拟/ }).click();
 
     // 放大 ×6（确定性视角：初始 (0°E,0°N)，滚轮沿视线 dolly）
