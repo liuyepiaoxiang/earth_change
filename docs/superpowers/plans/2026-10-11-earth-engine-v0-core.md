@@ -2432,3 +2432,21 @@ git commit -m "feat(engine): runScenario 对外 API(SimResult 契约) + CLI 里�
 
 1. 用真实运行结果回填 SPEC 中的「软目标」达成情况（G4 与 AR6 最佳估计的偏差记录进 docs）
 2. 编写**计划 B**：apps/web（3D 地球 + 时间轴 + 城市面板 + /api/simulate + CI + Vercel 部署 + 静态空间数据获取）
+
+
+---
+
+## 执行偏差记录（2026-10-11 执行完成时追加）
+
+执行中相对本计划的实质性偏差（均有测试与文献依据，详见 git log）：
+
+1. **变量数 57→58**：`atmosphere.radiative_forcing`（F_total，系统核心变量）被 15 处引用但计划中未定义，由引用可解析测试捕获后补上
+2. **GISTEMP 实际始于 1880**：温度文件更名 `temperature_1880_2024.csv`，测试与 datasets.yaml 同步
+3. **OWID 排放单位为吨**：fetch.mjs 增加量纲自适应换算（t/kt/Mt → GtC）
+4. **Params 类型收紧**：`Record<string, number>` → `Record<ParameterId, number>`（规格生成类型，配合 noUncheckedIndexedAccess）
+5. **未来时段改浓度驱动**（替代 scenarioScale 端点校正）：scale 因子在跨零排放路径（ssp126 净负排放）上非单调，无法收敛；浓度驱动是 IPCC 仿真器标准做法
+6. **气候校准加 TCR+ECS 双约束**：仅拟合历史会得到 ECS 4.5°C/TCR 2.7 的组合，G4 过热
+7. **GrIS 先验下调**（b1 0.001→0.0003, b2 0.0002→0.00008）：原先验意味着当前格陵兰贡献 3.3mm/yr，实际 ~0.8mm/yr
+8. **历史 f_other 补卤代烃/臭氧净贡献**（2024: −0.75→−0.50 W/m²）：AR6 卤代烃 +0.41 原本缺失，导致 G1 系统性偏冷
+
+**最终验收**：G1–G5 全通过（G4: ssp126/245/370/585 = 1.77/2.81/3.98/5.05°C，AR6 最佳估计 1.8/2.7/3.6/4.4）。

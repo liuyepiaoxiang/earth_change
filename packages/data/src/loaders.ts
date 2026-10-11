@@ -36,7 +36,7 @@ export const loadCO2 = () => parseCsv("historical/co2_concentration_1850_2024.cs
 export const loadEmissions = () => parseCsv("historical/emissions_1750_2024.csv", EmisRow, (c) => ({ year: +c[0]!, efossil: +c[1]!, eluluc: +c[2]! }));
 export const loadForcing = () => parseCsv("historical/forcing_natural_1850_2024.csv", ForcingRow, (c) => ({ year: +c[0]!, ch4: +c[1]!, n2o: +c[2]!, fOther: +c[3]! }));
 
-export interface ScenarioSeries { id: string; name: string; years: number[]; efossil: number[]; eluluc: number[]; ch4: number[]; n2o: number[]; fOther: number[]; landWaterRate: number }
+export interface ScenarioSeries { id: string; name: string; years: number[]; efossil: number[]; eluluc: number[]; ch4: number[]; n2o: number[]; fOther: number[]; co2Conc: number[]; landWaterRate: number }
 export function loadScenario(id: "ssp126" | "ssp245" | "ssp370" | "ssp585"): ScenarioSeries {
   const p = join(DS, "scenarios", `${id}.json`);
   if (!existsSync(p)) throw new Error(`情景文件不存在: ${id}（先运行 gen-forcing.mjs）`);
