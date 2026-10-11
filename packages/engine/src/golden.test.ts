@@ -1,14 +1,12 @@
 import { describe, it, expect } from "vitest";
-import { readFileSync } from "node:fs";
 import { runSim } from "./solver.js";
 import { makeHistoricalDrivers, makeScenarioDrivers, initialState } from "./scenario.js";
-import { loadSpec } from "@future-earth/spec";
+import { PARAMETER_DEFAULTS } from "@future-earth/spec";
+import { CALIBRATED_PARAMS } from "./generated/params.gen.js";
 import { loadCO2, loadTemperature } from "@future-earth/data";
 import type { Params } from "./types.js";
 
-const paramsFile = JSON.parse(readFileSync(new URL("../params.json", import.meta.url), "utf8"));
-const base: Record<string, number> = { ...paramsFile.values };
-for (const x of loadSpec().parameters) if (!(x.id in base)) base[x.id] = x.default;
+const base: Record<string, number> = { ...PARAMETER_DEFAULTS, ...CALIBRATED_PARAMS };
 const p = base as Params;
 const tempObs = loadTemperature();
 const co2Obs = loadCO2();

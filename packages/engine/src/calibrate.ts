@@ -1,6 +1,6 @@
 /** 用法：pnpm calibrate —— 分阶段确定性校准，产出 params.json（提交入库） */
-import { writeFileSync } from "node:fs";
-import { loadSpec } from "@future-earth/spec";
+import { writeFileSync, mkdirSync } from "node:fs";
+import { PARAMETER_DEFAULTS, PARAMETERS } from "@future-earth/spec";
 import { loadCO2, loadTemperature } from "@future-earth/data";
 import { runSim } from "./solver.js";
 import { makeHistoricalDrivers, initialState } from "./scenario.js";
@@ -36,10 +36,9 @@ export function nelderMead(f: (x: number[]) => number, x0: number[], iters = 300
 }
 
 // ---------- 参数基准 ----------
-const spec = loadSpec();
-const DEFAULTS: Record<string, number> = {};
+const DEFAULTS: Record<string, number> = { ...PARAMETER_DEFAULTS };
 const RANGE: Record<string, { min: number; max: number }> = {};
-for (const x of spec.parameters) { DEFAULTS[x.id] = x.default; RANGE[x.id] = { min: x.min, max: x.max }; }
+for (const x of PARAMETERS) RANGE[x.id] = { min: x.min, max: x.max };
 const toUnit = (id: string, v: number) => (v - RANGE[id]!.min) / (RANGE[id]!.max - RANGE[id]!.min);
 const fromUnit = (id: string, u: number) => RANGE[id]!.min + u * (RANGE[id]!.max - RANGE[id]!.min);
 
@@ -120,6 +119,9 @@ function main() {
     values, ranges: RANGE, stages: log,
   };
   writeFileSync(new URL("../params.json", import.meta.url), JSON.stringify(out, null, 2) + "\n");
+  mkdirSync(new URL("./generated/", import.meta.url), { recursive: true });
+  writeFileSync(new URL("./generated/params.gen.ts", import.meta.url),
+    "// 自动生成：pnpm calibrate —— 请勿手改\nexport const CALIBRATED_PARAMS = " + JSON.stringify(values) + " as const;\n", "utf8");
   const m = runHistorical(values as Params).records.at(-1)!;
   console.log(`校准后 2024: ΔT=${m.tempAnomaly.toFixed(2)}°C  CO₂=${m.co2.toFixed(1)}ppm  SLR=${m.seaLevel.toFixed(3)}m（自1850）`);
 }

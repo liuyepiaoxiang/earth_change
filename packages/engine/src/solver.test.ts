@@ -1,12 +1,12 @@
 import { describe, it, expect } from "vitest";
 import { runSim, rhs } from "./solver.js";
 import { makeHistoricalDrivers, initialState } from "./scenario.js";
-import { loadSpec } from "@future-earth/spec";
+import { PARAMETER_DEFAULTS } from "@future-earth/spec";
 import type { Params } from "./types.js";
 
 function defaultParams(): Params {
   const p: Record<string, number> = {};
-  for (const x of loadSpec().parameters) p[x.id] = x.default;
+  Object.assign(p, PARAMETER_DEFAULTS);
   return p as Params;
 }
 

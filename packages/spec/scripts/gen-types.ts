@@ -27,6 +27,8 @@ const lines: string[] = [
   `export type ImplTier = "v0" | "v1" | "v2" | "v3";`,
   `export const V0_EQUATIONS: EquationId[] = [${spec.equations.filter((e) => e.impl === "v0").map((e) => q(e.id)).join(", ")}];`,
   `export const V0_EQUATION_COUNT = ${spec.equations.filter((e) => e.impl === "v0").length};`,
+  `export const PARAMETERS: Array<{ id: ParameterId; default: number; min: number; max: number }> = ${JSON.stringify(spec.parameters.map((p) => ({ id: p.id, default: p.default, min: p.min, max: p.max })))};`,
+  `export const PARAMETER_DEFAULTS: Record<ParameterId, number> = ${JSON.stringify(Object.fromEntries(spec.parameters.map((p) => [p.id, p.default])))};`,
 ];
 const out = join(dirname(fileURLToPath(import.meta.url)), "../src/generated/spec-types.ts");
 mkdirSync(dirname(out), { recursive: true });

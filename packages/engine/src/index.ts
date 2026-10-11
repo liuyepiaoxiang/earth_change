@@ -1,16 +1,13 @@
 import { createHash } from "node:crypto";
-import { readFileSync } from "node:fs";
 import { runSim } from "./solver.js";
 import { makeHistoricalDrivers, makeScenarioDrivers, initialState } from "./scenario.js";
-import { loadSpec, type ScenarioId } from "@future-earth/spec";
+import { PARAMETER_DEFAULTS, type ScenarioId } from "@future-earth/spec";
+import { CALIBRATED_PARAMS } from "./generated/params.gen.js";
 import type { Params, SimResult } from "./types.js";
 
 const MODEL_VERSION = "0.1.0";
-const paramsFile = JSON.parse(readFileSync(new URL("../params.json", import.meta.url), "utf8"));
-
 function baseParams(): Params {
-  const p: Record<string, number> = { ...paramsFile.values };
-  for (const x of loadSpec().parameters) if (!(x.id in p)) p[x.id] = x.default;
+  const p: Record<string, number> = { ...PARAMETER_DEFAULTS, ...CALIBRATED_PARAMS };
   return p as Params;
 }
 
@@ -25,7 +22,7 @@ export function runScenario(id: ScenarioId, horizon = 2500): SimResult {
   }).records;
   return {
     schemaVersion: 1, modelVersion: MODEL_VERSION, scenario: id,
-    paramsFingerprint: "sha256:" + createHash("sha256").update(JSON.stringify(paramsFile.values)).digest("hex").slice(0, 16),
+    paramsFingerprint: "sha256:" + createHash("sha256").update(JSON.stringify(CALIBRATED_PARAMS)).digest("hex").slice(0, 16),
     years: recs.map((r) => r.year),
     metrics: {
       tempAnomaly: recs.map((r) => +r.tempAnomaly.toFixed(3)),
