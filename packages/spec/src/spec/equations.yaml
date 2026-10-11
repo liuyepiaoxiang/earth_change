@@ -44,11 +44,11 @@
 - { id: eq_35, name_en: Vegetation Dynamics, name_zh: 植被动态, domain: biosphere, formula: "dV/dt = Growth - Death", inputs: [], outputs: [bio.vegetation_fraction], parameters: [], notes: "dV/dt，V = B/B₀ 派生", impl: v0 }
 - { id: eq_36, name_en: NPP, name_zh: 净初级生产力, domain: biosphere, formula: "NPP = V·NPPmax·fT·fP·fCO2", inputs: [atmosphere.co2, bio.vegetation_fraction, hydrosphere.precipitation], outputs: [bio.npp], parameters: [], notes: "诊断量 NPP", impl: v0 }
 # ---- 第 10 组：火灾（v2）----
-- { id: eq_37, name_en: Fire Probability, name_zh: 火灾概率, domain: biosphere, formula: "P_fire = σ(aT + b·Drought + c·Fuel - d·Humidity)", inputs: [atmosphere.temperature, bio.biomass, pedo.soil_moisture], outputs: [bio.fire_probability], parameters: [], notes: "", impl: v2 }
-- { id: eq_38, name_en: Fire Loss, name_zh: 火灾损失, domain: biosphere, formula: "FireLoss = P_fire·Biomass", inputs: [bio.fire_probability, bio.biomass], outputs: [bio.biomass], parameters: [], notes: "", impl: v2 }
+- { id: eq_37, name_en: Fire Probability, name_zh: 火灾概率, domain: biosphere, formula: "P_fire = σ(aT + b·Drought + c·Fuel - d·Humidity)", inputs: [atmosphere.temperature, bio.biomass, pedo.soil_moisture], outputs: [bio.fire_probability], parameters: [], notes: "诊断式箱式（ADR-003）：logistic 概率，a/b 量级标定", impl: v0 }
+- { id: eq_38, name_en: Fire Loss, name_zh: 火灾损失, domain: biosphere, formula: "FireLoss = P_fire·Biomass", inputs: [bio.fire_probability, bio.biomass], outputs: [bio.biomass], parameters: [], notes: "诊断式箱式（ADR-003）：异常通量 = P_fire·fire_k·ΔT·V", impl: v0 }
 # ---- 第 11 组：冻土（v2）----
-- { id: eq_39, name_en: Permafrost Thaw, name_zh: 冻土融化, domain: cryosphere, formula: "dM_pf/dt = Freeze - Thaw, Thaw = k_pf·(T-T_pf)+", inputs: [atmosphere.temperature], outputs: [cryosphere.permafrost_carbon], parameters: [], notes: "", impl: v2 }
-- { id: eq_40, name_en: Permafrost Carbon Release, name_zh: 冻土碳释放, domain: cryosphere, formula: "E_pf = r_pf·M_pf_thawed", inputs: [cryosphere.permafrost_carbon], outputs: [atmosphere.co2, atmosphere.ch4], parameters: [], notes: "", impl: v2 }
+- { id: eq_39, name_en: Permafrost Thaw, name_zh: 冻土融化, domain: cryosphere, formula: "dM_pf/dt = Freeze - Thaw, Thaw = k_pf·(T-T_pf)+", inputs: [atmosphere.temperature], outputs: [cryosphere.permafrost_carbon], parameters: [], notes: "诊断式箱式（ADR-003）：阈值+线性速率，库不穿底", impl: v0 }
+- { id: eq_40, name_en: Permafrost Carbon Release, name_zh: 冻土碳释放, domain: cryosphere, formula: "E_pf = r_pf·M_pf_thawed", inputs: [cryosphere.permafrost_carbon], outputs: [atmosphere.co2, atmosphere.ch4], parameters: [], notes: "诊断式箱式（ADR-003）：CO₂ 份额 1.0 简化", impl: v0 }
 # ---- 第 12 组：地貌（v3）----
 - { id: eq_41, name_en: Slope, name_zh: 坡度, domain: geosphere, formula: "Slope = |∇Z|", inputs: [geo.elevation], outputs: [geo.slope], parameters: [], notes: "", impl: v3 }
 - { id: eq_42, name_en: River Erosion, name_zh: 河流侵蚀, domain: geosphere, formula: "E_river = K·Q^m·S^n", inputs: [hydrosphere.river_discharge, geo.slope], outputs: [pedo.erosion_rate], parameters: [], notes: "", impl: v3 }
