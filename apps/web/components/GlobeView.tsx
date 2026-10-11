@@ -3,10 +3,12 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { MeshPhongMaterial, NearestFilter, SRGBColorSpace, Texture, TextureLoader } from "three";
 import { isCityFlooded, localDTs } from "@future-earth/engine";
+import { tempColorHex } from "../lib/colormap";
 import type { WarmingPatternBand } from "@future-earth/engine";
 import type { CityRow, PatternBand } from "@future-earth/data";
 import type { MetricsSnapshot } from "../lib/sim";
 import LayerControl from "./LayerControl";
+import Colorbar from "./Colorbar";
 import { DEFAULT_LAYERS, type LayerState } from "./LayerControl";
 
 // react-globe.gl 依赖 WebGL/浏览器 API，仅客户端装载
@@ -33,30 +35,13 @@ type GlobePoint = GridPoint | CityPoint;
 /** 城市点半径按 √人口 归一化时的分母 */
 const maxPop = (cities: CityRow[]) => Math.max(...cities.map((c) => c.population), 1);
 
-/** ΔT(°C) → 蓝→红 色阶（0–6°C 线性映射色相 220→0）。直接算 RGB hex，绕开 three.js 的 CSS hsl 解析 */
-function tempColor(dt: number): string {
-  const t = Math.min(1, Math.max(0, dt / 6));
-  const h = (220 * (1 - t)) / 360;
-  const s = 0.8;
-  const l = 0.6 - 0.18 * t;
-  const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-  const p = 2 * l - q;
-  const chan = (t6: number) => {
-    const v = t6 < 1 / 6 ? p + (q - p) * 6 * t6 : t6 < 1 / 2 ? q : t6 < 2 / 3 ? p + (q - p) * (2 / 3 - t6) * 6 : p;
-    return Math.min(1, Math.max(0, v));
-  };
-  const r = Math.round(chan(h + 1 / 3) * 255);
-  const g = Math.round(chan(h) * 255);
-  const b = Math.round(chan(h - 1 / 3) * 255);
-  return `#${((1 << 24) | (r << 16) | (g << 8) | b).toString(16).slice(1)}`;
-}
 
 // react-globe.gl 的 ObjAccessor 参数是 object，收窄在内部完成
 const getLat = (d: object) => (d as GlobePoint).lat;
 const getLng = (d: object) => (d as GlobePoint).lng;
 const getColor = (d: object) => {
   const p = d as GlobePoint;
-  return p.kind === "grid" ? tempColor(p.dt) : p.flooded ? "#38bdf8" : "#eab308";
+  return p.kind === "grid" ? tempColorHex(p.dt) : p.flooded ? "#38bdf8" : "#eab308";
 };
 const getAltitude = (d: object) => {
   const p = d as GlobePoint;
@@ -278,29 +263,7 @@ export default function GlobeView({
         />
       )}
       <LayerControl layers={layers} onToggle={toggleLayer} />
-      <div
-        style={{
-          position: "absolute",
-          right: 16,
-          bottom: 16,
-          fontSize: 11,
-          color: "#64748b",
-          display: "flex",
-          alignItems: "center",
-          gap: 6,
-        }}
-      >
-        ΔT 0
-        <span
-          style={{
-            width: 90,
-            height: 8,
-            borderRadius: 4,
-            background: "linear-gradient(90deg, hsl(220,85%,58%), hsl(110,85%,50%), hsl(0,85%,42%))",
-          }}
-        />
-        +5°C · <span style={{ color: "#eab308" }}>●</span> 城市（蓝 = 已淹没）
-      </div>
+      <Colorbar />
     </div>
   );
 }

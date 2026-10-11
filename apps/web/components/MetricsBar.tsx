@@ -1,6 +1,7 @@
 "use client";
 import { seaIceArea } from "@future-earth/engine";
 import type { MetricsSnapshot, UncertaintySnapshot } from "../lib/sim";
+import { tokens } from "../lib/design";
 
 function Metric({
   label,
@@ -15,9 +16,9 @@ function Metric({
 }) {
   return (
     <span style={{ display: "inline-flex", gap: 6, alignItems: "baseline" }}>
-      <span style={{ color: "#64748b" }}>{label}</span>
+      <span style={{ color: tokens.textFaint }}>{label}</span>
       <strong style={{ color, fontVariantNumeric: "tabular-nums" }}>{value}</strong>
-      {range && <span style={{ color: "#475569", fontSize: 11, fontVariantNumeric: "tabular-nums" }}>{range}</span>}
+      {range && <span style={{ color: tokens.textDisabled, fontSize: 11, fontVariantNumeric: "tabular-nums" }}>{range}</span>}
     </span>
   );
 }
@@ -34,7 +35,7 @@ export default function MetricsBar({
   unc: UncertaintySnapshot | null;
 }) {
   if (!snap) {
-    return <div style={{ marginLeft: "auto", color: "#475569", fontSize: 13 }}>—</div>;
+    return <div style={{ marginLeft: "auto", color: tokens.textDisabled, fontSize: 13 }}>—</div>;
   }
   const sl = snap.seaLevel;
   return (
@@ -73,7 +74,7 @@ export default function MetricsBar({
         // 海冰随温度单调递减：温度 p90（更暖）→ 海冰 p10
         range={unc && unc.tempP90 > unc.tempP10 ? showT(seaIceArea(unc.tempP90), seaIceArea(unc.tempP10)) : undefined}
       />
-      <span style={{ color: "#64748b", fontSize: 12 }}>
+      <span style={{ color: tokens.textFaint, fontSize: 12 }}>
         热膨 {sl.thermal.toFixed(2)} / 冰川 {sl.glacier.toFixed(2)} / 冰盖 {sl.iceSheet.toFixed(2)} / 陆水{" "}
         {sl.landWater.toFixed(2)} m
       </span>

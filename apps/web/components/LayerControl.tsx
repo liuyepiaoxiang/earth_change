@@ -1,4 +1,5 @@
 "use client";
+import { panelStyle, tokens } from "../lib/design";
 
 export interface LayerState {
   temperature: boolean;
@@ -44,11 +45,11 @@ export default function LayerControl({
         padding: "8px 10px",
         borderRadius: 10,
         background: "rgba(8, 15, 30, 0.85)",
-        border: "1px solid #1e293b",
+        border: `1px solid ${tokens.panelBorder}`,
         backdropFilter: "blur(4px)",
       }}
     >
-      <div style={{ fontSize: 11, color: "#64748b", marginBottom: 6 }}>图层（点击切换）</div>
+      <div style={{ fontSize: 11, color: tokens.textFaint, marginBottom: 6 }}>图层（点击切换）</div>
       {ITEMS.map((it) => {
         const on = layers[it.key];
         return (
