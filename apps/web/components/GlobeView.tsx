@@ -1,7 +1,7 @@
 "use client";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
-import { MeshPhongMaterial, NearestFilter, Texture, TextureLoader } from "three";
+import { MeshPhongMaterial, NearestFilter, SRGBColorSpace, Texture, TextureLoader } from "three";
 import { isCityFlooded, localDTs } from "@future-earth/engine";
 import type { WarmingPatternBand } from "@future-earth/engine";
 import type { CityRow, PatternBand } from "@future-earth/data";
@@ -153,6 +153,38 @@ export default function GlobeView({
     uFlood.current.value = layers.flood ? 1 : 0;
   }, [layers.flood]);
 
+  // 底图显隐由本材质自管，不走 globeImageUrl prop：three-globe 该 setter 的 OFF 分支不清 map
+  // 也不置 needsUpdate，ON 分支设 color=null 会被 uniform 刷新跳过——关→开后 diffuse 残留
+  // 黑色，永远渲染黑球。自管方式：map + color 成对切换并显式 needsUpdate。
+  const basemapTex = useRef<Texture | null>(null);
+  const applyBasemap = useCallback(() => {
+    const mat = globeMaterial;
+    const tex = basemapTex.current;
+    if (layers.basemap && tex) {
+      mat.map = tex;
+      mat.color.set(0xffffff);
+    } else {
+      mat.map = null;
+      mat.color.set(0x000000);
+    }
+    mat.needsUpdate = true;
+  }, [globeMaterial, layers.basemap]);
+  const applyBasemapRef = useRef(applyBasemap);
+  useEffect(() => {
+    applyBasemapRef.current = applyBasemap;
+  }, [applyBasemap]);
+  useEffect(() => {
+    applyBasemap();
+  }, [applyBasemap]);
+  useEffect(() => {
+    const loader = new TextureLoader();
+    loader.load("/earth-blue-marble.jpg", (tex) => {
+      tex.colorSpace = SRGBColorSpace;
+      basemapTex.current = tex;
+      applyBasemapRef.current();
+    });
+  }, []);
+
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
@@ -204,7 +236,6 @@ export default function GlobeView({
           width={size.w}
           height={size.h}
           globeMaterial={globeMaterial}
-          globeImageUrl={layers.basemap ? "/earth-blue-marble.jpg" : null}
           backgroundColor="rgba(0,0,0,0)"
           atmosphereColor="#5b7fa6"
           atmosphereAltitude={layers.atmosphere ? 0.12 : 0}

@@ -47,6 +47,7 @@ node packages/data/scripts/gen-bundle.mjs  # datasets → datasets.gen.ts（改�
 - `tsconfig.base.json` 开 `strict` + `noUncheckedIndexedAccess`，索引访问需判空
 - API horizon 合法域 [2026, 2500] 整数，scenario ∈ 4 个 SSP（锚点在 `scenarios.yaml`）
 - **CI 已建立**（`.github/workflows/ci.yml`：install → gen:spec → typecheck → test → web build，node 20 + pnpm 9）；本地改动后仍建议先跑 `pnpm test` + `pnpm --filter web build`
+- **底图显隐不要走 `globeImageUrl` prop**：three-globe 该 setter 的 OFF 分支不清 map 也不置 needsUpdate，ON 分支设 `color = null` 会被渲染器 uniform 刷新跳过——关→开后 diffuse 残留黑色、永远渲染黑球。正确做法是纹理自己加载一次，在自定义材质上成对切换 `map`/`color` 并显式 `needsUpdate`（见 GlobeView 的 applyBasemap）
 - 改任何 `packages/data/datasets/` 下的数据文件后，**必须重跑 `node packages/data/scripts/gen-bundle.mjs`**——运行时 loaders 读生成模块，不重跑则改动对引擎/前端不可见（B3/B4 曾因此空数据静默上线）
 
 ## 领域约定
