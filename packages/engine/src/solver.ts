@@ -4,6 +4,7 @@ import * as ocean from "./equations/ocean.js";
 import * as sealevel from "./equations/sealevel.js";
 import * as water from "./equations/water.js";
 import * as bio from "./equations/bio.js";
+import { fTemp as bioFTemp, fPrecip as bioFPrecip, fWater as bioFWater, fCo2 as bioFCo2 } from "./equations/bio.js";
 import * as fire from "./equations/fire.js";
 import * as permafrost from "./equations/permafrost.js";
 import type { Drivers, EarthState, Params, YearRecord } from "./types.js";
@@ -17,7 +18,12 @@ export interface RunOptions {
 }
 export interface RunOutput {
   records: YearRecord[];
-  carbon: { cumEmissions: number; cumFeedback: number; cumAtmos: number; cumLand: number; cumOcean: number; residualRatio: number };
+  carbon: {
+    cumEmissions: number; cumFeedback: number; cumAtmos: number; cumLand: number; cumOcean: number;
+    /** 守恒残差比——仅对排放驱动段闭合（G5/G6 断言范围）；浓度驱动段（钉住+反馈抬升）
+     *  的反馈碳被自然汇部分吸收，闭合需完整碳循环，单独报告 cumFeedback 净额 */
+    residualRatio: number;
+  };
 }
 
 const KEYS = ["co2", "ts", "td", "sThermal", "sGlacier", "sGrIS", "sAIS", "sLandWater", "b", "w", "mPf", "pTh"] as const;
@@ -54,10 +60,11 @@ export function rhs(s: EarthState, d: Drivers, p: Params): EarthState {
   const { fireF, ePf, pLand, eLand, dW, dMpf } = v2Fluxes(s, p);
   const feedbackC = fireF + ePf; // GtC/yr，气候驱动异常（接 eq_15 排放侧）
   return {
-    // 排放驱动段：反馈碳进入大气收支；浓度驱动段：导数仅为反馈碳（钉住+累积机制见 runSim）
+    // 排放驱动段：反馈碳进入大气收支。浓度驱动段：co2 由 runSim 的「钉住 + 累积反馈」
+    // 公式管理（此处导数置 0，避免反馈碳在 RK4 积分与 cumFB 记账中双重计入）
     co2:
       d.prescribedCo2 !== undefined
-        ? feedbackC * p.ppm_per_gtc
+        ? 0
         : (d.efossil + d.eluluc + feedbackC - carbon.landSink(s.co2, p) - carbon.oceanSink(s.co2, s.ts, p)) * p.ppm_per_gtc,
     ts: ocean.dTs(F, s.ts, s.td, p),
     td: ocean.dTd(s.ts, s.td, p),
@@ -66,7 +73,7 @@ export function rhs(s: EarthState, d: Drivers, p: Params): EarthState {
     sGrIS: sealevel.dSgris(s.ts, p),
     sAIS: sealevel.dSais(s.ts, p),
     sLandWater: p.lw_rate,
-    b: bio.biomassDdt(s.b, s.ts, pLand, s.w, s.co2, p.r_veg, p.k_biomass, fireF),
+    b: bio.biomassDdt(s.b, bioFTemp(s.ts), bioFPrecip(s.ts), bioFWater(s.w), bioFCo2(s.co2), p.r_veg, p.k_biomass, fireF),
     w: dW,
     mPf: dMpf,
     pTh: -dMpf - ePf,
@@ -90,10 +97,11 @@ export function runSim(o: RunOptions): RunOutput {
       if (d0.prescribedCo2 !== undefined) s = { ...s, co2: d0.prescribedCo2 + (cumFB * p.ppm_per_gtc) };
       const k1 = rhs(s, d0, p);
       const mid = axpy(s, h / 2, k1);
-      // 碳收支诊断：用中点状态的汇速率累积（质量守恒检查用）
+      // 碳收支诊断：汇按实际 co2（浓度段 = 钉住 + 反馈抬升）计
       cumL += h * carbon.landSink(mid.co2, p);
       cumO += h * carbon.oceanSink(mid.co2, mid.ts, p);
-      cumFB += h * (v2Fluxes(mid, p).fireF + permafrost.permafrostRelease(mid.pTh, p.r_pf));
+      const fl = v2Fluxes(mid, p);
+      cumFB += h * (fl.fireF + permafrost.permafrostRelease(mid.pTh, p.r_pf));
       const k2 = rhs(mid, o.driversAt(t + h / 2), p);
       const k3 = rhs(axpy(s, h / 2, k2), o.driversAt(t + h / 2), p);
       const k4 = rhs(axpy(s, h, k3), o.driversAt(t + h), p);

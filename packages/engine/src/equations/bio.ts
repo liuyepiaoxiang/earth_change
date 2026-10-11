@@ -16,9 +16,9 @@ export function fTemp(dTs: number): number {
   return Math.max(0.3, 1 + 0.05 * dTs);
 }
 
-/** fW 土壤水分响应：W/W₀（相对初值 800mm） */
+/** fW 土壤水分响应：W/W₀，钳制 [0, 1.2]（过饱和不增益——饱和林地的生长上限） */
 export function fWater(w: number, w0 = 800): number {
-  return Math.max(0, w / w0);
+  return Math.min(1.2, Math.max(0, w / w0));
 }
 
 /** fP 降水响应：与 eq_52 标量缩放同式（1 + 0.02·ΔT） */
@@ -28,7 +28,8 @@ export function fPrecip(dTs: number): number {
 
 /** 承载力 K = k_biomass·fCO2（GtC） */
 export function carryingCapacity(kBiomass: number, fCO2: number): number {
-  return Math.max(0, kBiomass * fCO2);
+  // 施肥放大限幅 1.4（营养约束的标准箱式近似）：无限制施肥会让生物量库膨胀至不现实量级（G6(b) 把守）
+  return Math.max(0, kBiomass * Math.min(fCO2, 1.4));
 }
 
 /** eq_33: 生长 = r·fT·fP·fW·fCO2·B·(1 − B/K)（logistic 净增长） */
@@ -70,5 +71,7 @@ export function biomassDdt(
 ): number {
   const k = carryingCapacity(kBiomass, fCO2);
   if (k <= 0 || b <= 0) return -fireFlux;
-  return rVeg * fT * fP * fW * fCO2 * b * Math.max(0, 1 - b / k) - fireFlux;
+  // B>K 超载段：以死亡速率回落（否则 max(0,·) 钳零后库无回落力，卡在不可持续高位）
+  if (b > k) return -(b - k) * 0.01 - fireFlux;
+  return rVeg * fT * fP * fW * fCO2 * b * (1 - b / k) - fireFlux;
 }
