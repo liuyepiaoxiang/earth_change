@@ -74,6 +74,12 @@ export default function MetricsBar({
         // 海冰随温度单调递减：温度 p90（更暖）→ 海冰 p10
         range={unc && unc.tempP90 > unc.tempP10 ? showT(seaIceArea(unc.tempP90), seaIceArea(unc.tempP10)) : undefined}
       />
+      {snap.biomass !== undefined && (
+        <Metric label="植被" value={`${((snap.biomass / 550) * 100).toFixed(0)}%`} color="#a3e635" />
+      )}
+      {snap.permafrost !== undefined && (
+        <Metric label="冻土" value={`${snap.permafrost.toFixed(0)}Gt`} color="#d8b4fe" />
+      )}
       <span style={{ color: tokens.textFaint, fontSize: 12 }}>
         热膨 {sl.thermal.toFixed(2)} / 冰川 {sl.glacier.toFixed(2)} / 冰盖 {sl.iceSheet.toFixed(2)} / 陆水{" "}
         {sl.landWater.toFixed(2)} m

@@ -22,7 +22,11 @@ export interface McResult {
 }
 
 /** 扰动参数集：气候敏感度/海洋热交换/碳汇/冰冻圈敏感度等主要不确定源（先验范围见 parameters.yaml） */
-export const PERTURBED_IDS = ["lambda", "gamma_ocean", "beta_land", "k_ocean", "amp_glacier", "b2_gris", "c1_ais"] as const;
+export const PERTURBED_IDS = [
+  "lambda", "gamma_ocean", "beta_land", "k_ocean", "amp_glacier", "b2_gris", "c1_ais",
+  // v2 生物圈/冻土反馈（ADR-003：先验中心固定，不确定性经 MC 呈现）
+  "fire_k", "k_pf", "r_pf",
+] as const;
 
 /** mulberry32：确定性 32 位 PRNG */
 export function makeRng(seed: number): () => number {

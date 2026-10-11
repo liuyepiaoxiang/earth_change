@@ -106,12 +106,15 @@ export interface MetricsSnapshot {
   tempAnomaly: number;
   co2: number;
   seaLevel: { total: number; thermal: number; glacier: number; iceSheet: number; landWater: number };
+  biomass?: number;      // 植被生物量 GtC（v2 箱）
+  permafrost?: number;   // 多年冻土碳 GtC（v2 箱）
 }
 
 /** 指标序列载体（SimResult 或带 uncertainty 的扩展）共用的结构化子集 */
 type SimLike = Pick<SimResult, "years" | "metrics">;
 
 function snapshotAt(sim: SimLike, i: number, year: number): MetricsSnapshot {
+  const m = sim.metrics as typeof sim.metrics & { biomass?: number[]; permafrost?: number[] };
   return {
     year,
     tempAnomaly: sim.metrics.tempAnomaly[i]!,
@@ -123,6 +126,8 @@ function snapshotAt(sim: SimLike, i: number, year: number): MetricsSnapshot {
       iceSheet: sim.metrics.seaLevel.iceSheet[i]!,
       landWater: sim.metrics.seaLevel.landWater[i]!,
     },
+    biomass: m.biomass?.[i],
+    permafrost: m.permafrost?.[i],
   };
 }
 
@@ -163,7 +168,11 @@ export function metricsAt(sim: SimLike, year: number): MetricsSnapshot | null {
   const y1 = years[hi]!;
   const t = y1 === y0 ? 0 : (year - y0) / (y1 - y0);
   const mix = (a: number, b: number) => a + (b - a) * t;
-  const m = sim.metrics;
+  const m = sim.metrics as typeof sim.metrics & { biomass?: number[]; permafrost?: number[] };
+  const v2 = {
+    biomass: m.biomass ? mix(m.biomass[lo]!, m.biomass[hi]!) : undefined,
+    permafrost: m.permafrost ? mix(m.permafrost[lo]!, m.permafrost[hi]!) : undefined,
+  };
   return {
     year,
     tempAnomaly: mix(m.tempAnomaly[lo]!, m.tempAnomaly[hi]!),
@@ -175,6 +184,8 @@ export function metricsAt(sim: SimLike, year: number): MetricsSnapshot | null {
       iceSheet: mix(m.seaLevel.iceSheet[lo]!, m.seaLevel.iceSheet[hi]!),
       landWater: mix(m.seaLevel.landWater[lo]!, m.seaLevel.landWater[hi]!),
     },
+    biomass: v2.biomass,
+    permafrost: v2.permafrost,
   };
 }
 

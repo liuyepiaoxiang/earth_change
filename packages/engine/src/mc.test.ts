@@ -90,3 +90,12 @@ describe("runScenarioMc", () => {
     expect(tiny.years.at(-1)).toBe(2050);
   });
 });
+
+describe("V2-09 性能预算", () => {
+  it("n=100 MC（四箱耦合模型）< 8s（Worker 化后主线程无感）", () => {
+    const t0 = performance.now();
+    runScenarioMc("ssp585", 2500, { n: 100, seed: 20261011 });
+    const dt = performance.now() - t0;
+    expect(dt).toBeLessThan(8000);
+  }, 15000);
+});
