@@ -10,6 +10,7 @@ next-env.d.ts
 packages/data/datasets/_tmp/
 # sync-public.mjs 从 data 包同步的产物（单一事实源在 packages/data/datasets/static/）
 apps/web/public/elevation_5min.png
+apps/web/public/precip_5min.png
 # 本地工具状态
 .video_agent/
 # Playwright 产物

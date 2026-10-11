@@ -207,7 +207,7 @@ earth_change/
 
 ### 5.6 v1+ 网格演进设计
 
-`variables.yaml` 通过 `spatial: true` + 网格定义（分辨率、坐标索引）预留 2D 演进；EarthState 定义为 `X(t) = { [variableId]: number | GridField }`——0D → 2D 演进时数据模型不推翻。
+`variables.yaml` 通过 `spatial: true` + 网格定义（分辨率、坐标索引）预留 2D 演进；EarthState 定义为 `X(t) = { [variableId]: number | GridField }`——0D → 2D 演进时数据模型不推翻。**2026-10-11 回填**：首个 2D 能力已落地——区域降水格点着色（WorldClim 5' 年降水纹理 shader，F12）与高程纹理淹没（5'，F05），均为「格点基准态 × 全场诊断缩放」模式，格点状态向量积分留 v2。
 
 ---
 

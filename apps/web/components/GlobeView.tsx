@@ -102,6 +102,8 @@ export default function GlobeView({
   const uSlr = useRef({ value: 0 });
   const uFlood = useRef({ value: 1 });
   const uDem = useRef<{ value: Texture | null }>({ value: null });
+  const uPrec = useRef<{ value: Texture | null }>({ value: null });
+  const uPrecOn = useRef({ value: 0 });
 
   // 自定义地球材质：注入 DEM 高程采样，elev ∈ (0, SLR] 的陆地渲染为水色（SPEC §8.2 淹没层）
   const globeMaterial = useMemo(() => {
@@ -112,17 +114,34 @@ export default function GlobeView({
       shader.uniforms.uSlr = uSlr.current;
       shader.uniforms.uFlood = uFlood.current;
       shader.uniforms.uDem = uDem.current;
+      shader.uniforms.uPrec = uPrec.current;
+      shader.uniforms.uPrecOn = uPrecOn.current;
       shader.fragmentShader = shader.fragmentShader
         .replace(
           "#include <common>",
           `#include <common>
            uniform sampler2D uDem;
+           uniform sampler2D uPrec;
            uniform float uSlr;
-           uniform float uFlood;`,
+           uniform float uFlood;
+           uniform float uPrecOn;`,
         )
         .replace(
           "#include <map_fragment>",
           `#include <map_fragment>
+           if (uPrecOn > 0.5) {
+             // 降水图层（F12）：年降水 0–2500mm → 干旱棕/半湿黄绿/湿润深绿，只着色陆地
+             vec2 pr = texture2D(uPrec, vUv).rg;
+             float pmm = floor(pr.r * 255.0 + 0.5) * 256.0 + floor(pr.g * 255.0 + 0.5);
+             if (pmm > 0.5) {
+               float pt = clamp(pmm / 2500.0, 0.0, 1.0);
+               vec3 dry = vec3(0.71, 0.45, 0.20);
+               vec3 semi = vec3(0.78, 0.75, 0.35);
+               vec3 wet = vec3(0.12, 0.45, 0.20);
+               vec3 pc = pt < 0.5 ? mix(dry, semi, pt * 2.0) : mix(semi, wet, (pt - 0.5) * 2.0);
+               diffuseColor.rgb = mix(diffuseColor.rgb, pc, 0.8);
+             }
+           }
            if (uFlood > 0.5) {
              vec2 d = texture2D(uDem, vUv).rg;
              float elevM = floor(d.r * 255.0 + 0.5) * 256.0 + floor(d.g * 255.0 + 0.5);
@@ -136,6 +155,12 @@ export default function GlobeView({
 
   useEffect(() => {
     const loader = new TextureLoader();
+    loader.load("/precip_5min.png", (tex) => {
+      tex.magFilter = NearestFilter;
+      tex.minFilter = NearestFilter;
+      tex.generateMipmaps = false;
+      uPrec.current.value = tex;
+    });
     loader.load("/elevation_5min.png", (tex) => {
       // 打包数据纹理必须最近邻采样：线性插值会让 R/G 通道独立混合、破坏 uint16 解码
       tex.magFilter = NearestFilter;
@@ -152,6 +177,9 @@ export default function GlobeView({
   useEffect(() => {
     uFlood.current.value = layers.flood ? 1 : 0;
   }, [layers.flood]);
+  useEffect(() => {
+    uPrecOn.current.value = layers.prec ? 1 : 0;
+  }, [layers.prec]);
 
   // 底图显隐由本材质自管，不走 globeImageUrl prop：three-globe 该 setter 的 OFF 分支不清 map
   // 也不置 needsUpdate，ON 分支设 color=null 会被 uniform 刷新跳过——关→开后 diffuse 残留

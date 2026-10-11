@@ -52,7 +52,7 @@ test.describe("S2 仪表盘交互", () => {
 });
 
 test.describe("R1 图层开关回归", () => {
-  const LAYERS = ["温度点云", "城市点", "淹没模拟", "卫星底图", "大气辉光"];
+  const LAYERS = ["温度点云", "城市点", "淹没模拟", "降水图层", "卫星底图", "大气辉光"];
 
   test("每个图层关→开一轮，状态文本正确恢复", async ({ page }) => {
     await page.goto("/");

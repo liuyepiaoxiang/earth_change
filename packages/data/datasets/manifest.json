@@ -72,6 +72,12 @@
       "bytes": 4344377,
       "retrieved": "2026-10-11",
       "source": "WorldClim 2.1 elevation 5 arc-min（源 ETOPO；淹没渲染用，非 loaders 数据）"
+    },
+    "static/precip_5min.png": {
+      "sha256": "de46b8574d198b63afbc2583ba1d18525142b0f23cf970bb232e67cd82b25ebc",
+      "bytes": 3332898,
+      "retrieved": "2026-10-11",
+      "source": "WorldClim 2.1 precipitation 5 arc-min 年降水（12 月求和；降水图层渲染用）"
     }
   }
 }
