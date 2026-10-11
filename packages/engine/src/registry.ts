@@ -12,6 +12,7 @@ import * as water from "./equations/water.js";
 import * as bio from "./equations/bio.js";
 import * as fire from "./equations/fire.js";
 import * as permafrost from "./equations/permafrost.js";
+import * as geo from "./equations/geo.js";
 
 type EqFn = (...args: never[]) => unknown;
 
@@ -63,6 +64,15 @@ export const REGISTRY: Partial<Record<EquationId, EqFn>> = {
   eq_38: fire.fireFlux as EqFn,
   eq_39: permafrost.permafrostThaw as EqFn,
   eq_40: permafrost.permafrostRelease as EqFn,
+  // v3 地貌演化诊断链
+  eq_41: geo.slope as EqFn,
+  eq_42: geo.riverErosion as EqFn,
+  eq_43: geo.surfaceErosion as EqFn,
+  eq_44: geo.vegetationShield as EqFn,
+  eq_45: geo.sedimentBudget as EqFn,
+  eq_46: geo.sedimentTransport as EqFn,
+  eq_47: geo.elevationChange as EqFn,
+  eq_48: geo.coastalErosion as EqFn,
   // 诊断式（ADR-001）：海冰与冰-反照率，UI 直接调用，不接入 solver RHS
   eq_28: seaice.seaIceArea as EqFn,
   eq_29: seaice.surfaceAlbedo as EqFn,
