@@ -1,1 +1,28 @@
-[]
+# 三个大气/海洋核心参数组 —— 先验范围来自 Geoffroy et al. 2013 / IPCC AR6 Box 7.1
+- { id: lambda, symbol: "λ", name_zh: 气候反馈参数, unit: "W/m²/K", default: 1.16, min: 0.75, max: 1.85, source: "Geoffroy 2013; ECS=F2x/λ → 2.0~4.9°C", impl: v0 }
+- { id: gamma_ocean, symbol: "γ", name_zh: 表层-深层海洋热交换系数, unit: "W/m²/K", default: 0.73, min: 0.4, max: 1.5, source: "Geoffroy 2013", impl: v0 }
+- { id: c_s, symbol: "Cs", name_zh: 表层有效热容量, unit: "W·yr/m²/K", default: 8.2, min: 5.0, max: 14.0, source: "Geoffroy 2013 (大气+混合层)", impl: v0 }
+- { id: c_d, symbol: "Cd", name_zh: 深海有效热容量, unit: "W·yr/m²/K", default: 105.0, min: 70.0, max: 160.0, source: "Geoffroy 2013", impl: v0 }
+# 辐射强迫
+- { id: c0_ref, symbol: "C0", name_zh: 工业前 CO₂ 参考浓度, unit: ppm, default: 280.0, min: 278.0, max: 285.0, source: "冰芯 (1750)", impl: v0 }
+- { id: a_ch4, symbol: "a_CH4", name_zh: CH₄ 强迫系数, unit: "W/m²/ppb^0.5", default: 0.036, min: 0.028, max: 0.045, source: "Myhre 1998 简化式", impl: v0 }
+- { id: a_n2o, symbol: "a_N2O", name_zh: N₂O 强迫系数, unit: "W/m²/ppb^0.5", default: 0.12, min: 0.09, max: 0.15, source: "Myhre 1998 简化式", impl: v0 }
+- { id: ch4_ref, symbol: "M0", name_zh: 工业前 CH₄ 浓度, unit: ppb, default: 722.0, min: 715.0, max: 730.0, source: "冰芯", impl: v0 }
+- { id: n2o_ref, symbol: "N0", name_zh: 工业前 N₂O 浓度, unit: ppb, default: 273.0, min: 268.0, max: 278.0, source: "冰芯", impl: v0 }
+# 碳循环
+- { id: beta_land, symbol: "β_L", name_zh: 陆地汇 CO₂ 施肥系数, unit: "GtC/yr/ln", default: 8.8, min: 5.0, max: 13.0, source: "先验=当前陆汇3.6GtC/yr ÷ ln(422/280)", impl: v0 }
+- { id: k_ocean, symbol: "k_oc", name_zh: 海洋碳吸收系数, unit: "GtC/yr/ppm", default: 0.020, min: 0.010, max: 0.035, source: "先验=当前海汇2.9GtC/yr ÷ ΔC 142ppm", impl: v0 }
+- { id: chi_temp, symbol: "χ", name_zh: 海洋碳吸收温度抑制, unit: "GtC/yr/K", default: 0.10, min: 0.04, max: 0.20, source: "AR6 碳循环反馈量级", impl: v0 }
+- { id: ppm_per_gtc, symbol: "κ", name_zh: ppm/GtC 换算, unit: ppm/GtC, default: 0.4708, min: 0.4708, max: 0.4708, source: "1 ppm CO₂ = 2.124 GtC", impl: v0 }
+# 海平面
+- { id: k_thermal, symbol: "k_th", name_zh: 热膨胀系数, unit: "m/(W/m²·yr)", default: 0.0045, min: 0.002, max: 0.008, source: "AR6 热膨胀效率量级", impl: v0 }
+- { id: k_glacier, symbol: "k_g", name_zh: 冰川损失系数, unit: "m SLE/(yr·K)", default: 0.0005, min: 0.0003, max: 0.0008, source: "先验=当前~1mm/yr ÷ (1.3K×1.5放大)", impl: v0 }
+- { id: amp_glacier, symbol: "A_g", name_zh: 冰川区升温放大, unit: "1", default: 1.5, min: 1.2, max: 1.8, source: "山地冰川区升温高于全球", impl: v0 }
+- { id: g0_glacier, symbol: "G0", name_zh: 冰川总储量(海平面当量), unit: "m SLE", default: 0.40, min: 0.36, max: 0.44, source: "Farinotti 2019 / RGI", impl: v0 }
+- { id: b0_gris, symbol: "b0", name_zh: 格陵兰基线损失率, unit: "m SLE/yr", default: 0.0002, min: 0.0001, max: 0.0004, source: "GRACE ~0.75mm/yr 量级", impl: v0 }
+- { id: b1_gris, symbol: "b1", name_zh: 格陵兰线性敏感度, unit: "m SLE/(yr·K)", default: 0.001, min: 0.0005, max: 0.002, source: "Fettweis SMB 拟合量级", impl: v0 }
+- { id: b2_gris, symbol: "b2", name_zh: 格陵兰二次敏感度, unit: "m SLE/(yr·K²)", default: 0.0002, min: 0.0001, max: 0.0005, source: "Fettweis SMB 拟合量级", impl: v0 }
+- { id: amp_gris, symbol: "A_Gr", name_zh: 格陵兰区升温放大, unit: "1", default: 2.0, min: 1.5, max: 2.5, source: "北极放大", impl: v0 }
+- { id: c0_ais, symbol: "c0", name_zh: 南极基线损失率, unit: "m SLE/yr", default: 0.0001, min: 0.0, max: 0.0003, source: "GRACE AIS ~0.3-0.4mm/yr", impl: v0 }
+- { id: c1_ais, symbol: "c1", name_zh: 南极非线性敏感度, unit: "m SLE/(yr·K^1.5)", default: 0.0002, min: 0.0001, max: 0.0006, source: "DeConto/AR6 量级", impl: v0 }
+- { id: lw_rate, symbol: "s_lw", name_zh: 陆地水储量变化率, unit: "m/yr", default: 0.0003, min: 0.0001, max: 0.0005, source: "水库蓄水-地下水开采净效应", impl: v0 }
