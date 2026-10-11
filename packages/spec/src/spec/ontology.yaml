@@ -1,0 +1,11 @@
+domains:
+  - { id: forcing, name_en: External Forcing, name_zh: 外部强迫, children: [solar, volcanic, anthropogenic] }
+  - { id: atmosphere, name_en: Atmosphere, name_zh: 大气, children: [ghg, temperature, humidity, wind, clouds] }
+  - { id: ocean, name_en: Ocean, name_zh: 海洋, children: [temperature, salinity, heat, carbon, sea_level] }
+  - { id: cryosphere, name_en: Cryosphere, name_zh: 冰冻圈, children: [glacier, ice_sheet, sea_ice, snow, permafrost] }
+  - { id: hydrosphere, name_en: Hydrosphere, name_zh: 水圈, children: [precipitation, evaporation, runoff, soil_water, groundwater, river] }
+  - { id: biosphere, name_en: Biosphere, name_zh: 生物圈, children: [vegetation, biomass, npp, fire, biome] }
+  - { id: pedosphere, name_en: Pedosphere, name_zh: 土壤圈, children: [soil_moisture, soil_carbon, soil_depth, erosion] }
+  - { id: geosphere, name_en: Geosphere, name_zh: 岩石圈/地表, children: [dem, sediment, river_network, coast, landform] }
+  - { id: human, name_en: Human System, name_zh: 人类系统, children: [population, energy, land_use, emissions, adaptation] }
+  - { id: surface, name_en: Earth Surface State, name_zh: 地球表层状态, children: [land_cover, biome_map, coastline, glacier_extent, desert_extent, wetland_extent] }
