@@ -147,7 +147,7 @@ export default function GlobeView({
         <Globe
           width={size.w}
           height={size.h}
-          globeImageUrl={layers.basemap ? "https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg" : null}
+          globeImageUrl={layers.basemap ? "/earth-blue-marble.jpg" : null}
           backgroundColor="rgba(0,0,0,0)"
           atmosphereColor="#5b7fa6"
           atmosphereAltitude={layers.atmosphere ? 0.12 : 0}

@@ -59,7 +59,7 @@ node packages/data/scripts/gen-bundle.mjs    # 全部数据 → datasets.gen.ts�
 | 情景 | SSP 延伸路径（2025–2500） | CC-BY 4.0 |
 | 城市 + 基准气候 | GeoNames cities15000 + WorldClim 2.1 | CC-BY 4.0 / CC-BY-SA |
 | 纬度带升温模式 | NASA GISTEMP ZonAnn 回归 | 公有领域 |
-| 3D 底图 | NASA Blue Marble（three-globe 示例纹理） | 公有领域 |
+| 3D 底图 | NASA Blue Marble（打包于 `apps/web/public/earth-blue-marble.jpg`，无外部 CDN 依赖） | 公有领域 |
 
 ## 部署（Vercel）
 
