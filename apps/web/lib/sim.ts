@@ -6,19 +6,69 @@ export type SimResultWithUnc = Omit<SimResult, "schemaVersion"> & {
   uncertainty?: McResult;
 };
 
-// 引擎毫秒级出结果：按「情景 + 是否含不确定性」缓存，切回已跑过的组合零等待
+// 引擎计算按「情景 + 是否含不确定性」缓存，切回已跑过的组合零等待
 const cache = new Map<string, Promise<SimResultWithUnc>>();
+
+// ---- V1-03：Worker 优先，失败回退动态 import（测试环境/无 Worker 环境走回退） ----
+let worker: Worker | null = null;
+let workerBroken = false;
+let workerReqId = 0;
+const workerJobs = new Map<number, { resolve: (v: SimResultWithUnc) => void; reject: (e: Error) => void }>();
+
+function ensureWorker(): Worker | null {
+  if (workerBroken || typeof window === "undefined" || typeof Worker === "undefined") return null;
+  if (!worker) {
+    try {
+      worker = new Worker(new URL("./engine.worker.ts", import.meta.url), { type: "module" });
+      worker.onmessage = (e: MessageEvent<{ id: number; ok: boolean; sim?: SimResultWithUnc; error?: string }>) => {
+        const job = workerJobs.get(e.data.id);
+        if (!job) return;
+        workerJobs.delete(e.data.id);
+        if (e.data.ok) job.resolve(e.data.sim!);
+        else job.reject(new Error(e.data.error ?? "worker 计算失败"));
+      };
+      worker.onerror = () => {
+        // 结构性失败（加载/协议错误）：标记不可用并清空在途任务，交由回退路径重算
+        workerBroken = true;
+        worker = null;
+        for (const [, job] of workerJobs) job.reject(new Error("worker 不可用"));
+        workerJobs.clear();
+      };
+    } catch {
+      worker = null;
+      workerBroken = true;
+    }
+  }
+  return worker;
+}
+
+function runInWorker(scenario: ScenarioId, horizon: number, uncertainty: boolean): Promise<SimResultWithUnc> | null {
+  const w = ensureWorker();
+  if (!w) return null;
+  const id = ++workerReqId;
+  return new Promise<SimResultWithUnc>((resolve, reject) => {
+    workerJobs.set(id, { resolve, reject });
+    w.postMessage({ id, scenario, horizon, uncertainty });
+  }).catch((e) => {
+    if (String(e).includes("worker 不可用")) return loadSimDirect(scenario, horizon, uncertainty); // 回退重算
+    throw e;
+  });
+}
+
+function loadSimDirect(scenario: ScenarioId, horizon: number, uncertainty: boolean): Promise<SimResultWithUnc> {
+  return import("@future-earth/engine").then((eng) => {
+    const sim = eng.runScenario(scenario, horizon);
+    if (!uncertainty) return sim;
+    // MC 约百次模拟（~1s），仅在用户显式开启时计算
+    return { ...sim, schemaVersion: 2 as const, uncertainty: eng.runScenarioMc(scenario, horizon) };
+  });
+}
 
 function loadSim(scenario: ScenarioId, uncertainty: boolean): Promise<SimResultWithUnc> {
   const key = `${scenario}::${uncertainty ? "mc" : "base"}`;
   let p: Promise<SimResultWithUnc> | undefined = cache.get(key);
   if (!p) {
-    p = import("@future-earth/engine").then((eng) => {
-      const sim = eng.runScenario(scenario, 2500);
-      if (!uncertainty) return sim;
-      // MC 约百次模拟（~1s），仅在用户显式开启时计算
-      return { ...sim, schemaVersion: 2 as const, uncertainty: eng.runScenarioMc(scenario, 2500) };
-    });
+    p = runInWorker(scenario, 2500, uncertainty) ?? loadSimDirect(scenario, 2500, uncertainty);
     cache.set(key, p);
   }
   return p;
