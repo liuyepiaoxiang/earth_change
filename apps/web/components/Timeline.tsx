@@ -13,29 +13,27 @@ export default function Timeline({
   onChange: (y: number | ((prev: number) => number)) => void;
   disabled?: boolean;
 }) {
-  // 自动播放（F18）：每年 ~40ms 步进（25 年/秒），拖动或到端点即停
+  // 自动播放（F18 增强）：约 60 年/秒。播放时钟用 setInterval（250ms 提交一次 ≈ 15 年）——
+  // 不用 rAF：每次提交触发整页重渲染（points 重算），渲染耗时会拖停 rAF 致播放卡顿；
+  // setInterval 由定时器驱动，与渲染耗时解耦。
   const [playing, setPlaying] = useState(false);
-  const rafRef = useRef<number | null>(null);
-  const lastRef = useRef(0);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     if (!playing || disabled) return;
-    const tick = (t: number) => {
-      if (t - lastRef.current >= 40) {
-        lastRef.current = t;
-        onChange((y: number) => {
-          if (y >= MAX) {
-            setPlaying(false);
-            return y;
-          }
-          return y + 1;
-        });
-      }
-      rafRef.current = requestAnimationFrame(tick);
-    };
-    rafRef.current = requestAnimationFrame(tick);
+    const STEP_YEARS = 15; // 250ms × 15 年 = 60 年/秒
+    intervalRef.current = setInterval(() => {
+      onChange((y: number) => {
+        const next = y + STEP_YEARS;
+        if (next >= MAX) {
+          setPlaying(false);
+          return MAX;
+        }
+        return next;
+      });
+    }, 250);
     return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      if (intervalRef.current) clearInterval(intervalRef.current);
     };
   }, [playing, disabled, onChange]);
 
@@ -48,7 +46,7 @@ export default function Timeline({
         }}
         disabled={disabled}
         aria-label={playing ? "暂停时间轴播放" : "播放时间演化"}
-        title="自动播放时间演化（25 年/秒）"
+        title="自动播放时间演化（约 60 年/秒）"
         className={playing ? "fe-breathe" : undefined}
         style={{
           width: 26,

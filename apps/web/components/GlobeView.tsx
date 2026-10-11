@@ -145,7 +145,7 @@ export default function GlobeView({
            if (uFlood > 0.5) {
              vec2 d = texture2D(uDem, vUv).rg;
              float elevM = floor(d.r * 255.0 + 0.5) * 256.0 + floor(d.g * 255.0 + 0.5);
-             float flood = (1.0 - smoothstep(uSlr - 30.0, uSlr + 30.0, elevM)) * step(0.5, elevM);
+             float flood = (1.0 - smoothstep(uSlr - 3.0, uSlr + 3.0, elevM)) * step(0.5, elevM);
              // F18 海岸线呼吸脉冲：在淹没带边缘（flood 0.15–0.85 过渡带）叠加时间振荡高光
              float edge = flood * (1.0 - flood) * 4.0; // 0..1 钟形（边缘=1）
              float pulse = 0.5 + 0.5 * sin(uTime * 2.2);
