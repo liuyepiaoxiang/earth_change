@@ -5,7 +5,7 @@
 /** eq_39: 冻土融化速率 dM_pf/dt = −k_pf·max(ΔT − T_pf, 0)（返回负增量，GtC/yr） */
 export function permafrostThaw(mPf: number, dTs: number, kPf = 30, tPf = 1.0): number {
   const thaw = kPf * Math.max(0, dTs - tPf);
-  return -Math.min(mPf, thaw); // 库不穿底
+  return thaw > 0 ? -Math.min(mPf, thaw) : 0; // 库不穿底；避免 -0
 }
 
 /** eq_40: 冻土碳释放 E_pf = r_pf·P_thawed（GtC/yr，CO₂ 口径） */
