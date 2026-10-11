@@ -5,6 +5,8 @@ import { isCityFlooded, localDTs } from "@future-earth/engine";
 import type { WarmingPatternBand } from "@future-earth/engine";
 import type { CityRow, PatternBand } from "@future-earth/data";
 import type { MetricsSnapshot } from "../lib/sim";
+import LayerControl from "./LayerControl";
+import { DEFAULT_LAYERS, type LayerState } from "./LayerControl";
 
 // react-globe.gl 依赖 WebGL/浏览器 API，仅客户端装载
 const Globe = dynamic(() => import("react-globe.gl"), {
@@ -26,6 +28,9 @@ type CityPoint = {
   radius: number;
 };
 type GlobePoint = GridPoint | CityPoint;
+
+/** 城市点半径按 √人口 归一化时的分母 */
+const maxPop = (cities: CityRow[]) => Math.max(...cities.map((c) => c.population), 1);
 
 /** ΔT(°C) → 蓝→红 色阶（0–6°C 线性映射色相 220→0）。直接算 RGB hex，绕开 three.js 的 CSS hsl 解析 */
 function tempColor(dt: number): string {
@@ -89,6 +94,8 @@ export default function GlobeView({
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ w: 0, h: 0 });
+  const [layers, setLayers] = useState<LayerState>(DEFAULT_LAYERS);
+  const toggleLayer = (key: keyof LayerState) => setLayers((s) => ({ ...s, [key]: !s[key] }));
 
   useEffect(() => {
     const el = ref.current;
@@ -106,30 +113,33 @@ export default function GlobeView({
     const slr = snap.seaLevel.total;
     const bands = pattern.length ? pattern : undefined;
     const grid: GridPoint[] = [];
-    for (let i = 0; i < 36; i++) {
-      const lat = -87.5 + i * 5;
-      for (let j = 0; j < 72; j++) {
-        const lng = -177.5 + j * 5;
-        grid.push({ kind: "grid", lat, lng, dt: localDTs(dtGlobal, lat, bands) });
+    if (layers.temperature) {
+      for (let i = 0; i < 36; i++) {
+        const lat = -87.5 + i * 5;
+        for (let j = 0; j < 72; j++) {
+          const lng = -177.5 + j * 5;
+          grid.push({ kind: "grid", lat, lng, dt: localDTs(dtGlobal, lat, bands) });
+        }
       }
     }
-    const maxPop = Math.max(...cities.map((c) => c.population), 1);
-    const cityPts: CityPoint[] = cities.map((c) => {
-      const flooded = isCityFlooded(c.elevation, slr);
-      const aboveM = Math.max(0, c.elevation - slr);
-      return {
-        kind: "city",
-        lat: c.lat,
-        lng: c.lon,
-        city: c,
-        dtLocal: localDTs(dtGlobal, c.lat, bands),
-        flooded,
-        alt: flooded ? 0.016 : Math.min(0.14, 0.012 + (aboveM / 8848) * 0.12),
-        radius: 0.22 + 0.5 * Math.sqrt(c.population / maxPop),
-      };
-    });
+    const cityPts: CityPoint[] = layers.cities
+      ? cities.map((c) => {
+          const flooded = isCityFlooded(c.elevation, slr);
+          const aboveM = Math.max(0, c.elevation - slr);
+          return {
+            kind: "city",
+            lat: c.lat,
+            lng: c.lon,
+            city: c,
+            dtLocal: localDTs(dtGlobal, c.lat, bands),
+            flooded,
+            alt: flooded ? 0.016 : Math.min(0.14, 0.012 + (aboveM / 8848) * 0.12),
+            radius: 0.22 + 0.5 * Math.sqrt(c.population / maxPop(cities)),
+          };
+        })
+      : [];
     return [...grid, ...cityPts];
-  }, [snap, cities, pattern]);
+  }, [snap, cities, pattern, layers]);
 
   return (
     <div ref={ref} style={{ position: "absolute", inset: 0 }}>
@@ -137,10 +147,10 @@ export default function GlobeView({
         <Globe
           width={size.w}
           height={size.h}
-          globeImageUrl="https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
+          globeImageUrl={layers.basemap ? "https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg" : null}
           backgroundColor="rgba(0,0,0,0)"
           atmosphereColor="#5b7fa6"
-          atmosphereAltitude={0.12}
+          atmosphereAltitude={layers.atmosphere ? 0.12 : 0}
           pointsData={points}
           pointLat={getLat}
           pointLng={getLng}
@@ -151,6 +161,7 @@ export default function GlobeView({
           onPointClick={(point: object) => onPointClick(point, onSelectCity)}
         />
       )}
+      <LayerControl layers={layers} onToggle={toggleLayer} />
       <div
         style={{
           position: "absolute",
