@@ -43,7 +43,7 @@ const base = tempRaw.filter((r) => r.year >= 1850 && r.year <= 1900);
 const offset = base.reduce((a, r) => a + r.anom, 0) / base.length;
 const temp = tempRaw.map((r) => ({ year: r.year, anomaly: +(r.anom - offset).toFixed(4) }));
 if (!(temp.at(-1).anomaly > 1.0 && temp.at(-1).anomaly < 1.8)) throw new Error("GISTEMP 2024 异常值超预期范围: " + temp.at(-1).anomaly);
-writeFileSync(join(HIST, "temperature_1850_2024.csv"),
+writeFileSync(join(HIST, "temperature_1880_2024.csv"),
   "year,anomaly\n" + temp.map((r) => `${r.year},${r.anomaly}`).join("\n") + "\n");
 
 // ---------- 2) CO₂（NOAA 1959+ / Law Dome 1832-1978）----------
@@ -97,7 +97,7 @@ writeFileSync(join(HIST, "emissions_1750_2024.csv"),
   "year,efossil,eluluc\n" + emis.map((r) => `${r.year},${r.gtc},${interp(lulucA, r.year).toFixed(3)}`).join("\n") + "\n");
 
 // ---------- 4) manifest ----------
-const files = ["temperature_1850_2024.csv", "co2_concentration_1850_2024.csv", "emissions_1750_2024.csv"];
+const files = ["temperature_1880_2024.csv", "co2_concentration_1850_2024.csv", "emissions_1750_2024.csv"];
 const manifestPath = join(ROOT, "datasets", "manifest.json");
 const manifest = existsSync(manifestPath) ? JSON.parse(readFileSync(manifestPath, "utf8")) : { version: 1, entries: {} };
 for (const f of files) {

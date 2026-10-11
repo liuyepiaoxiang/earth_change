@@ -48,12 +48,6 @@
       "bytes": 18147,
       "retrieved": "2026-10-11",
       "source": "gen-forcing 合成（AR6/Riahi/Meinshausen 锚点）"
-    },
-    "historical/temperature_1850_2024.csv": {
-      "sha256": "68b510833f15426deeff97080c623be48a2c30084832f5db6e6af057e39db1e5",
-      "bytes": 1788,
-      "retrieved": "2026-10-11",
-      "source": "NASA GISTEMP v4"
     }
   }
 }
