@@ -54,15 +54,17 @@ test.describe("S2 仪表盘交互", () => {
 test.describe("R1 图层开关回归", () => {
   const LAYERS = ["温度点云", "城市点", "淹没模拟", "降水图层", "卫星底图", "大气辉光"];
 
-  test("每个图层关→开一轮，状态文本正确恢复", async ({ page }) => {
+  test("每个图层切换一轮，状态文本正确翻转（初始开或关均可）", async ({ page }) => {
     await page.goto("/");
     await expect(page.getByRole("button", { name: /温度点云/ })).toBeVisible({ timeout: 20_000 });
     for (const name of LAYERS) {
       const btn = page.getByRole("button", { name: new RegExp(name) });
+      // 注意：降水图层默认关闭（着色类默认关），断言的是翻转而非固定方向
+      const initialOn = (await btn.textContent())!.includes("显示中");
       await btn.click();
-      await expect(btn).toContainText("已隐藏");
+      await expect(btn).toContainText(initialOn ? "已隐藏" : "显示中");
       await btn.click();
-      await expect(btn).toContainText("显示中");
+      await expect(btn).toContainText(initialOn ? "显示中" : "已隐藏");
     }
   });
 
