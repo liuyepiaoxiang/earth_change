@@ -7,6 +7,7 @@ import * as sealevel from "./equations/sealevel.js";
 import * as downscale from "./equations/downscale.js";
 import * as seaice from "./equations/seaice.js";
 import * as energy from "./equations/energy.js";
+import * as singlelayer from "./equations/singlelayer.js";
 
 type EqFn = (...args: never[]) => unknown;
 
@@ -39,6 +40,7 @@ export const REGISTRY: Partial<Record<EquationId, EqFn>> = {
   eq_03: energy.qAbs as EqFn,
   eq_04: energy.qOut as EqFn,
   eq_05: energy.netRadiation as EqFn,
+  eq_10: singlelayer.runSingleLayer as EqFn,
   // 诊断式（ADR-001）：海冰与冰-反照率，UI 直接调用，不接入 solver RHS
   eq_28: seaice.seaIceArea as EqFn,
   eq_29: seaice.surfaceAlbedo as EqFn,
