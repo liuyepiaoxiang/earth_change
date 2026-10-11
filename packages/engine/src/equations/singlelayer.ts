@@ -3,7 +3,7 @@
  *  （单层缺失深海慢响应 → 多年代际 drift 被低估）。不接入 solver RHS。
  *  偏差说明：eq_10 公式含 γ(Ta−To) 耦合项；对比诊断取深海 To 固定为 0（未扰动深海），
  *  这是与两层模型可对照的最简口径（SPEC §4.4 注记「v0 由 eq_11/12 两层形式涵盖」。 */
-import type { Params } from "./types.js";
+import type { Params } from "../types.js";
 
 export interface SingleLayerSeries {
   year: number;
