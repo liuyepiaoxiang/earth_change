@@ -8,6 +8,7 @@ import * as downscale from "./equations/downscale.js";
 import * as seaice from "./equations/seaice.js";
 import * as energy from "./equations/energy.js";
 import * as singlelayer from "./equations/singlelayer.js";
+import * as water from "./equations/water.js";
 
 type EqFn = (...args: never[]) => unknown;
 
@@ -41,6 +42,13 @@ export const REGISTRY: Partial<Record<EquationId, EqFn>> = {
   eq_04: energy.qOut as EqFn,
   eq_05: energy.netRadiation as EqFn,
   eq_10: singlelayer.runSingleLayer as EqFn,
+  // 诊断式（v1.x 收尾批）：水循环链
+  eq_19: water.precipitation as EqFn,
+  eq_20: water.evaporation as EqFn,
+  eq_21: water.waterBalanceStep as EqFn,
+  eq_22: water.runoff as EqFn,
+  eq_23: water.soilWaterStep as EqFn,
+  eq_24: water.snowStep as EqFn,
   // 诊断式（ADR-001）：海冰与冰-反照率，UI 直接调用，不接入 solver RHS
   eq_28: seaice.seaIceArea as EqFn,
   eq_29: seaice.surfaceAlbedo as EqFn,
