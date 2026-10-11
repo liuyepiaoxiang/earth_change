@@ -34,6 +34,11 @@ type GlobePoint = CityPoint;
 /** 城市点半径按 √人口 归一化时的分母 */
 const maxPop = (cities: CityRow[]) => Math.max(...cities.map((c) => c.population), 1);
 
+// 模块级实时快照：accessor/tooltip（组件外函数）读取最新指标——
+// 由组件每次渲染同步写入；这样 points 的 useMemo 可以收窄依赖（播放期不重建点层）
+let snapRefCurrent: MetricsSnapshot | null = null;
+let patternRefCurrent: WarmingPatternBand[] = [];
+
 
 // react-globe.gl 的 ObjAccessor 参数是 object，收窄在内部完成
 const getLat = (d: object) => (d as GlobePoint).lat;
@@ -51,10 +56,15 @@ const getRadius = (d: object) => {
   return p.radius;
 };
 const getLabel = (d: object) => {
-  const c = (d as GlobePoint).city;
+  const p = d as GlobePoint;
+  const c = p.city;
+  // dtLocal 实时计算（播放/拖动期间 tooltip 数值随时间轴走，不依赖点层重建）；
+  // 组件挂载前 snapRefCurrent 为 null——此时 tooltip 不可能被触发，兜底 0
+  const snap = snapRefCurrent;
+  const dt = snap ? localDTs(snap.tempAnomaly, c.lat, patternRefCurrent.length ? patternRefCurrent : undefined) : 0;
   return (
     `<div style="font:12px system-ui;color:#e2e8f0"><b>${c.name}</b>（${c.country}，人口 ${(c.population / 10000).toFixed(0)} 万）` +
-    `<br/>高程 ${c.elevation} m · 本地 ΔT +${(d as GlobePoint).dtLocal.toFixed(2)}°C${(d as GlobePoint).flooded ? " · 已淹没" : ""}</div>`
+    `<br/>高程 ${c.elevation} m · 本地 ΔT +${dt.toFixed(2)}°C${p.flooded ? " · 已淹没" : ""}</div>`
   );
 };
 const onPointClick = (point: object, onSelectCity: (c: CityRow) => void) => {
@@ -72,6 +82,9 @@ export default function GlobeView({
   pattern: PatternBand[];
   onSelectCity: (c: CityRow) => void;
 }) {
+  // 同步最新快照到模块级（getLabel 等 accessor 读取）；并保留组件内 ref 供其他 effect 用
+  snapRefCurrent = snap;
+  patternRefCurrent = pattern.length ? pattern : [];
   const ref = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ w: 0, h: 0 });
   const [layers, setLayers] = useState<LayerState>(DEFAULT_LAYERS);
@@ -201,15 +214,18 @@ export default function GlobeView({
     uTempLut.current.value = tex;
     uTempReady.current.value = 1;
     if (old) old.dispose();
-    // F18 入场淡入：重建（时间轴/情景变化）时 0→1，GPU 采样即时生效
-    uFade.current.value = 0;
-    const t0 = performance.now();
-    const stepFade = (t: number) => {
-      const k = Math.min(1, (t - t0) / 400);
-      uFade.current.value = k * k * (3 - 2 * k); // smoothstep 缓动
-      if (k < 1) requestAnimationFrame(stepFade);
-    };
-    requestAnimationFrame(stepFade);
+    // F18 入场淡入：只在首次就绪时播放（0→1，400ms）。数据更新（拖时间轴/播放）时
+    // 保持 uFade=1——重放淡入会让覆盖层以 2.5Hz 闪烁（正是播放闪烁的根因）
+    if (uFade.current.value < 1) {
+      const t0 = performance.now();
+      const stepFade = (t: number) => {
+        const k = Math.min(1, (t - t0) / 400);
+        uFade.current.value = k * k * (3 - 2 * k); // smoothstep 缓动
+        if (k < 1) requestAnimationFrame(stepFade);
+        else uFade.current.value = 1;
+      };
+      requestAnimationFrame(stepFade);
+    }
   }, [snap, pattern]);
 
   // F18 海岸线脉冲时钟：单一 rAF 驱动 uTime（其余效果全部 GPU 侧，主线程零成本）
@@ -266,12 +282,14 @@ export default function GlobeView({
     return () => ro.disconnect();
   }, []);
 
-  // 点层 = 仅城市点（温度场已升级为连续覆盖层 F14，点云网格移除）
+  // 点层 = 仅城市点（温度场已升级为连续覆盖层 F14，点云网格移除）。
+  // 依赖刻意收窄到 [cities, layers.cities, slrBucket]：播放时 snap 每 250ms 变化，
+  // 若依赖 snap 会全量重建 500 个点对象 → globe.gl 全量 diff → 城市点层周期性闪烁。
+  // 淹没状态只需在 SLR 跨越某城高程时更新 → 用 0.1m 桶级依赖（播放期间大多不跨档）。
+  const slrBucket = Math.round(snap.seaLevel.total * 10); // 0.1m 一档
   const points = useMemo<CityPoint[]>(() => {
     if (!layers.cities) return [];
-    const dtGlobal = snap.tempAnomaly;
     const slr = snap.seaLevel.total;
-    const bands = pattern.length ? pattern : undefined;
     return cities.map((c) => {
       const flooded = isCityFlooded(c.elevation, slr);
       const aboveM = Math.max(0, c.elevation - slr);
@@ -280,13 +298,14 @@ export default function GlobeView({
         lat: c.lat,
         lng: c.lon,
         city: c,
-        dtLocal: localDTs(dtGlobal, c.lat, bands),
+        dtLocal: 0, // tooltip 展示值改由 snapRef 读取（见 getLabel），不参与重建
         flooded,
         alt: flooded ? 0.016 : Math.min(0.14, 0.012 + (aboveM / 8848) * 0.12),
         radius: 0.22 + 0.5 * Math.sqrt(c.population / maxPop(cities)),
       };
     });
-  }, [snap, cities, pattern, layers.cities]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- slrBucket 是 slr 的离散化，刻意见注释
+  }, [cities, layers.cities, slrBucket]);
 
   return (
     <div ref={ref} style={{ position: "absolute", inset: 0 }}>
