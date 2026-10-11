@@ -86,6 +86,8 @@ export default function GlobeView({
   const uTempLut = useRef<{ value: Texture | null }>({ value: null });
   const uTempOn = useRef({ value: 0 });
   const uTempReady = useRef({ value: 0 });
+  const uFade = useRef({ value: 1 }); // 温度场入场淡入（0→1，重建时重置）
+  const uTime = useRef({ value: 0 }); // 海岸线脉冲时钟
   const tempTex = useRef<Texture | null>(null);
 
   // 自定义地球材质：注入 DEM 高程采样，elev ∈ (0, SLR] 的陆地渲染为水色（SPEC §8.2 淹没层）
@@ -102,6 +104,8 @@ export default function GlobeView({
       shader.uniforms.uTempLut = uTempLut.current;
       shader.uniforms.uTempOn = uTempOn.current;
       shader.uniforms.uTempReady = uTempReady.current;
+      shader.uniforms.uFade = uFade.current;
+      shader.uniforms.uTime = uTime.current;
       shader.fragmentShader = shader.fragmentShader
         .replace(
           "#include <common>",
@@ -113,7 +117,9 @@ export default function GlobeView({
            uniform float uFlood;
            uniform float uPrecOn;
            uniform float uTempOn;
-           uniform float uTempReady;`,
+           uniform float uTempReady;
+           uniform float uFade;
+           uniform float uTime;`,
         )
         .replace(
           "#include <map_fragment>",
@@ -132,15 +138,19 @@ export default function GlobeView({
              }
            }
            if (uTempOn > 0.5 && uTempReady > 0.5) {
-             // 温度连续覆盖层（F14）：纬度 LUT 采样 + 等温线（LUT alpha 内嵌）
+             // 温度连续覆盖层（F14/F18）：纬度 LUT 采样 + 等温线 + 入场淡入（uFade 0→1）
              vec4 T = texture2D(uTempLut, vec2(0.5, vUv.y));
-             diffuseColor.rgb = mix(diffuseColor.rgb, T.rgb, T.a);
+             diffuseColor.rgb = mix(diffuseColor.rgb, T.rgb, T.a * uFade);
            }
            if (uFlood > 0.5) {
              vec2 d = texture2D(uDem, vUv).rg;
              float elevM = floor(d.r * 255.0 + 0.5) * 256.0 + floor(d.g * 255.0 + 0.5);
              float flood = (1.0 - smoothstep(uSlr - 30.0, uSlr + 30.0, elevM)) * step(0.5, elevM);
-             diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.219, 0.741, 0.973), flood * 0.9);
+             // F18 海岸线呼吸脉冲：在淹没带边缘（flood 0.15–0.85 过渡带）叠加时间振荡高光
+             float edge = flood * (1.0 - flood) * 4.0; // 0..1 钟形（边缘=1）
+             float pulse = 0.5 + 0.5 * sin(uTime * 2.2);
+             vec3 floodC = mix(vec3(0.219, 0.741, 0.973), vec3(0.75, 0.95, 1.0), pulse * 0.6);
+             diffuseColor.rgb = mix(diffuseColor.rgb, floodC, flood * 0.75 + edge * pulse * 0.5);
            }`,
         );
     };
@@ -191,7 +201,27 @@ export default function GlobeView({
     uTempLut.current.value = tex;
     uTempReady.current.value = 1;
     if (old) old.dispose();
+    // F18 入场淡入：重建（时间轴/情景变化）时 0→1，GPU 采样即时生效
+    uFade.current.value = 0;
+    const t0 = performance.now();
+    const stepFade = (t: number) => {
+      const k = Math.min(1, (t - t0) / 400);
+      uFade.current.value = k * k * (3 - 2 * k); // smoothstep 缓动
+      if (k < 1) requestAnimationFrame(stepFade);
+    };
+    requestAnimationFrame(stepFade);
   }, [snap, pattern]);
+
+  // F18 海岸线脉冲时钟：单一 rAF 驱动 uTime（其余效果全部 GPU 侧，主线程零成本）
+  useEffect(() => {
+    let raf = 0;
+    const tick = (t: number) => {
+      uTime.current.value = t / 1000;
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, []);
 
   // 底图显隐由本材质自管，不走 globeImageUrl prop：three-globe 该 setter 的 OFF 分支不清 map
   // 也不置 needsUpdate，ON 分支设 color=null 会被 uniform 刷新跳过——关→开后 diffuse 残留

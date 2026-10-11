@@ -8,7 +8,7 @@ const [D_MIN, D_MAX] = TEMP_DOMAIN;
 export default function Colorbar() {
   const tickPos = (v: number) => `${(((v - D_MIN) / (D_MAX - D_MIN)) * 100).toFixed(1)}%`;
   return (
-    <div style={{ ...panelStyle, position: "absolute", left: 16, bottom: 16, width: 300, padding: "10px 12px", fontSize: 12 }}>
+    <div className="fe-fade-up" style={{ ...panelStyle, position: "absolute", left: 16, bottom: 16, width: 300, padding: "10px 12px", fontSize: 12 }}>
       <div style={{ color: tokens.textFaint, marginBottom: 6 }}>
         地表温度异常（°C，相对 1850 年工业化前基线）
       </div>

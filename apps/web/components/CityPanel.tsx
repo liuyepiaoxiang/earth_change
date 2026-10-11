@@ -24,6 +24,7 @@ export default function CityPanel({
 
   return (
     <div
+      className="fe-slide-in"
       style={{
         position: "absolute",
         left: 16,

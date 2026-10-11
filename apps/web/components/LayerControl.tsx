@@ -37,6 +37,7 @@ export default function LayerControl({
 }) {
   return (
     <div
+      className="fe-fade-up"
       style={{
         position: "absolute",
         top: 12,
@@ -55,6 +56,7 @@ export default function LayerControl({
         return (
           <button
             key={it.key}
+            className="fe-layer-btn"
             onClick={() => onToggle(it.key)}
             style={{
               display: "flex",

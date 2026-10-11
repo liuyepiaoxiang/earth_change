@@ -1,0 +1,44 @@
+/* 全局动画样式（F18 动画规范第一批）：全部为 GPU 合成层属性（transform/opacity），
+   不触发 layout/paint 重排；prefers-reduced-motion 用户自动降级为瞬时切换。 */
+
+/* ---- 面板/卡片通用入场：轻微上浮 + 淡入 ---- */
+@keyframes fe-fade-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fe-fade-up { animation: fe-fade-up 0.45s ease-out both; }
+
+/* ---- 图层面板行：显隐状态切换过渡 ---- */
+.fe-layer-btn {
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+/* ---- 指标数值变化：短暂高亮脉冲（数据更新提示，不闪烁） ---- */
+@keyframes fe-value-pulse {
+  0% { text-shadow: 0 0 0 rgba(125, 211, 252, 0); }
+  30% { text-shadow: 0 0 12px rgba(125, 211, 252, 0.9); }
+  100% { text-shadow: 0 0 0 rgba(125, 211, 252, 0); }
+}
+.fe-value-pulse { animation: fe-value-pulse 0.8s ease-out; }
+
+/* ---- 城市面板滑入 ---- */
+@keyframes fe-slide-in {
+  from { opacity: 0; transform: translateX(-12px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.fe-slide-in { animation: fe-slide-in 0.3s ease-out both; }
+
+/* ---- 播放按钮呼吸（自动播放进行中） ---- */
+@keyframes fe-breathe {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.5); }
+  50% { box-shadow: 0 0 10px 2px rgba(56, 189, 248, 0.55); }
+}
+.fe-breathe { animation: fe-breathe 1.6s ease-in-out infinite; }
+
+/* ---- 减少动态偏好：全部动画瞬时化 ---- */
+@media (prefers-reduced-motion: reduce) {
+  .fe-fade-up, .fe-value-pulse, .fe-slide-in, .fe-breathe {
+    animation: none !important;
+  }
+  .fe-layer-btn { transition: none !important; }
+}
