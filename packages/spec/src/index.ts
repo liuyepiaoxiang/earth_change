@@ -23,3 +23,4 @@ export function loadSpec() {
   return SpecBundleSchema.parse(raw); // 不合法立即抛错
 }
 export { SpecBundleSchema } from "./schema.js";
+export * from "./generated/spec-types.js";
