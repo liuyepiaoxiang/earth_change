@@ -1,9 +1,9 @@
 # ---- 第 1 组：辐射与能量平衡（v1 显式化；v0 由 forcing 数据 + 两层 EBM 隐式涵盖）----
-- { id: eq_01, name_en: Incoming Solar, name_zh: 太阳入射, domain: forcing, formula: "Q_in = (S0/4)(1+δS)", inputs: [solar.irradiance], outputs: [atmosphere.radiative_forcing], parameters: [], notes: "", impl: v1 }
-- { id: eq_02, name_en: Reflected Solar, name_zh: 反射太阳辐射, domain: forcing, formula: "Q_ref = α·Q_in", inputs: [cryosphere.sea_ice_area, cryosphere.snow_mass], outputs: [atmosphere.radiative_forcing], parameters: [], notes: "", impl: v1 }
-- { id: eq_03, name_en: Absorbed Solar, name_zh: 吸收太阳辐射, domain: forcing, formula: "Q_abs = (1-α)·Q_in", inputs: [solar.irradiance], outputs: [atmosphere.radiative_forcing], parameters: [], notes: "", impl: v1 }
-- { id: eq_04, name_en: Outgoing Longwave, name_zh: 射出长波, domain: forcing, formula: "Q_out = ε·σ·Te⁴", inputs: [atmosphere.temperature], outputs: [atmosphere.radiative_forcing], parameters: [], notes: "", impl: v1 }
-- { id: eq_05, name_en: Net Radiation, name_zh: 净辐射, domain: forcing, formula: "N = Q_abs - Q_out", inputs: [], outputs: [atmosphere.radiative_forcing], parameters: [], notes: "", impl: v1 }
+- { id: eq_01, name_en: Incoming Solar, name_zh: 太阳入射, domain: forcing, formula: "Q_in = (S0/4)(1+δS)", inputs: [solar.irradiance], outputs: [atmosphere.radiative_forcing], parameters: [], notes: "诊断式（v1.x 收尾批）：显式能量收支，不接入 RHS", impl: v0 }
+- { id: eq_02, name_en: Reflected Solar, name_zh: 反射太阳辐射, domain: forcing, formula: "Q_ref = α·Q_in", inputs: [cryosphere.sea_ice_area, cryosphere.snow_mass], outputs: [atmosphere.radiative_forcing], parameters: [], notes: "诊断式（v1.x 收尾批）：显式能量收支，不接入 RHS", impl: v0 }
+- { id: eq_03, name_en: Absorbed Solar, name_zh: 吸收太阳辐射, domain: forcing, formula: "Q_abs = (1-α)·Q_in", inputs: [solar.irradiance], outputs: [atmosphere.radiative_forcing], parameters: [], notes: "诊断式（v1.x 收尾批）：显式能量收支，不接入 RHS", impl: v0 }
+- { id: eq_04, name_en: Outgoing Longwave, name_zh: 射出长波, domain: forcing, formula: "Q_out = ε·σ·Te⁴", inputs: [atmosphere.temperature], outputs: [atmosphere.radiative_forcing], parameters: [], notes: "诊断式（v1.x 收尾批）：显式能量收支，不接入 RHS", impl: v0 }
+- { id: eq_05, name_en: Net Radiation, name_zh: 净辐射, domain: forcing, formula: "N = Q_abs - Q_out", inputs: [], outputs: [atmosphere.radiative_forcing], parameters: [], notes: "诊断式（v1.x 收尾批）：显式能量收支，不接入 RHS", impl: v0 }
 # ---- 第 2 组：温度 ----
 - { id: eq_06, name_en: Global Mean Temperature, name_zh: 全球平均温度, domain: atmosphere, formula: "Ca·dTa/dt = N - λ·Ta", inputs: [atmosphere.radiative_forcing], outputs: [atmosphere.temperature], parameters: [lambda], notes: "v0 为两层形式下的表层诊断", impl: v0 }
 - { id: eq_07, name_en: CO2 Forcing, name_zh: CO₂辐射强迫, domain: atmosphere, formula: "F_CO2 = 5.35·ln(C/C0)", inputs: [atmosphere.co2], outputs: [atmosphere.forcing_co2], parameters: [c0_ref], notes: "Myhre 1998", impl: v0 }
