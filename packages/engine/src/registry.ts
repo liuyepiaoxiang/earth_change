@@ -9,6 +9,7 @@ import * as seaice from "./equations/seaice.js";
 import * as energy from "./equations/energy.js";
 import * as singlelayer from "./equations/singlelayer.js";
 import * as water from "./equations/water.js";
+import * as bio from "./equations/bio.js";
 
 type EqFn = (...args: never[]) => unknown;
 
@@ -49,6 +50,12 @@ export const REGISTRY: Partial<Record<EquationId, EqFn>> = {
   eq_22: water.runoff as EqFn,
   eq_23: water.soilWaterStep as EqFn,
   eq_24: water.snowStep as EqFn,
+  // v2 生物圈（ADR-003）：植被动态与生物量收支
+  eq_33: bio.growth as EqFn,
+  eq_34: bio.death as EqFn,
+  eq_35: bio.vegetationDdt as EqFn,
+  eq_36: bio.npp as EqFn,
+  eq_18: bio.biomassDdt as EqFn,
   // 诊断式（ADR-001）：海冰与冰-反照率，UI 直接调用，不接入 solver RHS
   eq_28: seaice.seaIceArea as EqFn,
   eq_29: seaice.surfaceAlbedo as EqFn,

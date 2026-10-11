@@ -28,7 +28,8 @@
 - { id: lw_rate, symbol: "s_lw", name_zh: 陆地水储量变化率, unit: "m/yr", default: 0.0003, min: 0.0001, max: 0.0005, source: "水库蓄水-地下水开采净效应", impl: v0 }
 # ---- v2 生物圈/冻土耦合参数（ADR-003：固定为先验中心，不进校准；不确定性走 MC 扰动）----
 - { id: npp_max, symbol: "NPPmax", name_zh: 潜在净初级生产力, unit: "GtC/yr", default: 50, min: 40, max: 70, source: "全球 NPP 观测 50-60 GtC/yr", impl: v0 }
-- { id: r_heterotroph, symbol: "r_h", name_zh: 异养呼吸速率, unit: "1/yr", default: 0.045, min: 0.03, max: 0.06, source: "全球 Rh ≈ 50 GtC/yr / 生物量库", impl: v0 }
+- { id: r_veg, symbol: "r_v", name_zh: 植被内禀净增长率, unit: "1/yr", default: 0.015, min: 0.005, max: 0.03, source: "logistic 净速率（死亡/呼吸已并入），稳态=B₀", impl: v0 }
+- { id: k_biomass, symbol: "K_B", name_zh: 植被生物量承载力, unit: "GtC", default: 550, min: 450, max: 700, source: "1850 年稳态 = B₀（植被生物量观测）", impl: v0 }
 - { id: fire_k, symbol: "k_f", name_zh: 火灾异常系数, unit: "GtC/(yr·K)", default: 0.3, min: 0.1, max: 0.8, source: "气候-火灾反馈文献量级（异常口径）", impl: v0 }
 - { id: k_pf, symbol: "k_pf", name_zh: 冻土融化速率, unit: "GtC/(yr·K)", default: 30, min: 10, max: 80, source: "NCSCD 库量级 + AR6 冻土反馈区间", impl: v0 }
 - { id: t_pf, symbol: "T_pf", name_zh: 冻土融化阈值异常, unit: "K", default: 1.0, min: 0.5, max: 2.0, source: "多年冻土起始融化异常区间", impl: v0 }
