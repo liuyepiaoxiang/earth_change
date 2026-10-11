@@ -73,8 +73,9 @@ test.describe("S4 画布点选城市", () => {
     // 西非海岸带（几内亚湾城市密集：Abidjan/Accra/Lagos）网格扫描，move 悬停 + click
     // 命中判定：CityPanel 出现「本地升温」（验证过的确定性坐标区）
     let hit = false;
+    // 扫描窗口 = three 0.186 缩放后实测命中区（Abidjan@480,240 附近，几内亚湾城市带）
     const targets: Array<[number, number]> = [];
-    for (let x = 440; x <= 560; x += 12) for (let y = 130; y <= 190; y += 10) targets.push([x, y]);
+    for (let x = 430; x <= 540; x += 10) for (let y = 210; y <= 270; y += 10) targets.push([x, y]);
     for (const [x, y] of targets) {
       await page.mouse.move(x, y);
       await page.waitForTimeout(120);
