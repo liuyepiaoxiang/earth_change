@@ -20,6 +20,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@future-earth/data':
+        specifier: workspace:*
+        version: link:../../packages/data
       '@future-earth/engine':
         specifier: workspace:*
         version: link:../../packages/engine
