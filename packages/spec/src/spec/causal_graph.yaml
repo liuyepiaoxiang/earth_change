@@ -1,1 +1,101 @@
-[]
+# ---- 排放→浓度→强迫（L1 温室效应回路）----
+- { source: human.population, target: human.energy_use, mechanism: 需求, sign: positive, equation: null, loops: [] }
+- { source: human.energy_use, target: human.emissions_fossil, mechanism: 化石燃烧, sign: positive, equation: null, loops: [] }
+- { source: human.land_use, target: human.emissions_luluc, mechanism: 毁林, sign: positive, equation: null, loops: [] }
+- { source: human.population, target: human.land_use, mechanism: 开垦, sign: positive, equation: null, loops: [] }
+- { source: human.emissions_fossil, target: atmosphere.co2, mechanism: 排放, sign: positive, equation: eq_15, loops: [L1] }
+- { source: human.emissions_luluc, target: atmosphere.co2, mechanism: 排放, sign: positive, equation: eq_15, loops: [L1] }
+- { source: atmosphere.co2, target: atmosphere.forcing_co2, mechanism: 辐射吸收, sign: positive, equation: eq_07, loops: [L1] }
+- { source: atmosphere.ch4, target: atmosphere.forcing_ghg, mechanism: 辐射吸收, sign: positive, equation: eq_08, loops: [L1] }
+- { source: atmosphere.n2o, target: atmosphere.forcing_ghg, mechanism: 辐射吸收, sign: positive, equation: eq_08, loops: [L1] }
+- { source: atmosphere.forcing_co2, target: atmosphere.forcing_ghg, mechanism: 加总, sign: positive, equation: eq_08, loops: [L1] }
+- { source: atmosphere.forcing_ghg, target: atmosphere.radiative_forcing, mechanism: 加总, sign: positive, equation: eq_09, loops: [L1] }
+- { source: atmosphere.forcing_other, target: atmosphere.radiative_forcing, mechanism: 加总, sign: positive, equation: eq_09, loops: [] }
+- { source: solar.irradiance, target: atmosphere.radiative_forcing, mechanism: 太阳输入, sign: positive, equation: eq_09, loops: [] }
+- { source: volcanic.forcing, target: atmosphere.radiative_forcing, mechanism: 平流层气溶胶, sign: negative, equation: eq_09, loops: [] }
+- { source: aerosol.forcing, target: atmosphere.radiative_forcing, mechanism: 散射遮阳, sign: negative, equation: eq_09, loops: [] }
+# ---- 温度核心 ----
+- { source: atmosphere.radiative_forcing, target: atmosphere.temperature, mechanism: 能量失衡, sign: positive, equation: eq_11, loops: [] }
+- { source: atmosphere.temperature, target: ocean.temp_deep, mechanism: 热交换, sign: positive, equation: eq_12, loops: [L3] }
+- { source: ocean.temp_deep, target: atmosphere.temperature, mechanism: 热惯性, sign: negative, equation: eq_11, loops: [L3] }
+- { source: atmosphere.temperature, target: ocean.heat_content, mechanism: 热累积, sign: positive, equation: eq_13, loops: [L3] }
+# ---- 碳循环反馈 ----
+- { source: atmosphere.co2, target: ocean.carbon_uptake, mechanism: 溶解梯度, sign: positive, equation: eq_17, loops: [] }
+- { source: atmosphere.temperature, target: ocean.carbon_uptake, mechanism: 溶解度下降, sign: negative, equation: eq_17, loops: [carbon-climate] }
+- { source: ocean.carbon_uptake, target: atmosphere.co2, mechanism: 清除, sign: negative, equation: eq_15, loops: [L1] }
+- { source: atmosphere.co2, target: bio.npp, mechanism: CO₂施肥, sign: positive, equation: eq_36, loops: [L6] }
+- { source: bio.npp, target: bio.biomass, mechanism: 生长, sign: positive, equation: eq_18, loops: [L6] }
+- { source: bio.npp, target: pedo.soil_carbon, mechanism: 凋落物, sign: positive, equation: eq_18, loops: [L6] }
+- { source: bio.biomass, target: atmosphere.co2, mechanism: 陆地碳汇, sign: negative, equation: eq_16, loops: [L6] }
+- { source: pedo.soil_carbon, target: atmosphere.co2, mechanism: 异养呼吸, sign: positive, equation: eq_16, loops: [L6] }
+- { source: human.land_use, target: bio.vegetation_fraction, mechanism: 砍伐, sign: negative, equation: null, loops: [L6] }
+# ---- 冰雪→海平面（L2 冰反照率 / L4 冰盖回路）----
+- { source: atmosphere.temperature, target: cryosphere.glacier_mass, mechanism: 融化, sign: negative, equation: eq_25, loops: [L4] }
+- { source: atmosphere.temperature, target: cryosphere.greenland_ice, mechanism: 消融, sign: negative, equation: eq_27, loops: [L2, L4] }
+- { source: atmosphere.temperature, target: cryosphere.antarctic_ice, mechanism: 消融, sign: negative, equation: eq_27, loops: [L2, L4] }
+- { source: atmosphere.temperature, target: cryosphere.sea_ice_area, mechanism: 融化, sign: negative, equation: eq_28, loops: [L2] }
+- { source: atmosphere.temperature, target: cryosphere.snow_mass, mechanism: 融化, sign: negative, equation: eq_24, loops: [L2] }
+- { source: cryosphere.sea_ice_area, target: atmosphere.radiative_forcing, mechanism: 反照率, sign: negative, equation: eq_29, loops: [L2] }
+- { source: cryosphere.snow_mass, target: atmosphere.radiative_forcing, mechanism: 反照率, sign: negative, equation: eq_29, loops: [L2] }
+- { source: cryosphere.glacier_mass, target: sea.level_glacier, mechanism: 融水入海, sign: negative, equation: eq_26, loops: [L4] }
+- { source: cryosphere.greenland_ice, target: sea.level_ice_sheet, mechanism: 融水入海, sign: negative, equation: eq_27, loops: [L4] }
+- { source: cryosphere.antarctic_ice, target: sea.level_ice_sheet, mechanism: 融水入海, sign: negative, equation: eq_27, loops: [L4] }
+- { source: ocean.temp_deep, target: sea.level_thermal, mechanism: 热膨胀, sign: positive, equation: eq_14, loops: [L3] }
+- { source: ocean.heat_content, target: sea.level_thermal, mechanism: 热膨胀, sign: positive, equation: eq_14, loops: [L3] }
+- { source: sea.level_thermal, target: sea.level, mechanism: 加总, sign: positive, equation: eq_31, loops: [] }
+- { source: sea.level_glacier, target: sea.level, mechanism: 加总, sign: positive, equation: eq_31, loops: [] }
+- { source: sea.level_ice_sheet, target: sea.level, mechanism: 加总, sign: positive, equation: eq_31, loops: [] }
+- { source: sea.level_land_water, target: sea.level, mechanism: 加总, sign: positive, equation: eq_31, loops: [] }
+# ---- 冻土（L7）----
+- { source: atmosphere.temperature, target: cryosphere.permafrost_carbon, mechanism: 融化, sign: negative, equation: eq_39, loops: [L7] }
+- { source: cryosphere.permafrost_carbon, target: atmosphere.co2, mechanism: 碳释放, sign: positive, equation: eq_40, loops: [L7] }
+- { source: cryosphere.permafrost_carbon, target: atmosphere.ch4, mechanism: 甲烷释放, sign: positive, equation: eq_40, loops: [L7] }
+# ---- 水循环（L5）----
+- { source: atmosphere.temperature, target: hydrosphere.evaporation, mechanism: 蒸发加强, sign: positive, equation: eq_20, loops: [L5] }
+- { source: hydrosphere.evaporation, target: hydrosphere.precipitation, mechanism: 水汽输送, sign: positive, equation: eq_19, loops: [L5] }
+- { source: hydrosphere.precipitation, target: pedo.soil_moisture, mechanism: 入渗, sign: positive, equation: eq_23, loops: [] }
+- { source: hydrosphere.precipitation, target: cryosphere.snow_mass, mechanism: 降雪, sign: positive, equation: eq_24, loops: [] }
+- { source: hydrosphere.precipitation, target: hydrosphere.runoff, mechanism: 产流, sign: positive, equation: eq_22, loops: [L9] }
+- { source: hydrosphere.evaporation, target: pedo.soil_moisture, mechanism: 消耗, sign: negative, equation: eq_23, loops: [] }
+- { source: pedo.soil_moisture, target: hydrosphere.runoff, mechanism: 饱和产流, sign: positive, equation: eq_22, loops: [] }
+- { source: pedo.soil_moisture, target: hydrosphere.groundwater, mechanism: 补给, sign: positive, equation: eq_23, loops: [] }
+- { source: hydrosphere.groundwater, target: hydrosphere.runoff, mechanism: 基流, sign: positive, equation: eq_22, loops: [] }
+- { source: hydrosphere.runoff, target: hydrosphere.river_discharge, mechanism: 汇流, sign: positive, equation: null, loops: [L9] }
+- { source: hydrosphere.precipitation, target: bio.npp, mechanism: 水分供给, sign: positive, equation: eq_36, loops: [] }
+# ---- 植被与火灾（L6/L8）----
+- { source: atmosphere.co2, target: bio.vegetation_fraction, mechanism: 施肥, sign: positive, equation: eq_33, loops: [L6] }
+- { source: pedo.soil_moisture, target: bio.vegetation_fraction, mechanism: 水分, sign: positive, equation: eq_33, loops: [] }
+- { source: bio.vegetation_fraction, target: bio.npp, mechanism: 光合面积, sign: positive, equation: eq_36, loops: [L6] }
+- { source: bio.vegetation_fraction, target: pedo.erosion_rate, mechanism: 固土, sign: negative, equation: eq_44, loops: [L9] }
+- { source: atmosphere.temperature, target: bio.fire_probability, mechanism: 干热, sign: positive, equation: eq_37, loops: [L8] }
+- { source: bio.biomass, target: bio.fire_probability, mechanism: 可燃物, sign: positive, equation: eq_37, loops: [L8] }
+- { source: pedo.soil_moisture, target: bio.fire_probability, mechanism: 湿润抑制, sign: negative, equation: eq_37, loops: [L8] }
+- { source: bio.fire_probability, target: bio.biomass, mechanism: 燃烧, sign: negative, equation: eq_38, loops: [L8] }
+- { source: bio.fire_probability, target: atmosphere.co2, mechanism: 燃烧排放, sign: positive, equation: eq_38, loops: [L8] }
+- { source: bio.fire_probability, target: bio.vegetation_fraction, mechanism: 毁林, sign: negative, equation: eq_34, loops: [L8] }
+- { source: downscale.warming_pattern, target: bio.biome_class, mechanism: 气候带迁移, sign: positive, equation: eq_50, loops: [] }
+- { source: bio.biome_class, target: surface.land_cover, mechanism: 覆盖更新, sign: positive, equation: eq_50, loops: [] }
+# ---- 地貌与侵蚀（L9）----
+- { source: geo.elevation, target: geo.slope, mechanism: 梯度, sign: positive, equation: eq_41, loops: [] }
+- { source: hydrosphere.runoff, target: pedo.erosion_rate, mechanism: 侵蚀, sign: positive, equation: eq_43, loops: [L9] }
+- { source: pedo.erosion_rate, target: geo.elevation, mechanism: 剥蚀, sign: negative, equation: eq_47, loops: [L9] }
+- { source: hydrosphere.river_discharge, target: geo.sediment_flux, mechanism: 输沙, sign: positive, equation: eq_46, loops: [L9] }
+- { source: pedo.erosion_rate, target: geo.sediment_flux, mechanism: 物源, sign: positive, equation: eq_45, loops: [L9] }
+- { source: geo.sediment_flux, target: geo.elevation, mechanism: 沉积, sign: positive, equation: eq_47, loops: [L9] }
+- { source: geo.slope, target: pedo.erosion_rate, mechanism: 势能, sign: positive, equation: eq_42, loops: [L9] }
+- { source: geo.slope, target: geo.sediment_flux, mechanism: 搬运, sign: positive, equation: eq_46, loops: [L9] }
+- { source: pedo.erosion_rate, target: pedo.soil_depth, mechanism: 变薄, sign: negative, equation: eq_47, loops: [] }
+# ---- 海岸线（L10）----
+- { source: sea.level, target: surface.inundation_mask, mechanism: 淹没, sign: positive, equation: eq_49, loops: [L10] }
+- { source: geo.elevation, target: surface.inundation_mask, mechanism: 地势, sign: negative, equation: eq_49, loops: [L10] }
+- { source: sea.level, target: geo.coastline_position, mechanism: 侵蚀后退, sign: negative, equation: eq_48, loops: [L10] }
+- { source: sea.level, target: geo.landmask, mechanism: 淹没, sign: negative, equation: eq_49, loops: [L10] }
+- { source: geo.coastline_position, target: surface.land_cover, mechanism: 覆盖更新, sign: positive, equation: null, loops: [] }
+- { source: surface.inundation_mask, target: surface.land_cover, mechanism: 覆盖更新, sign: positive, equation: eq_49, loops: [L10] }
+- { source: human.adaptation, target: surface.inundation_mask, mechanism: 防护工程, sign: negative, equation: null, loops: [] }
+# ---- 降尺度（v0 城市级）----
+- { source: atmosphere.temperature, target: downscale.city_climate, mechanism: 全球信号, sign: positive, equation: eq_51, loops: [] }
+- { source: downscale.warming_pattern, target: downscale.city_climate, mechanism: 纬度放大, sign: positive, equation: eq_51, loops: [] }
+- { source: hydrosphere.precipitation, target: downscale.city_climate, mechanism: 降水信号, sign: positive, equation: eq_52, loops: [] }
+- { source: downscale.city_climate, target: bio.biome_class, mechanism: 群系判定, sign: positive, equation: eq_50, loops: [] }
+- { source: atmosphere.temperature, target: hydrosphere.precipitation, mechanism: 水循环加强, sign: positive, equation: eq_52, loops: [L5] }
