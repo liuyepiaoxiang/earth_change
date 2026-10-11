@@ -1,0 +1,20 @@
+
+> @future-earth/engine@0.1.0 test D:\02-code\20-allstack\05-ai\earth_change\packages\engine
+> vitest run --passWithNoTests
+
+
+ RUN  v2.1.9 D:/02-code/20-allstack/05-ai/earth_change/packages/engine
+
+ ✓ src/equations/downscale.test.ts (4 tests) 2ms
+ ✓ src/equations/forcing.test.ts (4 tests) 2ms
+ ✓ src/equations/carbon.test.ts (3 tests) 2ms
+ ✓ src/equations/ocean.test.ts (4 tests) 2ms
+ ✓ src/equations/sealevel.test.ts (4 tests) 3ms
+ ✓ src/registry.test.ts (3 tests) 4ms
+ ✓ src/solver.test.ts (4 tests) 243ms
+
+ Test Files  7 passed (7)
+      Tests  26 passed (26)
+   Start at  12:55:29
+   Duration  1.54s (transform 477ms, setup 0ms, collect 967ms, tests 260ms, environment 1ms, prepare 1.08s)
+
