@@ -1,0 +1,9 @@
+{
+  "name": "@future-earth/engine",
+  "version": "0.1.0",
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "scripts": { "test": "vitest run --passWithNoTests", "typecheck": "tsc --noEmit" },
+  "dependencies": { "@future-earth/spec": "workspace:*", "@future-earth/data": "workspace:*", "zod": "^3.23.0" },
+  "devDependencies": { "vitest": "^2.1.0", "typescript": "^5.5.0", "@types/node": "^20.14.0" }
+}
