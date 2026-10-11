@@ -82,6 +82,9 @@ importers:
       geotiff:
         specifier: ^3.0.5
         version: 3.0.5
+      pngjs:
+        specifier: ^7.0.0
+        version: 7.0.0
       typescript:
         specifier: ^5.5.0
         version: 5.9.3
@@ -962,6 +965,10 @@ packages:
 
   picocolors@1.1.1:
     resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
+
+  pngjs@7.0.0:
+    resolution: {integrity: sha512-LKWqWJRhstyYo9pGvgor/ivk2w94eSjE3RGVuzLGlr3NmD8bf7RcYGze1mNdEHRP6TRP6rMuDHk5t44hnTRyow==}
+    engines: {node: '>=14.19.0'}
 
   point-in-polygon-hao@1.2.4:
     resolution: {integrity: sha512-x2pcvXeqhRHlNRdhLs/tgFapAbSSe86wa/eqmj1G6pWftbEs5aVRJhRGM6FYSUERKu0PjekJzMq0gsI2XyiclQ==}
@@ -1853,6 +1860,8 @@ snapshots:
   pathval@2.0.1: {}
 
   picocolors@1.1.1: {}
+
+  pngjs@7.0.0: {}
 
   point-in-polygon-hao@1.2.4:
     dependencies:

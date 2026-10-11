@@ -8,5 +8,7 @@ next-env.d.ts
 
 # 抓取脚本下载暂存区（fetch-static.mjs 正常结束会自删）
 packages/data/datasets/_tmp/
+# sync-public.mjs 从 data 包同步的产物（单一事实源在 packages/data/datasets/static/）
+apps/web/public/elevation_10min.png
 # 本地工具状态
 .video_agent/

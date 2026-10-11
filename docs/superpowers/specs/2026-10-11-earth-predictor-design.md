@@ -306,7 +306,7 @@ G4 通过而 G1–G3 不通过 = 「蒙对答案」，故历史门为前置必�
 | 淹没 | 自定义 shader 对高度图纹理逐像素比较 `elevation < SLR(t)`，GPU 实时 |
 | 城市点 | 2000 城市标记，点击弹出 CityPanel |
 
-> **v0 偏差回填（2026-10-11）**：淹没 shader 层未实现——v0 以城市点级判定呈现（`isCityFlooded`，城市点高度 = 高程 vs SLR 差值），GPU 高度图 shader 层留 v1；城市规模为 top500（GeoNames），非 2000。GlobeView 分层结构已预留扩展位。
+> **v0 偏差回填（2026-10-11）**：淹没 shader 层已实现（原降级项提前交付）——地球材质注入自定义 shader，采样全球高程纹理（WorldClim 2.1 10 角分 ≈18km，源 ETOPO，RGB 打包 uint16，`datasets/static/elevation_10min.png`），高程 ∈ (0, SLR] 的陆地实时渲染为水色，SLR uniform 随时间轴拖动更新；高程数据未含 bathymetry，海洋保持底图原色。分辨率低于规格的 0.1°（NOAA 直链不可达，改用已验证可达的 WorldClim 源）；城市规模为 top500（GeoNames），非 2000。
 
 ### 8.3 交互性能模型
 

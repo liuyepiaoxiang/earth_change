@@ -5,6 +5,7 @@ export interface LayerState {
   cities: boolean;
   basemap: boolean;
   atmosphere: boolean;
+  flood: boolean;
 }
 
 export const DEFAULT_LAYERS: LayerState = {
@@ -12,11 +13,13 @@ export const DEFAULT_LAYERS: LayerState = {
   cities: true,
   basemap: true,
   atmosphere: true,
+  flood: true,
 };
 
 const ITEMS: Array<{ key: keyof LayerState; label: string; color: string }> = [
   { key: "temperature", label: "温度点云", color: "#26e74d" },
   { key: "cities", label: "城市点", color: "#eab308" },
+  { key: "flood", label: "淹没模拟", color: "#38bdf8" },
   { key: "basemap", label: "卫星底图", color: "#8b6f47" },
   { key: "atmosphere", label: "大气辉光", color: "#5b7fa6" },
 ];

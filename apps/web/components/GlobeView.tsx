@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
+import { MeshPhongMaterial, NearestFilter, Texture, TextureLoader } from "three";
 import { isCityFlooded, localDTs } from "@future-earth/engine";
 import type { WarmingPatternBand } from "@future-earth/engine";
 import type { CityRow, PatternBand } from "@future-earth/data";
@@ -97,6 +98,61 @@ export default function GlobeView({
   const [layers, setLayers] = useState<LayerState>(DEFAULT_LAYERS);
   const toggleLayer = (key: keyof LayerState) => setLayers((s) => ({ ...s, [key]: !s[key] }));
 
+  // 淹没 shader 的共享 uniform（对象引用跨渲染稳定，直接改 .value 即可驱动 GPU）
+  const uSlr = useRef({ value: 0 });
+  const uFlood = useRef({ value: 1 });
+  const uDem = useRef<{ value: Texture | null }>({ value: null });
+
+  // 自定义地球材质：注入 DEM 高程采样，elev ∈ (0, SLR] 的陆地渲染为水色（SPEC §8.2 淹没层）
+  const globeMaterial = useMemo(() => {
+    const mat = new MeshPhongMaterial({ color: 0x0b1e33 });
+    // 无论有无底图纹理都保证 vUv 可用（淹没采样依赖球面 UV）
+    mat.defines = { USE_UV: "" };
+    mat.onBeforeCompile = (shader) => {
+      shader.uniforms.uSlr = uSlr.current;
+      shader.uniforms.uFlood = uFlood.current;
+      shader.uniforms.uDem = uDem.current;
+      shader.fragmentShader = shader.fragmentShader
+        .replace(
+          "#include <common>",
+          `#include <common>
+           uniform sampler2D uDem;
+           uniform float uSlr;
+           uniform float uFlood;`,
+        )
+        .replace(
+          "#include <map_fragment>",
+          `#include <map_fragment>
+           if (uFlood > 0.5) {
+             vec2 d = texture2D(uDem, vUv).rg;
+             float elevM = floor(d.r * 255.0 + 0.5) * 256.0 + floor(d.g * 255.0 + 0.5);
+             float flood = (1.0 - smoothstep(uSlr - 30.0, uSlr + 30.0, elevM)) * step(0.5, elevM);
+             diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.219, 0.741, 0.973), flood * 0.9);
+           }`,
+        );
+    };
+    return mat;
+  }, []);
+
+  useEffect(() => {
+    const loader = new TextureLoader();
+    loader.load("/elevation_10min.png", (tex) => {
+      // 打包数据纹理必须最近邻采样：线性插值会让 R/G 通道独立混合、破坏 uint16 解码
+      tex.magFilter = NearestFilter;
+      tex.minFilter = NearestFilter;
+      tex.generateMipmaps = false;
+      uDem.current.value = tex;
+    });
+  }, []);
+
+  useEffect(() => {
+    uSlr.current.value = snap.seaLevel.total;
+  }, [snap]);
+
+  useEffect(() => {
+    uFlood.current.value = layers.flood ? 1 : 0;
+  }, [layers.flood]);
+
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
@@ -147,6 +203,7 @@ export default function GlobeView({
         <Globe
           width={size.w}
           height={size.h}
+          globeMaterial={globeMaterial}
           globeImageUrl={layers.basemap ? "/earth-blue-marble.jpg" : null}
           backgroundColor="rgba(0,0,0,0)"
           atmosphereColor="#5b7fa6"

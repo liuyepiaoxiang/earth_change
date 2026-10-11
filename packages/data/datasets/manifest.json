@@ -66,6 +66,12 @@
       "bytes": 119,
       "retrieved": "2026-10-11",
       "source": "GISTEMP ZonAnn 回归"
+    },
+    "static/elevation_10min.png": {
+      "sha256": "02de23e09accecf8806f0ce621557b139495ca6e8cbacabf49126df9e751aa54",
+      "bytes": 1199731,
+      "retrieved": "2026-10-11",
+      "source": "WorldClim 2.1 elevation 10 arc-min（源 ETOPO；淹没渲染用，非 loaders 数据）"
     }
   }
 }

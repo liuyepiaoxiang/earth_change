@@ -7,7 +7,7 @@
 ## 功能
 
 - **四个 SSP 情景**（SSP1-2.6 / SSP2-4.5 / SSP3-7.0 / SSP5-8.5）模拟 2026–2500 年，毫秒级出结果
-- **3D 地球**：5° 温度点云（Pattern Scaling 纬度带放大，蓝→红色阶）、500 城市点（大小 ∝ √人口，淹没变蓝）、点击城市查看本地升温 / 未来年均温 / 降水 / 群系 / 淹没判定；右上角图层开关（温度点云 / 城市点 / 卫星底图 / 大气辉光）
+- **3D 地球**：5° 温度点云（Pattern Scaling 纬度带放大，蓝→红色阶）、500 城市点（大小 ∝ √人口，淹没变蓝）、**淹没模拟**——全球高程纹理 shader 逐像素渲染「高程 < 海平面上升」的陆地，随时间轴拖动实时推进、点击城市查看本地升温 / 未来年均温 / 降水 / 群系 / 淹没判定；右上角图层开关（温度点云 / 城市点 / 淹没模拟 / 卫星底图 / 大气辉光）
 - **时间轴拖动**：逐年插值，纯渲染零计算
 - **公开 API**：`GET /api/simulate?scenario=ssp245&horizon=2500` → 版本化 SimResult JSON（输出确定性，CDN immutable 缓存）
 
@@ -58,6 +58,7 @@ node packages/data/scripts/gen-bundle.mjs    # 全部数据 → datasets.gen.ts�
 | 自然强迫 | AR6 Table 7.8 量级锚点合成 | — |
 | 情景 | SSP 延伸路径（2025–2500） | CC-BY 4.0 |
 | 城市 + 基准气候 | GeoNames cities15000 + WorldClim 2.1 | CC-BY 4.0 / CC-BY-SA |
+| 全球高程（淹没渲染） | WorldClim 2.1 elevation（10 角分，源 ETOPO） | CC-BY-SA |
 | 纬度带升温模式 | NASA GISTEMP ZonAnn 回归 | 公有领域 |
 | 3D 底图 | NASA Blue Marble（打包于 `apps/web/public/earth-blue-marble.jpg`，无外部 CDN 依赖） | 公有领域 |
 
