@@ -38,7 +38,7 @@ export default function Timeline({
   }, [playing, disabled, onChange]);
 
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 12, width: "100%" }}>
+    <div style={{ display: "flex", alignItems: "center", gap: 12, width: "100%", position: "relative", flexWrap: "wrap" }}>
       <button
         onClick={() => {
           if (year >= MAX) onChange(MIN); // 端点重播
@@ -78,6 +78,9 @@ export default function Timeline({
         }}
         style={{ flex: 1, accentColor: "#38bdf8" }}
       />
+      <div aria-label="关键年份" style={{ display: "flex", justifyContent: "space-between", width: "100%", fontSize: 9, color: "#475569", position: "absolute", bottom: -2, left: 0, right: 0, pointerEvents: "none" }}>
+        {[2030, 2050, 2100, 2200, 2500].map((y) => <span key={y}>|{y}</span>)}
+      </div>
       <span style={{ fontSize: 12, color: "#64748b" }}>2500</span>
       <strong style={{ minWidth: 52, textAlign: "center", color: "#e0f2fe", fontVariantNumeric: "tabular-nums" }}>
         <span data-testid="timeline-year">{year}</span>{year > 2100 && (
