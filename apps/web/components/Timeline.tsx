@@ -80,7 +80,7 @@ export default function Timeline({
       />
       <span style={{ fontSize: 12, color: "#64748b" }}>2500</span>
       <strong style={{ minWidth: 52, textAlign: "center", color: "#e0f2fe", fontVariantNumeric: "tabular-nums" }}>
-        {year}{year > 2100 && (
+        <span data-testid="timeline-year">{year}</span>{year > 2100 && (
           <span title="2100 年后为探索性外推，置信度低于 AR6 校准区间" style={{ color: "#f59e0b", fontSize: 11, marginLeft: 6, border: "1px solid #92400e", borderRadius: 6, padding: "1px 6px" }}>探索性外推</span>
         )}
       </strong>

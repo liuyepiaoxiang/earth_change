@@ -48,7 +48,7 @@ export default function Colorbar() {
         </span>
       </div>
       <div style={{ marginTop: 6, fontSize: 10, color: tokens.textDisabled, lineHeight: 1.5 }}>
-        数据：NASA GISTEMP · WorldClim 2.1 · GeoNames · NOAA/AR6 锚点 ｜ 模型 v0.1.0（两层 EBM + 碳循环，G1–G5 定量验收）
+        数据：NASA GISTEMP · WorldClim 2.1 · GeoNames · NOAA/AR6 锚点 ｜ 模型 v0.2.0（两层 EBM + 碳循环，G1–G5 定量验收）
       </div>
     </div>
   );

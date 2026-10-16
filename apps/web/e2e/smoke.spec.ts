@@ -8,7 +8,7 @@ test.describe("S1 /api/simulate", () => {
     const res = await request.get("/api/simulate?scenario=ssp245&horizon=2100");
     expect(res.status()).toBe(200);
     const body = await res.json();
-    expect(body.schemaVersion).toBe(1);
+    expect(body.schemaVersion).toBe(2); // v0.2 契约：2=基础+metadata（含 uncertainty 时为 3）
     expect(body.scenario).toBe("ssp245");
     expect(body.years[0]).toBe(1851);
     expect(body.years.at(-1)).toBe(2100);
