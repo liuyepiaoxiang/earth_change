@@ -78,6 +78,12 @@
       "bytes": 3332898,
       "retrieved": "2026-10-11",
       "source": "WorldClim 2.1 precipitation 5 arc-min 年降水（12 月求和；降水图层渲染用）"
+    },
+    "generated/grid.gen.ts": {
+      "sha256": "da7799867d097066f0e3c1b7a3ea18a619a321546706bfe8ea59cc97bbb6dd32",
+      "bytes": 191236,
+      "retrieved": "2026-10-16",
+      "source": "gen-grid（WorldClim 10m tavg + elevation/precip_5min 聚合到 2.5°）"
     }
   }
 }

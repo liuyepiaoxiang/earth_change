@@ -24,3 +24,21 @@ export function loadScenario(id: "ssp126" | "ssp245" | "ssp370" | "ssp585"): Sce
   if (!s) throw new Error(`情景不存在: ${id}`);
   return s as unknown as ScenarioSeries;
 }
+
+// ---- v1.0 区域化气候场：2.5° 基准网格（grid.gen 固化） ----
+import { GRID_RES, GRID_NLAT, GRID_NLON, GRID_T0, GRID_P0, GRID_ELEV, GRID_LAND } from "./generated/grid.gen.js";
+export { GRID_RES, GRID_NLAT, GRID_NLON, GRID_T0, GRID_P0, GRID_ELEV, GRID_LAND };
+
+export interface BaseGrid {
+  res: number; nLat: number; nLon: number;
+  t0: Array<number | null>; p0: Array<number | null>; elev: Array<number | null>; land: Array<number | null>;
+}
+export function loadBaseGrid(): BaseGrid {
+  return { res: GRID_RES, nLat: GRID_NLAT, nLon: GRID_NLON, t0: [...GRID_T0], p0: [...GRID_P0], elev: [...GRID_ELEV], land: [...GRID_LAND] };
+}
+/** 经纬度 → 行列索引（行 0 = 90N；列 0 = 180W） */
+export function cellIndexOf(lat: number, lon: number): { r: number; c: number; i: number } {
+  const r = Math.min(GRID_NLAT - 1, Math.max(0, Math.floor((90 - lat) / GRID_RES)));
+  const c = Math.min(GRID_NLON - 1, Math.max(0, Math.floor((lon + 180) / GRID_RES)));
+  return { r, c, i: r * GRID_NLON + c };
+}

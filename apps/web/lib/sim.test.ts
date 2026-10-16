@@ -8,6 +8,14 @@ function fakeSim(years: number[], temp: number[], total: number[]): SimResult {
     modelVersion: "0.1.0",
     scenario: "ssp245",
     paramsFingerprint: "sha256:test",
+    metadata: {
+      modelScope: "global-box",
+      driverMode: "hybrid",
+      driverSegments: [{ from: 1850, to: 2024, mode: "emissions-driven" }, { from: 2025, mode: "concentration-driven" }],
+      confidenceNotes: [],
+      dataManifestHash: "test",
+    },
+    warnings: [],
     years,
     metrics: {
       tempAnomaly: temp,
