@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { DataTexture, LinearFilter, MeshPhongMaterial, NearestFilter, RGBAFormat, SRGBColorSpace, Texture, TextureLoader } from "three";
 import { isCityFlooded, localDTs } from "@future-earth/engine";
 import { buildTempLut, patternAmpInterp, tempColorHex } from "../lib/colormap";
+import { GRID, ampField } from "@future-earth/engine";
 import type { WarmingPatternBand } from "@future-earth/engine";
 import type { CityRow, PatternBand } from "@future-earth/data";
 import type { MetricsSnapshot } from "../lib/sim";
@@ -152,7 +153,7 @@ export default function GlobeView({
            }
            if (uTempOn > 0.5 && uTempReady > 0.5) {
              // 温度连续覆盖层（F14/F18）：纬度 LUT 采样 + 等温线 + 入场淡入（uFade 0→1）
-             vec4 T = texture2D(uTempLut, vec2(0.5, vUv.y));
+             vec4 T = texture2D(uTempLut, vUv); // v1.0：2.5° 格点场（陆海/区域结构）
              diffuseColor.rgb = mix(diffuseColor.rgb, T.rgb, T.a * uFade);
            }
            if (uFlood > 0.5) {
@@ -203,10 +204,25 @@ export default function GlobeView({
 
   // 温度连续覆盖层 LUT（F14）：随 ΔT 全局值/纬度带数据重建（512 像素 CPU 计算，微秒级）
   useEffect(() => {
-    const bands = pattern.length ? pattern : [{ latMin: -90, latMax: 90, amp: 1 }];
-    const data = buildTempLut(snap.tempAnomaly, bands, { isothermStep: 1, opacity: 0.78, height: 1024 });
+    // v1.0：2.5° 格点温度异常场（amp×ΔT_global），行序翻转为纹理坐标（v=0 南）
+    const amp = ampField();
+    const data = new Uint8Array(GRID.nLon * GRID.nLat * 4);
+    for (let r = 0; r < GRID.nLat; r++) {
+      const tr = GRID.nLat - 1 - r; // 纹理行 0 = 南
+      for (let c = 0; c < GRID.nLon; c++) {
+        const a = amp[r * GRID.nLon + c] ?? 1;
+        const dT = snap.tempAnomaly * a;
+        // 与 Colorbar 图例同源着色（tempColorHex → #rrggbb）
+        const hex = tempColorHex(dT);
+        const i = (tr * GRID.nLon + c) * 4;
+        data[i] = parseInt(hex.slice(1, 3), 16);
+        data[i + 1] = parseInt(hex.slice(3, 5), 16);
+        data[i + 2] = parseInt(hex.slice(5, 7), 16);
+        data[i + 3] = 205; // ~0.8 不透明度
+      }
+    }
     const old = tempTex.current;
-    const tex = new DataTexture(data, 1, 1024, RGBAFormat);
+    const tex = new DataTexture(data, GRID.nLon, GRID.nLat, RGBAFormat);
     tex.magFilter = LinearFilter; // 纬度方向线性插值 → 连续色带
     tex.minFilter = LinearFilter;
     tex.needsUpdate = true;

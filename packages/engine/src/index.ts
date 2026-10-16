@@ -98,3 +98,9 @@ export { MODEL_VERSION } from "./version.js";
 export type { McResult, McBand } from "./mc.js";
 export type { SimResult } from "./types.js";
 export type { ScenarioId } from "@future-earth/spec";
+export {
+  GRID, ampField, anomalyField, temperatureField, precipField, globalDT,
+  cellWaterTimeline, gridSeaIceFraction, gridBiome, sampleGrid, regionStats, runGridFields,
+  cellLat, cellLon,
+} from "./grid.js";
+export type { Field, GridFields, RegionStats, CellWaterSeries, SimLike } from "./grid.js";

@@ -6,6 +6,8 @@ import { loadWarmingPattern } from "@future-earth/data";
 import * as water from "./equations/water.js";
 import { classifyBiome } from "./equations/downscale.js";
 import type { SimResult } from "./types.js";
+/** 结构子集：schemaVersion 2/3（含 MC 扩展）的载体均可驱动网格场 */
+export type SimLike = Pick<SimResult, "years" | "metrics">;
 
 export const GRID = { res: GRID_RES, nLat: GRID_NLAT, nLon: GRID_NLON } as const;
 export type Field = Array<number | null>;
@@ -56,25 +58,25 @@ const interp = (years: number[], vals: number[], y: number): number => {
 };
 
 /** 全球 ΔT(t) 从 SimResult 插值 */
-export function globalDT(sim: SimResult, year: number): number {
+export function globalDT(sim: SimLike, year: number): number {
   return interp(sim.years, sim.metrics.tempAnomaly, year);
 }
 
 /** 温度异常场（全格有值；海洋 amp=衰减项） */
-export function anomalyField(sim: SimResult, year: number): Field {
+export function anomalyField(sim: SimLike, year: number): Field {
   const dT = globalDT(sim, year);
   const amp = ampField();
   return amp.map((a) => (a === null ? null : +(a * dT).toFixed(4)));
 }
 
 /** 绝对温度场 °C（T0 缺测格为 null——WorldClim 为陆地数据） */
-export function temperatureField(sim: SimResult, year: number): Field {
+export function temperatureField(sim: SimLike, year: number): Field {
   const anom = anomalyField(sim, year);
   return GRID_T0.map((t0, i) => (t0 === null ? null : +(t0 + (anom[i] as number)).toFixed(2)));
 }
 
 /** 降水场 mm/yr（P = P0·(1+0.02·ΔT_global)，与 eq_52 同源） */
-export function precipField(sim: SimResult, year: number): Field {
+export function precipField(sim: SimLike, year: number): Field {
   const k = 1 + 0.02 * globalDT(sim, year);
   return GRID_P0.map((p0) => (p0 === null ? null : +(p0 * k).toFixed(0)));
 }
@@ -82,7 +84,7 @@ export function precipField(sim: SimResult, year: number): Field {
 /** 逐格水循环（按需桶模型，复用 water.ts 同源函数）：返回该格 1850→year 的年度序列与终态
  *  E 口径：E = E0·evap(ΔTg)/evap(0)，E0 = P0·0.595（全球 E0/P0 比例，water.ts 默认 500/840） */
 export interface CellWaterSeries { years: number[]; p: number[]; e: number[]; runoff: number[]; w: number[]; snow: number[] }
-export function cellWaterTimeline(sim: SimResult, cellIndex: number, throughYear: number): CellWaterSeries | null {
+export function cellWaterTimeline(sim: SimLike, cellIndex: number, throughYear: number): CellWaterSeries | null {
   const p0 = GRID_P0[cellIndex];
   const t0 = GRID_T0[cellIndex];
   if (p0 == null || t0 == null) return null;
@@ -110,7 +112,7 @@ export function gridSeaIceFraction(lat: number, dTg: number): number {
 }
 
 /** 植被适宜度（群系判定，复用 classifyBiome） */
-export function gridBiome(sim: SimResult, cellIndex: number, year: number): string | null {
+export function gridBiome(sim: SimLike, cellIndex: number, year: number): string | null {
   const t = temperatureField(sim, year)[cellIndex];
   const p = precipField(sim, year)[cellIndex];
   if (t == null || p == null) return null;
@@ -157,6 +159,6 @@ export function regionStats(field: Field, latS: number, latN: number, lonW: numb
 
 /** Worker 消费入口：一年一组的派生场 */
 export interface GridFields { year: number; anomaly: Field; temperature: Field; precip: Field }
-export function runGridFields(sim: SimResult, year: number): GridFields {
+export function runGridFields(sim: SimLike, year: number): GridFields {
   return { year, anomaly: anomalyField(sim, year), temperature: temperatureField(sim, year), precip: precipField(sim, year) };
 }
