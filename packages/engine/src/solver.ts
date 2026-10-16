@@ -2,6 +2,7 @@ import * as forcing from "./equations/forcing.js";
 import * as carbon from "./equations/carbon.js";
 import * as ocean from "./equations/ocean.js";
 import * as sealevel from "./equations/sealevel.js";
+import * as seaice from "./equations/seaice.js";
 import * as water from "./equations/water.js";
 import * as bio from "./equations/bio.js";
 import { fTemp as bioFTemp, fPrecip as bioFPrecip, fWater as bioFWater, fCo2 as bioFCo2 } from "./equations/bio.js";
@@ -116,6 +117,14 @@ export function runSim(o: RunOptions): RunOutput {
       slIceSheet: s.sGrIS + s.sAIS, slLandWater: s.sLandWater,
       oceanUptake: carbon.oceanSink(s.co2, s.ts, p), landSink: carbon.landSink(s.co2, p),
       biomass: s.b, soilMoisture: s.w, permafrost: s.mPf,
+      forcingCo2: forcing.fCO2(s.co2, p), forcingCh4: forcing.fCH4(d.ch4, p),
+      forcingN2o: forcing.fN2O(d.n2o, p), forcingOther: d.fOther,
+      oceanHeatUptake: p.gamma_ocean * (s.ts - s.td),
+      seaIceArea: seaice.seaIceArea(s.ts),
+      precip: water.precipitation(s.ts), evap: water.evaporation(s.ts),
+      runoff: water.runoff(s.w, water.precipitation(s.ts), water.evaporation(s.ts)),
+      npp: bio.npp(s.b, p.npp_max, bioFTemp(s.ts), bioFCo2(s.co2), bioFPrecip(s.ts), bioFWater(s.w)),
+      fireAnomaly: v2Fluxes(s, p).fireF,
     });
   }
   const cumAtmos = (s.co2 - co2Start) / p.ppm_per_gtc;

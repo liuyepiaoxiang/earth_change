@@ -51,6 +51,26 @@ export function runScenario(id: ScenarioId, horizon = 2500): SimResult {
       biomass: recs.map((r) => +r.biomass.toFixed(1)),
       soilMoisture: recs.map((r) => +r.soilMoisture.toFixed(1)),
       permafrost: recs.map((r) => +r.permafrost.toFixed(1)),
+      diagnostics: {
+        forcing: {
+          co2: recs.map((r) => +r.forcingCo2.toFixed(3)),
+          ch4: recs.map((r) => +r.forcingCh4.toFixed(3)),
+          n2o: recs.map((r) => +r.forcingN2o.toFixed(3)),
+          other: recs.map((r) => +r.forcingOther.toFixed(3)),
+          total: recs.map((r) => +r.forcing.toFixed(3)),
+        },
+        oceanHeatUptake: recs.map((r) => +r.oceanHeatUptake.toFixed(3)),
+        seaIceArea: recs.map((r) => +r.seaIceArea.toFixed(2)),
+        water: {
+          precip: recs.map((r) => +r.precip.toFixed(1)),
+          evap: recs.map((r) => +r.evap.toFixed(1)),
+          runoff: recs.map((r) => +r.runoff.toFixed(1)),
+        },
+        bio: {
+          npp: recs.map((r) => +r.npp.toFixed(2)),
+          fireAnomaly: recs.map((r) => +r.fireAnomaly.toFixed(3)),
+        },
+      },
     },
   };
 }

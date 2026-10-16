@@ -30,6 +30,13 @@ export interface YearRecord {
   seaLevel: number; slThermal: number; slGlacier: number; slIceSheet: number; slLandWater: number;
   oceanUptake: number; landSink: number;
   biomass: number; soilMoisture: number; permafrost: number; // v2 箱诊断
+  // v0.2 诊断统一（V02-E01/E04）
+  forcingCo2: number; forcingCh4: number; forcingN2o: number; forcingOther: number; // W/m²
+  oceanHeatUptake: number; // W/m²，进入深海的净热通量 γ(Ts-Td)
+  seaIceArea: number;      // 10⁶ km² 诊断
+  precip: number; evap: number; runoff: number; // mm/yr 全球陆地诊断
+  npp: number;             // GtC/yr
+  fireAnomaly: number;     // GtC/yr 火灾异常碳通量
 }
 /** 驱动段：1850-2024 排放驱动（碳循环闭合），2025 起浓度驱动（CO₂ 外生） */
 export interface DriverSegment { from: number; to?: number; mode: "emissions-driven" | "concentration-driven" }
@@ -50,5 +57,13 @@ export interface SimResult {
     tempAnomaly: number[]; co2: number[];
     seaLevel: { total: number[]; thermal: number[]; glacier: number[]; iceSheet: number[]; landWater: number[] };
     biomass?: number[]; soilMoisture?: number[]; permafrost?: number[]; // v2 箱（GtC / mm / GtC，V2-06 起提供）
+    /** v0.2 诊断统一（V02-E01/E04）：强迫分解 / 海洋热吸收 / 海冰 / 水循环 / 生物圈 */
+    diagnostics?: {
+      forcing: { co2: number[]; ch4: number[]; n2o: number[]; other: number[]; total: number[] };
+      oceanHeatUptake: number[];
+      seaIceArea: number[];
+      water: { precip: number[]; evap: number[]; runoff: number[] };
+      bio: { npp: number[]; fireAnomaly: number[] };
+    };
   };
 }
