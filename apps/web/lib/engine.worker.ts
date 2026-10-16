@@ -1,14 +1,15 @@
 /// <reference lib="webworker" />
 // 引擎计算专用 Worker（V1-03）：MC 等重计算移出主线程，UI 保持 60fps。
 // 消息协议：{ id, scenario, horizon, uncertainty } → { id, ok, sim? / error? }
-import { runScenario, runScenarioMc } from "@future-earth/engine";
-import type { ScenarioId } from "@future-earth/engine";
+import { runScenario, runScenarioMc, runExperiment } from "@future-earth/engine";
+import type { ScenarioId, ExperimentControls } from "@future-earth/engine";
 
 export interface WorkerRequest {
   id: number;
   scenario: ScenarioId;
   horizon: number;
   uncertainty: boolean;
+  exp?: ExperimentControls; // v0.3：实验模式（排放驱动；MC 对实验暂不提供）
 }
 export interface WorkerOk {
   id: number;
@@ -25,11 +26,11 @@ export type WorkerResponse = WorkerOk | WorkerErr;
 const ctx = self as unknown as DedicatedWorkerGlobalScope;
 
 ctx.onmessage = (e: MessageEvent<WorkerRequest>) => {
-  const { id, scenario, horizon, uncertainty } = e.data;
+  const { id, scenario, horizon, uncertainty, exp } = e.data;
   try {
-    const sim = runScenario(scenario, horizon);
+    const sim = exp ? runExperiment(scenario, exp, horizon) : runScenario(scenario, horizon);
     const out =
-      uncertainty
+      uncertainty && !exp
         ? { ...sim, schemaVersion: 3 as const, uncertainty: runScenarioMc(scenario, horizon) }
         : sim;
     ctx.postMessage({ id, ok: true, sim: out } satisfies WorkerResponse);

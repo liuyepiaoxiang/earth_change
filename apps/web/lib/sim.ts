@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import type { ScenarioId, SimResult, McResult } from "@future-earth/engine";
+import type { ScenarioId, SimResult, McResult, ExperimentControls } from "@future-earth/engine";
+import { encodeExp } from "./url-state";
 
 export type SimResultWithUnc = Omit<SimResult, "schemaVersion"> & {
   schemaVersion: 2 | 3;
@@ -42,33 +43,33 @@ function ensureWorker(): Worker | null {
   return worker;
 }
 
-function runInWorker(scenario: ScenarioId, horizon: number, uncertainty: boolean): Promise<SimResultWithUnc> | null {
+function runInWorker(scenario: ScenarioId, horizon: number, uncertainty: boolean, exp?: ExperimentControls): Promise<SimResultWithUnc> | null {
   const w = ensureWorker();
   if (!w) return null;
   const id = ++workerReqId;
   return new Promise<SimResultWithUnc>((resolve, reject) => {
     workerJobs.set(id, { resolve, reject });
-    w.postMessage({ id, scenario, horizon, uncertainty });
+    w.postMessage({ id, scenario, horizon, uncertainty, exp });
   }).catch((e) => {
     if (String(e).includes("worker 不可用")) return loadSimDirect(scenario, horizon, uncertainty); // 回退重算
     throw e;
   });
 }
 
-function loadSimDirect(scenario: ScenarioId, horizon: number, uncertainty: boolean): Promise<SimResultWithUnc> {
+function loadSimDirect(scenario: ScenarioId, horizon: number, uncertainty: boolean, exp?: ExperimentControls): Promise<SimResultWithUnc> {
   return import("@future-earth/engine").then((eng) => {
-    const sim = eng.runScenario(scenario, horizon);
-    if (!uncertainty) return sim;
+    const sim = exp ? eng.runExperiment(scenario, exp, horizon) : eng.runScenario(scenario, horizon);
+    if (!uncertainty || exp) return sim; // 实验模式暂不提供 MC
     // MC 约百次模拟（~1s），仅在用户显式开启时计算
     return { ...sim, schemaVersion: 3 as const, uncertainty: eng.runScenarioMc(scenario, horizon) };
   });
 }
 
-function loadSim(scenario: ScenarioId, uncertainty: boolean): Promise<SimResultWithUnc> {
-  const key = `${scenario}::${uncertainty ? "mc" : "base"}`;
+function loadSim(scenario: ScenarioId, uncertainty: boolean, exp?: ExperimentControls): Promise<SimResultWithUnc> {
+  const key = `${scenario}::${uncertainty ? "mc" : "base"}::${exp ? encodeExp(exp) : ""}`;
   let p: Promise<SimResultWithUnc> | undefined = cache.get(key);
   if (!p) {
-    p = runInWorker(scenario, 2500, uncertainty) ?? loadSimDirect(scenario, 2500, uncertainty);
+    p = runInWorker(scenario, 2500, uncertainty, exp) ?? loadSimDirect(scenario, 2500, uncertainty, exp);
     cache.set(key, p);
   }
   return p;
@@ -77,6 +78,7 @@ function loadSim(scenario: ScenarioId, uncertainty: boolean): Promise<SimResultW
 export function useSimulation(
   scenario: ScenarioId,
   uncertainty = false,
+  exp?: ExperimentControls,
 ): { sim: SimResultWithUnc | null; error: string | null } {
   const [state, setState] = useState<{ sim: SimResultWithUnc | null; error: string | null }>({
     sim: null,
@@ -85,8 +87,8 @@ export function useSimulation(
   useEffect(() => {
     let alive = true;
     // 同情景下追加/撤销不确定性时保留旧结果（MC 计算期间继续显示中心路径，避免闪回装载中）
-    setState((s) => (s.sim && s.sim.scenario === scenario ? s : { sim: null, error: null }));
-    loadSim(scenario, uncertainty).then(
+    setState((s) => (s.sim && s.sim.scenario === scenario && !exp !== !s.sim.experiment ? s : { sim: null, error: null }));
+    loadSim(scenario, uncertainty, exp).then(
       (sim) => {
         if (alive) setState({ sim, error: null });
       },
@@ -97,7 +99,7 @@ export function useSimulation(
     return () => {
       alive = false;
     };
-  }, [scenario, uncertainty]);
+  }, [scenario, uncertainty, exp]);
   return state;
 }
 
