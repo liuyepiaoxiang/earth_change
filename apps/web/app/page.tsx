@@ -9,6 +9,7 @@ import MetricsBar from "../components/MetricsBar";
 import Timeline from "../components/Timeline";
 import GlobeView from "../components/GlobeView";
 import CityPanel from "../components/CityPanel";
+import AnalysisDrawer from "../components/AnalysisDrawer";
 
 const centerStyle = { height: "100%", display: "grid", placeItems: "center", color: "#475569" } as const;
 
@@ -17,6 +18,7 @@ export default function Home() {
   const [year, setYear] = useState(2100);
   const [uncertain, setUncertain] = useState(false);
   const [city, setCity] = useState<CityRow | null>(null);
+  const [showAnalysis, setShowAnalysis] = useState(false);
   const { sim, error } = useSimulation(scenario, uncertain);
   const cities = useMemo(() => loadCities(), []);
   const pattern = useMemo(() => loadWarmingPattern(), []);
@@ -80,6 +82,19 @@ export default function Home() {
         >
           ±区间
         </button>
+        <button
+          onClick={() => setShowAnalysis((v) => !v)}
+          aria-pressed={showAnalysis}
+          title="v0.2 分析面板：时间序列 / 观测对照 / 海平面分量 / 贡献分解 / 结果说明"
+          style={{
+            padding: "4px 10px", borderRadius: 6, cursor: "pointer", fontSize: 13,
+            border: `1px solid ${showAnalysis ? "#4ade80" : "#334155"}`,
+            background: showAnalysis ? "#14532d" : "transparent",
+            color: showAnalysis ? "#dcfce7" : "#94a3b8",
+          }}
+        >
+          📊 分析
+        </button>
         <MetricsBar snap={snap} unc={unc} />
       </header>
 
@@ -90,6 +105,7 @@ export default function Home() {
           <div style={centerStyle}>{error ? `引擎加载失败：${error}` : "引擎装载中…"}</div>
         )}
         {city && snap && <CityPanel city={city} snap={snap} pattern={pattern} onClose={() => setCity(null)} />}
+        {showAnalysis && sim && <AnalysisDrawer sim={sim} year={year} onClose={() => setShowAnalysis(false)} />}
       </section>
 
       <footer style={{ padding: "10px 16px", borderTop: "1px solid #1e293b", display: "flex" }}>

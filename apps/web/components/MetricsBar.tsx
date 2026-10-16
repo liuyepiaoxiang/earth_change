@@ -40,7 +40,8 @@ export default function MetricsBar({
   const sl = snap.seaLevel;
   return (
     <div
-      style={{
+      data-testid="metrics-bar"
+      style={{ overflowX: "auto", 
         marginLeft: "auto",
         display: "flex",
         gap: 18,
