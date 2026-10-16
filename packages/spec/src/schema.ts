@@ -1,6 +1,8 @@
 import { z } from "zod";
 
 export const ImplTier = z.enum(["v0", "v1", "v2", "v3"]);
+/** 运行时角色（v0.2 治理轴，与 impl 批次轴正交）：coupled=solver 耦合态 / diagnostic=诊断式 / prescribed=外生输入 / planned=未实现 */
+export const ModelStatus = z.enum(["coupled", "diagnostic", "prescribed", "planned"]).default("planned");
 
 export const OntologySchema = z.object({
   domains: z.array(z.object({
@@ -25,6 +27,7 @@ export const VariableSchema = z.object({
   timescale: z.object({ min: z.number(), typical: z.number(), max: z.number() }),
   data_source: z.string().nullable().default(null),
   impl: ImplTier,
+  status: ModelStatus,
 });
 
 export const EquationSchema = z.object({
@@ -38,6 +41,7 @@ export const EquationSchema = z.object({
   parameters: z.array(z.string()).default([]),
   notes: z.string().default(""),
   impl: ImplTier,
+  status: ModelStatus,
 });
 
 export const ParameterSchema = z.object({

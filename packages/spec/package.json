@@ -7,6 +7,10 @@
     "./overview-data": {
       "types": "./src/overview-data.ts",
       "default": "./src/overview-data.ts"
+    },
+    "./node": {
+      "types": "./src/load-spec.ts",
+      "default": "./src/load-spec.ts"
     }
   },
   "scripts": {
