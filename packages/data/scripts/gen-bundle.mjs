@@ -24,6 +24,10 @@ try {
   for (const c of csv("static/warming_pattern_lat.csv")) pattern.push({ latMin: +c[0], latMax: +c[1], amp: +c[2] });
 } catch {}
 
+const manifest = JSON.parse(read("manifest.json"));
+const manifestHash = createHash("sha256").update(
+  JSON.stringify(Object.keys(manifest.entries).sort().map((k) => [k, manifest.entries[k].sha256]))
+).digest("hex").slice(0, 16);
 const ts = `// 自动生成：node packages/data/scripts/gen-bundle.mjs —— 请勿手改
 export const TEMPERATURE = ${JSON.stringify(temperature)} as const;
 export const CO2 = ${JSON.stringify(co2)} as const;
@@ -32,11 +36,11 @@ export const FORCING = ${JSON.stringify(forcing)} as const;
 export const SCENARIOS = ${JSON.stringify(scenarios)} as const;
 export const CITIES = ${JSON.stringify(cities)} as const;
 export const WARMING_PATTERN = ${JSON.stringify(pattern)} as const;
+export const MANIFEST_HASH = ${JSON.stringify(manifestHash)};
 `;
 const out = join(DATA, "../src/generated/datasets.gen.ts");
 mkdirSync(dirname(out), { recursive: true });
 writeFileSync(out, ts, "utf8");
-const manifest = JSON.parse(read("manifest.json"));
 for (const rel of ["../src/generated/datasets.gen.ts"]) {
   manifest.entries["generated/datasets.gen.ts"] = { sha256: createHash("sha256").update(ts).digest("hex"), bytes: Buffer.byteLength(ts), retrieved: new Date().toISOString().slice(0, 10), source: "gen-bundle 固化" };
 }

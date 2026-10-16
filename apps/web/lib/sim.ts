@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import type { ScenarioId, SimResult, McResult } from "@future-earth/engine";
 
 export type SimResultWithUnc = Omit<SimResult, "schemaVersion"> & {
-  schemaVersion: 1 | 2;
+  schemaVersion: 2 | 3;
   uncertainty?: McResult;
 };
 
@@ -60,7 +60,7 @@ function loadSimDirect(scenario: ScenarioId, horizon: number, uncertainty: boole
     const sim = eng.runScenario(scenario, horizon);
     if (!uncertainty) return sim;
     // MC 约百次模拟（~1s），仅在用户显式开启时计算
-    return { ...sim, schemaVersion: 2 as const, uncertainty: eng.runScenarioMc(scenario, horizon) };
+    return { ...sim, schemaVersion: 3 as const, uncertainty: eng.runScenarioMc(scenario, horizon) };
   });
 }
 

@@ -5,8 +5,8 @@ describe("公开 API runScenario（SimResult 契约）", () => {
   const sim = runScenario("ssp245", 2100);
 
   it("版本化字段齐全：schemaVersion/modelVersion/scenario/paramsFingerprint", () => {
-    expect(sim.schemaVersion).toBe(1);
-    expect(sim.modelVersion).toBe("0.1.0");
+    expect(sim.schemaVersion).toBe(2);
+    expect(sim.modelVersion).toBe("0.2.0");
     expect(sim.scenario).toBe("ssp245");
     expect(sim.paramsFingerprint).toMatch(/^sha256:[0-9a-f]{16}$/);
   });
@@ -52,5 +52,25 @@ describe("公开 API runScenario（SimResult 契约）", () => {
 
   it("非法情景抛错", () => {
     expect(() => runScenario("rcp45" as "ssp245")).toThrow();
+  });
+});
+
+describe("v0.2 契约：metadata 与 G9 逐位复现", () => {
+  const a = runScenario("ssp245", 2100);
+  it("metadata 完整：modelScope/driverMode/driverSegments/confidenceNotes/dataManifestHash", () => {
+    expect(a.metadata.modelScope).toBe("global-box");
+    expect(a.metadata.driverMode).toBe("hybrid");
+    expect(a.metadata.driverSegments).toHaveLength(2);
+    expect(a.metadata.driverSegments[0]!.mode).toBe("emissions-driven");
+    expect(a.metadata.driverSegments[1]!.mode).toBe("concentration-driven");
+    expect(a.metadata.confidenceNotes.length).toBeGreaterThanOrEqual(3);
+    expect(a.metadata.confidenceNotes.some((n) => n.from === 2101 && n.label.includes("探索性外推"))).toBe(true);
+    expect(a.metadata.dataManifestHash).toMatch(/^[0-9a-f]{16}$/);
+  });
+  it("G9：同 fingerprint + manifest + 情景 → 逐位一致", () => {
+    const b = runScenario("ssp245", 2100);
+    expect(a.paramsFingerprint).toBe(b.paramsFingerprint);
+    expect(a.metadata.dataManifestHash).toBe(b.metadata.dataManifestHash);
+    expect(JSON.stringify(a)).toBe(JSON.stringify(b));
   });
 });

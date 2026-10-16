@@ -31,8 +31,20 @@ export interface YearRecord {
   oceanUptake: number; landSink: number;
   biomass: number; soilMoisture: number; permafrost: number; // v2 箱诊断
 }
+/** 驱动段：1850-2024 排放驱动（碳循环闭合），2025 起浓度驱动（CO₂ 外生） */
+export interface DriverSegment { from: number; to?: number; mode: "emissions-driven" | "concentration-driven" }
+/** 置信标注：用于 UI 与 API 的可靠性分层 */
+export interface ConfidenceNote { from: number; to?: number; label: string }
+export interface ResultMetadata {
+  modelScope: "global-box";
+  driverMode: "hybrid";
+  driverSegments: DriverSegment[];
+  confidenceNotes: ConfidenceNote[];
+  dataManifestHash: string;
+}
 export interface SimResult {
-  schemaVersion: 1; modelVersion: string; scenario: string; paramsFingerprint: string;
+  schemaVersion: 2; modelVersion: string; scenario: string; paramsFingerprint: string;
+  metadata: ResultMetadata;
   years: number[];
   metrics: {
     tempAnomaly: number[]; co2: number[];

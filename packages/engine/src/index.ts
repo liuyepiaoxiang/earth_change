@@ -2,9 +2,10 @@ import { runSim } from "./solver.js";
 import { makeHistoricalDrivers, makeScenarioDrivers, initialState } from "./scenario.js";
 import { PARAMETER_DEFAULTS, type ScenarioId } from "@future-earth/spec";
 import { CALIBRATED_PARAMS, PARAMS_FINGERPRINT } from "./generated/params.gen.js";
+import { manifestHash } from "@future-earth/data";
 import type { Params, SimResult } from "./types.js";
 
-const MODEL_VERSION = "0.1.0";
+const MODEL_VERSION = "0.2.0";
 function baseParams(): Params {
   const p: Record<string, number> = { ...PARAMETER_DEFAULTS, ...CALIBRATED_PARAMS };
   return p as Params;
@@ -20,8 +21,22 @@ export function runScenario(id: ScenarioId, horizon = 2500): SimResult {
     driversAt: (y) => (y <= 2024 ? dh(y) : ds(y)), params: p,
   }).records;
   return {
-    schemaVersion: 1, modelVersion: MODEL_VERSION, scenario: id,
+    schemaVersion: 2, modelVersion: MODEL_VERSION, scenario: id,
     paramsFingerprint: PARAMS_FINGERPRINT,
+    metadata: {
+      modelScope: "global-box",
+      driverMode: "hybrid",
+      driverSegments: [
+        { from: 1850, to: 2024, mode: "emissions-driven" },
+        { from: 2025, mode: "concentration-driven" },
+      ],
+      confidenceNotes: [
+        { from: 1850, to: 2024, label: "历史复现段（GISTEMP/NOAA 校准）" },
+        { from: 2025, to: 2100, label: "IPCC AR6 校准区间" },
+        { from: 2101, label: "探索性外推（低置信度）" },
+      ],
+      dataManifestHash: manifestHash(),
+    },
     years: recs.map((r) => r.year),
     metrics: {
       tempAnomaly: recs.map((r) => +r.tempAnomaly.toFixed(3)),

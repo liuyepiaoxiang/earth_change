@@ -1,5 +1,8 @@
 // 数据访问统一入口：从生成的 TS 模块读取（可打包）；fs+manifest 校验见 manifest.test.ts
-import { TEMPERATURE, CO2, EMISSIONS, FORCING, SCENARIOS, CITIES, WARMING_PATTERN } from "./generated/datasets.gen.js";
+import { TEMPERATURE, CO2, EMISSIONS, FORCING, SCENARIOS, CITIES, WARMING_PATTERN, MANIFEST_HASH } from "./generated/datasets.gen.js";
+
+/** 数据基线指纹（gen-bundle 从 manifest 规范化派生）：同一 hash = 同一数据基线 */
+export const manifestHash = (): string => MANIFEST_HASH;
 
 export type TemperatureRow = { year: number; anomaly: number };
 export type Co2Row = { year: number; ppm: number };

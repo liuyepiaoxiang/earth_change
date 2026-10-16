@@ -4,7 +4,7 @@ import type { SimResult } from "@future-earth/engine";
 
 function fakeSim(years: number[], temp: number[], total: number[]): SimResult {
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
     modelVersion: "0.1.0",
     scenario: "ssp245",
     paramsFingerprint: "sha256:test",

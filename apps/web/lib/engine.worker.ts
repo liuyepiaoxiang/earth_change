@@ -30,7 +30,7 @@ ctx.onmessage = (e: MessageEvent<WorkerRequest>) => {
     const sim = runScenario(scenario, horizon);
     const out =
       uncertainty
-        ? { ...sim, schemaVersion: 2 as const, uncertainty: runScenarioMc(scenario, horizon) }
+        ? { ...sim, schemaVersion: 3 as const, uncertainty: runScenarioMc(scenario, horizon) }
         : sim;
     ctx.postMessage({ id, ok: true, sim: out } satisfies WorkerResponse);
   } catch (err) {
