@@ -3,6 +3,7 @@ import { makeHistoricalDrivers, makeScenarioDrivers, initialState } from "./scen
 import { PARAMETER_DEFAULTS, type ScenarioId } from "@future-earth/spec";
 import { CALIBRATED_PARAMS, PARAMS_FINGERPRINT } from "./generated/params.gen.js";
 import { manifestHash } from "@future-earth/data";
+import { checkStability } from "./stability.js";
 import type { Params, SimResult } from "./types.js";
 
 const MODEL_VERSION = "0.2.0";
@@ -38,6 +39,7 @@ export function runScenario(id: ScenarioId, horizon = 2500): SimResult {
       dataManifestHash: manifestHash(),
     },
     years: recs.map((r) => r.year),
+    warnings: checkStability(recs),
     metrics: {
       tempAnomaly: recs.map((r) => +r.tempAnomaly.toFixed(3)),
       co2: recs.map((r) => +r.co2.toFixed(2)),
@@ -85,6 +87,9 @@ export type { WarmingPatternBand } from "./equations/downscale.js";
 export { seaIceArea, surfaceAlbedo, iceAlbedoFeedback } from "./equations/seaice.js";
 // 不确定性量化（v1）
 export { runScenarioMc, PERTURBED_IDS } from "./mc.js";
+export { checkStability } from "./stability.js";
+export { reportCarbonClosure } from "./closure.js";
+export type { ClosureReport } from "./closure.js";
 export type { McResult, McBand } from "./mc.js";
 export type { SimResult } from "./types.js";
 export type { ScenarioId } from "@future-earth/spec";

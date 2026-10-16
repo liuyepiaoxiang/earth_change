@@ -52,6 +52,8 @@ export interface ResultMetadata {
 export interface SimResult {
   schemaVersion: 2; modelVersion: string; scenario: string; paramsFingerprint: string;
   metadata: ResultMetadata;
+  /** V02-E05 稳定性检查结果（正常运行为空数组） */
+  warnings: string[];
   years: number[];
   metrics: {
     tempAnomaly: number[]; co2: number[];
