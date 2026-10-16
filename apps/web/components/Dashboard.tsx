@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { loadCities, loadWarmingPattern } from "@future-earth/data";
 import type { CityRow } from "@future-earth/data";
 import { DEFAULT_CONTROLS } from "@future-earth/engine";
@@ -16,17 +16,26 @@ import AnalysisDrawer from "./AnalysisDrawer";
 const centerStyle = { height: "100%", display: "grid", placeItems: "center", color: "#475569" } as const;
 
 export default function Dashboard({ embed = false }: { embed?: boolean }) {
-  const initial = typeof window !== "undefined" ? parseUrlState(window.location.href) : {};
-  const [scenario, setScenario] = useState<ScenarioId>(initial.scenario ?? "ssp245");
-  const [year, setYear] = useState(initial.year ?? 2100);
-  const [uncertain, setUncertain] = useState(initial.uncertainty ?? false);
-  const [exp, setExp] = useState<ExperimentControls | undefined>(initial.exp);
+  // SSR 安全：默认值渲染，挂载后从 URL 恢复可复现状态（v0.3 分享链接入口）
+  const [scenario, setScenario] = useState<ScenarioId>("ssp245");
+  const [year, setYear] = useState(2100);
+  const [uncertain, setUncertain] = useState(false);
+  const [exp, setExp] = useState<ExperimentControls | undefined>(undefined);
   const [city, setCity] = useState<CityRow | null>(null);
   const [showAnalysis, setShowAnalysis] = useState(false);
   const { sim, error } = useSimulation(scenario, uncertain, exp);
   const cities = useMemo(() => loadCities(), []);
   const pattern = useMemo(() => loadWarmingPattern(), []);
+  const firstRender = useRef(true);
   useEffect(() => {
+    const st = parseUrlState(window.location.href);
+    if (st.scenario) setScenario(st.scenario);
+    if (st.year !== undefined) setYear(st.year);
+    if (st.uncertainty !== undefined) setUncertain(st.uncertainty);
+    setExp(st.exp);
+  }, []);
+  useEffect(() => {
+    if (firstRender.current) { firstRender.current = false; return; } // 跳过挂载首拍，先让 URL 恢复生效
     const url = serializeUrlState({ scenario, year, uncertainty: uncertain, exp }, window.location.pathname);
     window.history.replaceState(null, "", url);
   }, [scenario, year, uncertain, exp]);
