@@ -6,7 +6,7 @@ import { manifestHash } from "@future-earth/data";
 import { checkStability } from "./stability.js";
 import type { Params, SimResult } from "./types.js";
 
-const MODEL_VERSION = "0.2.0";
+import { MODEL_VERSION } from "./version.js";
 function baseParams(): Params {
   const p: Record<string, number> = { ...PARAMETER_DEFAULTS, ...CALIBRATED_PARAMS };
   return p as Params;
@@ -90,6 +90,11 @@ export { runScenarioMc, PERTURBED_IDS } from "./mc.js";
 export { checkStability } from "./stability.js";
 export { reportCarbonClosure } from "./closure.js";
 export type { ClosureReport } from "./closure.js";
+export { runExperiment, reshapeEmissions, ExperimentControlsSchema, DEFAULT_CONTROLS } from "./experiment.js";
+export type { ExperimentControls } from "./experiment.js";
+export { crossingYears } from "./thresholds.js";
+export type { CrossingYears } from "./thresholds.js";
+export { MODEL_VERSION } from "./version.js";
 export type { McResult, McBand } from "./mc.js";
 export type { SimResult } from "./types.js";
 export type { ScenarioId } from "@future-earth/spec";

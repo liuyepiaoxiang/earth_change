@@ -44,7 +44,7 @@ export interface DriverSegment { from: number; to?: number; mode: "emissions-dri
 export interface ConfidenceNote { from: number; to?: number; label: string }
 export interface ResultMetadata {
   modelScope: "global-box";
-  driverMode: "hybrid";
+  driverMode: "hybrid" | "emissions-driven";
   driverSegments: DriverSegment[];
   confidenceNotes: ConfidenceNote[];
   dataManifestHash: string;
@@ -54,6 +54,8 @@ export interface SimResult {
   metadata: ResultMetadata;
   /** V02-E05 稳定性检查结果（正常运行为空数组） */
   warnings: string[];
+  /** V0.3 情景实验室：实验配置回显（仅 runExperiment 产生） */
+  experiment?: { base: string; controls: import("./experiment.js").ExperimentControls };
   years: number[];
   metrics: {
     tempAnomaly: number[]; co2: number[];
