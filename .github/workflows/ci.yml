@@ -32,6 +32,8 @@ jobs:
         run: pnpm test
 
       - name: Next.js 构建
+        run: pnpm report
+      - name: Build web
         run: pnpm --filter web build
 
       - name: E2E（Playwright：S1 API / S2 交互 / R1 图层回归）

@@ -6,6 +6,7 @@
   "scripts": {
     "gen:spec": "tsx packages/spec/scripts/gen-types.ts",
     "calibrate": "tsx packages/engine/src/calibrate.ts",
+    "report": "tsx packages/engine/scripts/gen-report.ts",
     "test": "pnpm -r --if-present test",
     "typecheck": "pnpm -r --if-present typecheck"
   },
