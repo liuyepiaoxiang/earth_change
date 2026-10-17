@@ -1,0 +1,58 @@
+name: Update Data
+
+# 每月 1 日自动刷新数据（NOAA/GISTEMP/OWID 有更新时）；也支持手动触发
+on:
+  schedule:
+    - cron: "0 3 1 * *"   # UTC 每月 1 日 03:00（北京 11:00）
+  workflow_dispatch:        # GitHub Actions 页面手动触发按钮
+
+jobs:
+  fetch-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write       # 允许推送到仓库
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Fetch latest data
+        run: |
+          node packages/data/scripts/fetch.mjs          || echo "::warning::fetch.mjs 部分失败（网络/数据源不可用）"
+          node packages/data/scripts/gen-forcing.mjs    || echo "::warning::gen-forcing 部分失败"
+
+      - name: Regenerate calibration
+        run: pnpm calibrate
+
+      - name: Regenerate report
+        run: pnpm report
+
+      - name: Bundle data
+        run: node packages/data/scripts/gen-bundle.mjs
+
+      - name: Run tests（数据变更后全部门禁必须通过）
+        run: pnpm test
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "data-bot"
+          git config user.email "data-bot@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "数据无变化，跳过推送"
+          else
+            git commit -m "chore(data): 自动刷新观测数据与校准（$(date +%Y-%m-%d)）"
+            git push
+          fi
+
+      # 推送后 Vercel 自动检测到新 commit → 自动重新部署
+      # （Vercel 连接仓库后 push = deploy，无需额外配置）
