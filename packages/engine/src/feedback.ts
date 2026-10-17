@@ -21,3 +21,19 @@ export function landSinkWithWater(base: number, w: number, strength: number): nu
   if (strength === 0) return base;
   return base * (1 + strength * (w - SOIL_WATER_REF) / SOIL_WATER_REF);
 }
+
+/** V1.5 Phase A：冰-反照率反馈（可回滚构造，海冰损失 → 正强迫）
+ *  A_i(T)：全球海冰面积诊断（seaice.ts logistic）；A₀ = 9.5×10⁶ km²。
+ *  ΔF_albedo = −s · 0.3 · ΔA_i(T) / A₀  [W/m²]，ΔA = A₀ − max(A_i, 0.3·A₀)（饱和下界）
+ *  s = 0（默认）→ ΔF ≡ 0（与 v1.0 逐位一致）。0.3 W/m²/K 为文献量级（海冰反照率反馈）。 */
+import { seaIceArea } from "./equations/seaice.js";
+export const ICE_ALBEDO_COEF = 0.3; // W/m²/K 等效（海冰完全消失时 ~0.3×ΔT_sens）
+export const ICE_AREA_FLOOR_FRAC = 0.3; // 饱和下界：海冰面积不低于 30% A₀
+
+export function iceAlbedoForcing(ts: number, strength: number): number {
+  if (strength === 0) return 0;
+  const A0 = 9.5;
+  const Ai = Math.max(seaIceArea(ts), ICE_AREA_FLOOR_FRAC * A0);
+  const dA = A0 - Ai; // 损失量（正 = 冰少 = 吸收多 = 正强迫）
+  return strength * ICE_ALBEDO_COEF * (dA / A0); // dA 饱和 → ΔF 饱和（无温度发散因子）
+}

@@ -8,7 +8,7 @@ import * as bio from "./equations/bio.js";
 import { fTemp as bioFTemp, fPrecip as bioFPrecip, fWater as bioFWater, fCo2 as bioFCo2 } from "./equations/bio.js";
 import * as fire from "./equations/fire.js";
 import * as permafrost from "./equations/permafrost.js";
-import { PF_CO2_SHARE, PF_CH4_SHARE, RECOVERY_TAU, rhFromClosure, landSinkWithWater } from "./feedback.js";
+import { PF_CO2_SHARE, PF_CH4_SHARE, RECOVERY_TAU, rhFromClosure, landSinkWithWater, iceAlbedoForcing } from "./feedback.js";
 import type { Drivers, EarthState, Params, YearRecord } from "./types.js";
 
 export interface RunOptions {
@@ -58,7 +58,7 @@ export function v2Fluxes(s: EarthState, p: Params): { fireF: number; ePf: number
 
 /** 完整右端项（SPEC §6.1 因果链 + ADR-003 v2 耦合） */
 export function rhs(s: EarthState, d: Drivers, p: Params): EarthState {
-  const F = forcing.fTotal(s.co2, d.ch4, d.n2o, d.fOther, p);
+  const F = forcing.fTotal(s.co2, d.ch4, d.n2o, d.fOther, p) + iceAlbedoForcing(s.ts, p.ice_albedo_strength);
   const { fireF, ePf, pLand, eLand, dW, dMpf } = v2Fluxes(s, p);
   const feedbackC = fireF + ePf; // GtC/yr，气候驱动异常（接 eq_15 排放侧）
   return {
@@ -112,7 +112,7 @@ export function runSim(o: RunOptions): RunOutput {
     }
     const d = o.driversAt(y + 0.5);
     cumE += d.efossil + d.eluluc;
-    const F = forcing.fTotal(s.co2, d.ch4, d.n2o, d.fOther, p);
+    const F = forcing.fTotal(s.co2, d.ch4, d.n2o, d.fOther, p) + iceAlbedoForcing(s.ts, p.ice_albedo_strength);
     records.push({
       year: y + 1, co2: s.co2, tempAnomaly: s.ts, oceanDeep: s.td, forcing: F,
       seaLevel: sealevel.seaLevelSum(s), slThermal: s.sThermal, slGlacier: s.sGlacier,

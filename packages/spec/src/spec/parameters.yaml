@@ -36,3 +36,5 @@
 - { id: r_pf, symbol: "r_pf", name_zh: 融化碳释放比, unit: "1/yr", default: 0.02, min: 0.005, max: 0.05, source: "已融碳池年释放比（百年尺度）", impl: v0 }
 # V1.5 Phase B：水循环→陆汇反馈强度（可回滚：0 = 与 v1.0 逐位一致）
 - { id: sink_water_strength, symbol: "s_w", name_zh: 陆汇水分响应强度, unit: "1", default: 0.0, min: 0.0, max: 0.3, source: "V1.5 Phase B（docs/10 §8.2.3）；f(w)=1+s·(w−800)/800", impl: v0 }
+# V1.5 Phase A：冰-反照率反馈强度（可回滚：0 = 与 v1.0 逐位一致；>0 时进入辐射强迫侧）
+- { id: ice_albedo_strength, symbol: "s_ia", name_zh: 冰反照率反馈强度, unit: "1", default: 0.0, min: 0.0, max: 1.0, source: "V1.5 Phase A（docs/10 §8.2.1）；ΔF = −s·0.3·ΔA/A₀（0.3 W/m²/K 量级）", impl: v0 }

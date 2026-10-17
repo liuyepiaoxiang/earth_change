@@ -4,7 +4,7 @@ import { runSim } from "./solver.js";
 import { makeHistoricalDrivers, makeScenarioDrivers, initialState } from "./scenario.js";
 import { PARAMETER_DEFAULTS } from "@future-earth/spec";
 import { CALIBRATED_PARAMS } from "./generated/params.gen.js";
-import { PF_CO2_SHARE, PF_CH4_SHARE, RECOVERY_TAU, rhFromClosure, landSinkWithWater } from "./feedback.js";
+import { PF_CO2_SHARE, PF_CH4_SHARE, RECOVERY_TAU, rhFromClosure, landSinkWithWater, iceAlbedoForcing } from "./feedback.js";
 import type { Params } from "./types.js";
 
 const p: Params = { ...PARAMETER_DEFAULTS, ...CALIBRATED_PARAMS };
@@ -85,5 +85,35 @@ describe("V1.5 Phase B：水循环→陆汇耦合（可回滚构造）", () => {
     expect(landSinkWithWater(4, 800, 0.3)).toBe(4);            // 稳态水分 → 无修正
     expect(landSinkWithWater(4, 700, 0.3)).toBeLessThan(4);    // 干旱 → 汇减弱
     expect(landSinkWithWater(4, 900, 0.3)).toBeGreaterThan(4); // 湿润 → 汇增强
+  });
+});
+
+describe("V1.5 Phase A：冰-反照率反馈（可回滚构造）", () => {
+  it("s=0 → ΔF ≡ 0；s>0 → 正反馈随温升增大；饱和下界", () => {
+    expect(iceAlbedoForcing(3, 0)).toBe(0);
+    expect(iceAlbedoForcing(1, 0.5)).toBeGreaterThan(0);
+    expect(iceAlbedoForcing(3, 0.5)).toBeGreaterThan(iceAlbedoForcing(1, 0.5));
+    // 饱和：极大温度下不发散（面积下界 0.3·A₀）
+    expect(iceAlbedoForcing(20, 0.5)).toBeCloseTo(iceAlbedoForcing(30, 0.5), 3);
+  });
+  it("耦合后稳定性：s=1（先验上限）四情景无发散", () => {
+    for (const id of ["ssp126", "ssp585"] as const) {
+      const out = runSim({
+        startYear: 1850, endYear: 2500, initialState: initialState(),
+        driversAt: (y) => (y <= 2024 ? makeHistoricalDrivers()(y) : makeScenarioDrivers(id)(y)),
+        params: { ...PARAMETER_DEFAULTS, ...CALIBRATED_PARAMS, ice_albedo_strength: 1 },
+      });
+      expect(out.records.every((r) => Number.isFinite(r.co2) && Number.isFinite(r.tempAnomaly)), id).toBe(true);
+      expect(out.records.at(-1)!.tempAnomaly).toBeLessThan(20); // 不失控
+    }
+  });
+  it("s=1 时敏感度增加（ssp585 2100 ΔT > 基线）——物理方向正确", () => {
+    const base = runScenario("ssp585", 2100).metrics.tempAnomaly.at(-1)!;
+    const coupled = runSim({
+      startYear: 1850, endYear: 2100, initialState: initialState(),
+      driversAt: (y) => (y <= 2024 ? makeHistoricalDrivers()(y) : makeScenarioDrivers("ssp585")(y)),
+      params: { ...PARAMETER_DEFAULTS, ...CALIBRATED_PARAMS, ice_albedo_strength: 1 },
+    }).records.at(-1)!.tempAnomaly;
+    expect(coupled).toBeGreaterThan(base);
   });
 });
