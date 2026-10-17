@@ -119,3 +119,7 @@ export { runImpacts, exposedPopulation, waterStress, extremeHeat, agriculture, e
 export type { ImpactSummary, ImpactMeta, ExposureResult, WaterResult, HeatResult, AgriResult, EcoResult, AcidResult, DamageResult, SccResult, AdaptationLevel } from "./impact.js";
 export { initGeoState, stepGeo, runGeomorph, coastlineMask, geoClosureResidual, DEFAULT_GEO } from "./geomorph.js";
 export type { GeoState, GeoOptions } from "./geomorph.js";
+export { amocStatus, grgLosing, permafrostBomb, allTippingPoints } from "./tipping.js";
+export type { TippingStatus } from "./tipping.js";
+export { runLayeredUncertainty, DEFAULT_LAYERS } from "./uncertainty.js";
+export type { UncertaintyLayers, UncertaintyResult, LayeredBand, UncertaintySource } from "./uncertainty.js";
