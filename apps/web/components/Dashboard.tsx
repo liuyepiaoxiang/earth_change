@@ -138,7 +138,7 @@ export default function Dashboard({ embed = false }: { embed?: boolean }) {
         {city && snap && <CityPanel city={city} snap={snap} pattern={pattern} onClose={() => setCity(null)} />}
         {showAnalysis && sim && (
           <AnalysisDrawer sim={sim} year={year} onClose={() => setShowAnalysis(false)}
-            exp={exp} onExpChange={setExp} onExitExp={() => setExp(undefined)} />
+            exp={exp} onExpChange={setExp} onExitExp={() => setExp(undefined)} onJumpYear={setYear} />
         )}
       </section>
 
