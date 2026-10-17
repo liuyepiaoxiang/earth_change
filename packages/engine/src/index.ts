@@ -123,3 +123,5 @@ export { amocStatus, grgLosing, permafrostBomb, allTippingPoints } from "./tippi
 export type { TippingStatus } from "./tipping.js";
 export { runLayeredUncertainty, DEFAULT_LAYERS } from "./uncertainty.js";
 export type { UncertaintyLayers, UncertaintyResult, LayeredBand, UncertaintySource } from "./uncertainty.js";
+export { milestoneEvents } from "./milestones.js";
+export type { MilestoneEvent } from "./milestones.js";
