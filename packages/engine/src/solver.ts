@@ -8,6 +8,7 @@ import * as bio from "./equations/bio.js";
 import { fTemp as bioFTemp, fPrecip as bioFPrecip, fWater as bioFWater, fCo2 as bioFCo2 } from "./equations/bio.js";
 import * as fire from "./equations/fire.js";
 import * as permafrost from "./equations/permafrost.js";
+import { PF_CO2_SHARE, PF_CH4_SHARE, RECOVERY_TAU, rhFromClosure } from "./feedback.js";
 import type { Drivers, EarthState, Params, YearRecord } from "./types.js";
 
 export interface RunOptions {
@@ -89,6 +90,7 @@ export function runSim(o: RunOptions): RunOutput {
   const co2Start = s.co2;
   const records: YearRecord[] = [];
   let cumE = 0, cumFB = 0, cumL = 0, cumO = 0;
+  let soilCProxy = 0; // V1.5 Phase C 土壤碳代理（累计 NPP − Rh − 火灾）
   for (let y = o.startYear; y < o.endYear; y++) {
     for (let i = 0; i < sub; i++) {
       const t = y + i * h;
@@ -125,6 +127,17 @@ export function runSim(o: RunOptions): RunOutput {
       runoff: water.runoff(s.w, water.precipitation(s.ts), water.evaporation(s.ts)),
       npp: bio.npp(s.b, p.npp_max, bioFTemp(s.ts), bioFCo2(s.co2), bioFPrecip(s.ts), bioFWater(s.w)),
       fireAnomaly: v2Fluxes(s, p).fireF,
+      // V1.5 Phase C：碳记账（Rh 闭合会计 + 冻土分账 + 土壤碳代理 + 恢复时间尺度）
+      rh: rhFromClosure(
+        bio.npp(s.b, p.npp_max, bioFTemp(s.ts), bioFCo2(s.co2), bioFPrecip(s.ts), bioFWater(s.w)),
+        carbon.landSink(s.co2, p),
+      ),
+      permafrostCo2: v2Fluxes(s, p).ePf * PF_CO2_SHARE,
+      permafrostCh4: v2Fluxes(s, p).ePf * PF_CH4_SHARE,
+      soilCarbonProxy: (soilCProxy += bio.npp(s.b, p.npp_max, bioFTemp(s.ts), bioFCo2(s.co2), bioFPrecip(s.ts), bioFWater(s.w))
+        - rhFromClosure(bio.npp(s.b, p.npp_max, bioFTemp(s.ts), bioFCo2(s.co2), bioFPrecip(s.ts), bioFWater(s.w)), carbon.landSink(s.co2, p))
+        - v2Fluxes(s, p).fireF),
+      recoveryTau: RECOVERY_TAU,
     });
   }
   const cumAtmos = (s.co2 - co2Start) / p.ppm_per_gtc;

@@ -11,6 +11,7 @@ const mk = (over: Partial<YearRecord>): YearRecord => ({
   forcingCo2: 4, forcingCh4: 0.6, forcingN2o: 0.25, forcingOther: -0.35,
   oceanHeatUptake: 0.6, seaIceArea: 5, precip: 900, evap: 520, runoff: 380,
   npp: 55, fireAnomaly: 0.1,
+  rh: 10, permafrostCo2: 0.02, permafrostCh4: 0.013, soilCarbonProxy: 100, recoveryTau: 50,
   ...over,
 });
 

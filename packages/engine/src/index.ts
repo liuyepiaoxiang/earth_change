@@ -4,6 +4,7 @@ import { PARAMETER_DEFAULTS, type ScenarioId } from "@future-earth/spec";
 import { CALIBRATED_PARAMS, PARAMS_FINGERPRINT } from "./generated/params.gen.js";
 import { manifestHash } from "@future-earth/data";
 import { checkStability } from "./stability.js";
+import { RECOVERY_TAU } from "./feedback.js";
 import type { Params, SimResult } from "./types.js";
 
 import { MODEL_VERSION } from "./version.js";
@@ -72,6 +73,15 @@ export function runScenario(id: ScenarioId, horizon = 2500): SimResult {
           npp: recs.map((r) => +r.npp.toFixed(2)),
           fireAnomaly: recs.map((r) => +r.fireAnomaly.toFixed(3)),
         },
+        carbon: {
+          npp: recs.map((r) => +r.npp.toFixed(2)),
+          rh: recs.map((r) => +r.rh.toFixed(2)),
+          soilCarbonProxy: recs.map((r) => +r.soilCarbonProxy.toFixed(1)),
+          permafrostCo2: recs.map((r) => +r.permafrostCo2.toFixed(3)),
+          permafrostCh4: recs.map((r) => +r.permafrostCh4.toFixed(3)),
+          fireF: recs.map((r) => +r.fireAnomaly.toFixed(3)),
+          recoveryTau: recs.map(() => RECOVERY_TAU),
+        },
       },
     },
   };
@@ -95,6 +105,7 @@ export type { ExperimentControls } from "./experiment.js";
 export { crossingYears } from "./thresholds.js";
 export type { CrossingYears } from "./thresholds.js";
 export { MODEL_VERSION } from "./version.js";
+export { PF_CO2_SHARE, PF_CH4_SHARE, RECOVERY_TAU, rhFromClosure } from "./feedback.js";
 export type { McResult, McBand } from "./mc.js";
 export type { SimResult } from "./types.js";
 export type { ScenarioId } from "@future-earth/spec";

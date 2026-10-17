@@ -37,6 +37,12 @@ export interface YearRecord {
   precip: number; evap: number; runoff: number; // mm/yr 全球陆地诊断
   npp: number;             // GtC/yr
   fireAnomaly: number;     // GtC/yr 火灾异常碳通量
+  // V1.5 Phase C 碳循环增强记账（纯诊断）
+  rh: number;                 // GtC/yr 土壤异养呼吸（闭合会计：landSink ≡ NPP − Rh）
+  permafrostCo2: number;      // GtC/yr 冻土 CO₂ 释放份额（ePf × 0.6）
+  permafrostCh4: number;      // GtC/yr 冻土 CH₄ 释放份额（ePf × 0.4，碳当量）
+  soilCarbonProxy: number;    // GtC 土壤碳代理（累计 NPP − Rh − 火灾）
+  recoveryTau: number;        // yr 植被恢复时间尺度（诊断常量 1/m）
 }
 /** 驱动段：1850-2024 排放驱动（碳循环闭合），2025 起浓度驱动（CO₂ 外生） */
 export interface DriverSegment { from: number; to?: number; mode: "emissions-driven" | "concentration-driven" }
@@ -68,6 +74,12 @@ export interface SimResult {
       seaIceArea: number[];
       water: { precip: number[]; evap: number[]; runoff: number[] };
       bio: { npp: number[]; fireAnomaly: number[] };
+      /** V1.5 Phase C：碳循环增强记账（GtC/yr；soilCarbonProxy 为 GtC） */
+      carbon?: {
+        npp: number[]; rh: number[]; soilCarbonProxy: number[];
+        permafrostCo2: number[]; permafrostCh4: number[];
+        fireF: number[]; recoveryTau: number[];
+      };
     };
   };
 }
