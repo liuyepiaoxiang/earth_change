@@ -115,3 +115,5 @@ export {
   cellLat, cellLon,
 } from "./grid.js";
 export type { Field, GridFields, RegionStats, CellWaterSeries, SimLike } from "./grid.js";
+export { runImpacts, exposedPopulation, waterStress, extremeHeat, agriculture, ecology, oceanAcid, economicDamage, socialCarbonCost } from "./impact.js";
+export type { ImpactSummary, ImpactMeta, ExposureResult, WaterResult, HeatResult, AgriResult, EcoResult, AcidResult, DamageResult, SccResult, AdaptationLevel } from "./impact.js";
