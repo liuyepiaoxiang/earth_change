@@ -1,7 +1,7 @@
 /** V2.0 影响与适应——8 个影响模块（纯派生函数，零新耦合状态）
  *  口径：影响 ≠ 气候观测量；每个结果携带公式摘要/来源/适用范围/越界警告（I-04/I-05）。
  *  I-03：适应只改变影响链（暴露判定/损害系数），不改变基础气候状态。 */
-import type { SimResult } from "./types.js";
+import type { SimLike } from "./grid.js";
 import type { CityRow } from "@future-earth/data";
 import { crossingYears } from "./thresholds.js";
 
@@ -14,7 +14,7 @@ export interface ImpactMeta {
   warnings: string[];
 }
 
-const at = (sim: SimResult, year: number, series: number[]): number => {
+const at = (sim: SimLike, year: number, series: number[]): number => {
   const i = sim.years.indexOf(year);
   return series[i >= 0 ? i : sim.years.length - 1]!;
 };
@@ -26,7 +26,7 @@ export interface ExposureResult {
   floodedCities: Array<{ name: string; country: string; population: number }>;
   meta: ImpactMeta;
 }
-export function exposedPopulation(sim: SimResult, year: number, cities: CityRow[], adaptation: AdaptationLevel = "none"): ExposureResult {
+export function exposedPopulation(sim: SimLike, year: number, cities: CityRow[], adaptation: AdaptationLevel = "none"): ExposureResult {
   const slr = at(sim, year, sim.metrics.seaLevel.total);
   const defH = { none: 0, medium: 1.5, high: 3 }[adaptation];
   const flooded: ExposureResult["floodedCities"] = [];
@@ -54,7 +54,7 @@ export interface WaterResult {
   meta: ImpactMeta;
 }
 const GLOBAL_POP_2100 = 9.7e9; // UN 中位预测量级
-export function waterStress(sim: SimResult, year: number): WaterResult {
+export function waterStress(sim: SimLike, year: number): WaterResult {
   const i = sim.years.indexOf(year);
   const diag = sim.metrics.diagnostics;
   const runoff = diag ? diag.water.runoff[i >= 0 ? i : sim.years.length - 1]! : 380;
@@ -79,7 +79,7 @@ export interface HeatResult {
   deltaDays: number;           // 相对 2024 的增量
   meta: ImpactMeta;
 }
-export function extremeHeat(sim: SimResult, year: number): HeatResult {
+export function extremeHeat(sim: SimLike, year: number): HeatResult {
   const dT = at(sim, year, sim.metrics.tempAnomaly);
   const dT24 = at(sim, 2024, sim.metrics.tempAnomaly);
   // 均值移位近似：热浪天数 ∝ exp(0.06·ΔT)·基准 ~12 天（教育性估计）
@@ -102,7 +102,7 @@ export interface AgriResult {
   suitability: "改善" | "稳定" | "恶化";
   meta: ImpactMeta;
 }
-export function agriculture(sim: SimResult, year: number): AgriResult {
+export function agriculture(sim: SimLike, year: number): AgriResult {
   const dT = at(sim, year, sim.metrics.tempAnomaly);
   const i = sim.years.indexOf(year);
   const diag = sim.metrics.diagnostics;
@@ -128,7 +128,7 @@ export interface EcoResult {
   crossings: ReturnType<typeof crossingYears>;
   meta: ImpactMeta;
 }
-export function ecology(sim: SimResult, year: number, baseYear = 2024): EcoResult {
+export function ecology(sim: SimLike, year: number, baseYear = 2024): EcoResult {
   const cy = crossingYears(sim.years, sim.metrics.tempAnomaly);
   const dT = at(sim, year, sim.metrics.tempAnomaly) - at(sim, baseYear, sim.metrics.tempAnomaly);
   // 教育性估计：群系改变 ~ 每°C 约 8% 格点（气候带迁移速率近似）
@@ -149,7 +149,7 @@ export interface AcidResult {
   ph: number;
   meta: ImpactMeta;
 }
-export function oceanAcid(sim: SimResult, year: number): AcidResult {
+export function oceanAcid(sim: SimLike, year: number): AcidResult {
   const co2 = at(sim, year, sim.metrics.co2);
   // 教育性近似：ΔpH ≈ −0.3·ln(C₂/C₁)/ln(2)（CO₂ 翻倍 → pH 降约 0.3；Revell 因子简化）
   const ph = +(8.25 - 0.3 * Math.log2(co2 / 280)).toFixed(2);
@@ -169,7 +169,7 @@ export interface DamageResult {
   gdpLossPct: number;          // % 全球 GDP
   meta: ImpactMeta;
 }
-export function economicDamage(sim: SimResult, year: number, adaptation: AdaptationLevel = "none"): DamageResult {
+export function economicDamage(sim: SimLike, year: number, adaptation: AdaptationLevel = "none"): DamageResult {
   const dT = at(sim, year, sim.metrics.tempAnomaly);
   // 教育性经验公式：损失 ≈ 0.5%·ΔT + 0.01%·ΔT²（Nordhaus DICE 量级）；适应减 10-25%
   const raw = 0.5 * dT + 0.011 * dT * dT;
@@ -190,7 +190,7 @@ export interface SccResult {
   scc: number;                 // $/tCO₂
   meta: ImpactMeta;
 }
-export function socialCarbonCost(sim: SimResult, year: number, discountRate = 0.03): SccResult {
+export function socialCarbonCost(sim: SimLike, year: number, discountRate = 0.03): SccResult {
   const dT = at(sim, year, sim.metrics.tempAnomaly);
   // 教育性：SCC ≈ 损失%·全球GDP(100T)·dΔT/dE ≈ 50·exp(0.04·ΔT)（DICE/Nordhaus 量级）；折现率修正
   const base = 50 * Math.exp(0.04 * dT);
@@ -218,7 +218,7 @@ export interface ImpactSummary {
   damage: DamageResult;
   scc: SccResult;
 }
-export function runImpacts(sim: SimResult, year: number, cities: CityRow[], adaptation: AdaptationLevel = "none"): ImpactSummary {
+export function runImpacts(sim: SimLike, year: number, cities: CityRow[], adaptation: AdaptationLevel = "none"): ImpactSummary {
   return {
     year,
     exposure: exposedPopulation(sim, year, cities, adaptation),
