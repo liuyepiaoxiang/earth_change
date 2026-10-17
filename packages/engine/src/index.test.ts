@@ -6,7 +6,7 @@ describe("公开 API runScenario（SimResult 契约）", () => {
 
   it("版本化字段齐全：schemaVersion/modelVersion/scenario/paramsFingerprint", () => {
     expect(sim.schemaVersion).toBe(2);
-    expect(sim.modelVersion).toBe("1.0.0");
+    expect(sim.modelVersion).toBe("1.5.0");
     expect(sim.scenario).toBe("ssp245");
     expect(sim.paramsFingerprint).toMatch(/^sha256:[0-9a-f]{16}$/);
   });

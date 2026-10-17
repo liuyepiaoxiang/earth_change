@@ -34,7 +34,8 @@
     "k_pf": 0.3,
     "t_pf": 1,
     "r_pf": 0.02,
-    "sink_water_strength": 0
+    "sink_water_strength": 0,
+    "ice_albedo_strength": 0
   },
   "ranges": {
     "lambda": {
@@ -164,6 +165,10 @@
     "sink_water_strength": {
       "min": 0,
       "max": 0.3
+    },
+    "ice_albedo_strength": {
+      "min": 0,
+      "max": 1
     }
   },
   "stages": [

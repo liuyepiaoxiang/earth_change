@@ -26,6 +26,8 @@ export const PERTURBED_IDS = [
   "lambda", "gamma_ocean", "beta_land", "k_ocean", "amp_glacier", "b2_gris", "c1_ais",
   // v2 生物圈/冻土反馈（ADR-003：先验中心固定，不确定性经 MC 呈现）
   "fire_k", "k_pf", "r_pf",
+  // V1.5 反馈强度（默认 0；MC 扰动探索非零响应的空间）
+  "sink_water_strength", "ice_albedo_strength",
 ] as const;
 
 /** mulberry32：确定性 32 位 PRNG */
