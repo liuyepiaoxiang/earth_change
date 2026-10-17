@@ -4,7 +4,7 @@ import { runSim } from "./solver.js";
 import { makeHistoricalDrivers, makeScenarioDrivers, initialState } from "./scenario.js";
 import { PARAMETER_DEFAULTS } from "@future-earth/spec";
 import { CALIBRATED_PARAMS } from "./generated/params.gen.js";
-import { PF_CO2_SHARE, PF_CH4_SHARE, RECOVERY_TAU, rhFromClosure } from "./feedback.js";
+import { PF_CO2_SHARE, PF_CH4_SHARE, RECOVERY_TAU, rhFromClosure, landSinkWithWater } from "./feedback.js";
 import type { Params } from "./types.js";
 
 const p: Params = { ...PARAMETER_DEFAULTS, ...CALIBRATED_PARAMS };
@@ -44,5 +44,46 @@ describe("V1.5 Phase C：碳循环增强记账", () => {
   it("rhFromClosure 单位性质", () => {
     expect(rhFromClosure(50, 40)).toBe(10);
     expect(rhFromClosure(50, 60)).toBe(-10); // 汇超 NPP 时 Rh 为负 = 会计口径说明
+  });
+});
+
+describe("V1.5 Phase B：水循环→陆汇耦合（可回滚构造）", () => {
+  const mkP = (s: number): Params => ({ ...PARAMETER_DEFAULTS, ...CALIBRATED_PARAMS, sink_water_strength: s });
+  const run = (s: number) => runSim({
+    startYear: 1850, endYear: 2500, initialState: initialState(),
+    driversAt: (y) => (y <= 2024 ? makeHistoricalDrivers()(y) : makeScenarioDrivers("ssp585")(y)),
+    params: mkP(s),
+  });
+
+  it("可回滚：s=0 路径短路 + 历史段守恒闭合（G5 口径：1850-2024 排放驱动段）", () => {
+    const a = run(0);
+    expect(a.records.at(-1)!.co2).toBeGreaterThan(600); // ssp585 2500 合理量级
+    const hist = runSim({ // 仅历史段——与 golden G5 同口径
+      startYear: 1850, endYear: 2024, initialState: initialState(),
+      driversAt: makeHistoricalDrivers(), params: mkP(0),
+    });
+    expect(hist.carbon.residualRatio).toBeLessThan(0.01); // 排放驱动段守恒闭合
+  });
+  it("单调性：s 越大 → 陆汇对干旱更敏感 → CO₂ 略高（湿润期反之）——量级有限", () => {
+    const base = run(0);
+    const s02 = run(0.2);
+    const dCO2 = s02.records.at(-1)!.co2 - base.records.at(-1)!.co2;
+    expect(Math.abs(dCO2)).toBeLessThan(60); // 弱反馈（<60 ppm @2500 ssp585）
+    expect(Math.abs(dCO2)).toBeGreaterThan(0); // 确实生效（非零）
+  });
+  it("稳定性：s=0.3（先验上限）四情景无告警", () => {
+    for (const id of ["ssp126", "ssp245", "ssp370", "ssp585"] as const) {
+      const out = runSim({
+        startYear: 1850, endYear: 2500, initialState: initialState(),
+        driversAt: (y) => (y <= 2024 ? makeHistoricalDrivers()(y) : makeScenarioDrivers(id)(y)),
+        params: mkP(0.3),
+      });
+      expect(out.records.every((r) => Number.isFinite(r.co2) && Number.isFinite(r.tempAnomaly)), id).toBe(true);
+    }
+  });
+  it("landSinkWithWater 单位性质", () => {
+    expect(landSinkWithWater(4, 800, 0.3)).toBe(4);            // 稳态水分 → 无修正
+    expect(landSinkWithWater(4, 700, 0.3)).toBeLessThan(4);    // 干旱 → 汇减弱
+    expect(landSinkWithWater(4, 900, 0.3)).toBeGreaterThan(4); // 湿润 → 汇增强
   });
 });

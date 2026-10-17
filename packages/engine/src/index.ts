@@ -105,7 +105,7 @@ export type { ExperimentControls } from "./experiment.js";
 export { crossingYears } from "./thresholds.js";
 export type { CrossingYears } from "./thresholds.js";
 export { MODEL_VERSION } from "./version.js";
-export { PF_CO2_SHARE, PF_CH4_SHARE, RECOVERY_TAU, rhFromClosure } from "./feedback.js";
+export { PF_CO2_SHARE, PF_CH4_SHARE, RECOVERY_TAU, rhFromClosure, landSinkWithWater, SOIL_WATER_REF } from "./feedback.js";
 export type { McResult, McBand } from "./mc.js";
 export type { SimResult } from "./types.js";
 export type { ScenarioId } from "@future-earth/spec";

@@ -12,3 +12,12 @@ export const RECOVERY_TAU = 50;
 export function rhFromClosure(npp: number, landSinkValue: number): number {
   return npp - landSinkValue;
 }
+
+/** V1.5 Phase B：水循环→陆汇耦合（可回滚构造）
+ *  landSink_coupled = landSink_base × [1 + s·(w − W₀)/W₀]，W₀ = 800 mm（工业化前稳态）
+ *  s = 0（默认）→ 恒等于 landSink_base（与 v1.0 逐位一致，可机器证明）。 */
+export const SOIL_WATER_REF = 800;
+export function landSinkWithWater(base: number, w: number, strength: number): number {
+  if (strength === 0) return base;
+  return base * (1 + strength * (w - SOIL_WATER_REF) / SOIL_WATER_REF);
+}

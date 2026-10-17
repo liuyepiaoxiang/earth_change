@@ -8,7 +8,7 @@ import * as bio from "./equations/bio.js";
 import { fTemp as bioFTemp, fPrecip as bioFPrecip, fWater as bioFWater, fCo2 as bioFCo2 } from "./equations/bio.js";
 import * as fire from "./equations/fire.js";
 import * as permafrost from "./equations/permafrost.js";
-import { PF_CO2_SHARE, PF_CH4_SHARE, RECOVERY_TAU, rhFromClosure } from "./feedback.js";
+import { PF_CO2_SHARE, PF_CH4_SHARE, RECOVERY_TAU, rhFromClosure, landSinkWithWater } from "./feedback.js";
 import type { Drivers, EarthState, Params, YearRecord } from "./types.js";
 
 export interface RunOptions {
@@ -67,7 +67,7 @@ export function rhs(s: EarthState, d: Drivers, p: Params): EarthState {
     co2:
       d.prescribedCo2 !== undefined
         ? 0
-        : (d.efossil + d.eluluc + feedbackC - carbon.landSink(s.co2, p) - carbon.oceanSink(s.co2, s.ts, p)) * p.ppm_per_gtc,
+        : (d.efossil + d.eluluc + feedbackC - landSinkWithWater(carbon.landSink(s.co2, p), s.w, p.sink_water_strength) - carbon.oceanSink(s.co2, s.ts, p)) * p.ppm_per_gtc,
     ts: ocean.dTs(F, s.ts, s.td, p),
     td: ocean.dTd(s.ts, s.td, p),
     sThermal: sealevel.dSth(s.ts, s.td, p),
@@ -101,7 +101,7 @@ export function runSim(o: RunOptions): RunOutput {
       const k1 = rhs(s, d0, p);
       const mid = axpy(s, h / 2, k1);
       // 碳收支诊断：汇按实际 co2（浓度段 = 钉住 + 反馈抬升）计
-      cumL += h * carbon.landSink(mid.co2, p);
+      cumL += h * landSinkWithWater(carbon.landSink(mid.co2, p), mid.w, p.sink_water_strength);
       cumO += h * carbon.oceanSink(mid.co2, mid.ts, p);
       const fl = v2Fluxes(mid, p);
       cumFB += h * (fl.fireF + permafrost.permafrostRelease(mid.pTh, p.r_pf));
@@ -117,7 +117,7 @@ export function runSim(o: RunOptions): RunOutput {
       year: y + 1, co2: s.co2, tempAnomaly: s.ts, oceanDeep: s.td, forcing: F,
       seaLevel: sealevel.seaLevelSum(s), slThermal: s.sThermal, slGlacier: s.sGlacier,
       slIceSheet: s.sGrIS + s.sAIS, slLandWater: s.sLandWater,
-      oceanUptake: carbon.oceanSink(s.co2, s.ts, p), landSink: carbon.landSink(s.co2, p),
+      oceanUptake: carbon.oceanSink(s.co2, s.ts, p), landSink: landSinkWithWater(carbon.landSink(s.co2, p), s.w, p.sink_water_strength),
       biomass: s.b, soilMoisture: s.w, permafrost: s.mPf,
       forcingCo2: forcing.fCO2(s.co2, p), forcingCh4: forcing.fCH4(d.ch4, p),
       forcingN2o: forcing.fN2O(d.n2o, p), forcingOther: d.fOther,

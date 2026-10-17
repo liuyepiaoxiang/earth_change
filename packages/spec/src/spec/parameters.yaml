@@ -34,3 +34,5 @@
 - { id: k_pf, symbol: "k_pf", name_zh: 冻土融化速率, unit: "GtC/(yr·K)", default: 0.3, min: 0.05, max: 1.5, source: "AR6: 冻土碳累计释放 2100 年 10-100 GtC → 年速率 0.1-1 量级（v2.1 修正：原 30 为量级错误）", impl: v0 }
 - { id: t_pf, symbol: "T_pf", name_zh: 冻土融化阈值异常, unit: "K", default: 1.0, min: 0.5, max: 2.0, source: "多年冻土起始融化异常区间", impl: v0 }
 - { id: r_pf, symbol: "r_pf", name_zh: 融化碳释放比, unit: "1/yr", default: 0.02, min: 0.005, max: 0.05, source: "已融碳池年释放比（百年尺度）", impl: v0 }
+# V1.5 Phase B：水循环→陆汇反馈强度（可回滚：0 = 与 v1.0 逐位一致）
+- { id: sink_water_strength, symbol: "s_w", name_zh: 陆汇水分响应强度, unit: "1", default: 0.0, min: 0.0, max: 0.3, source: "V1.5 Phase B（docs/10 §8.2.3）；f(w)=1+s·(w−800)/800", impl: v0 }

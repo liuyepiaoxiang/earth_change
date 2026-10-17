@@ -50,9 +50,9 @@
       "source": "gen-forcing 合成（AR6/Riahi/Meinshausen 锚点）"
     },
     "generated/datasets.gen.ts": {
-      "sha256": "7c3c7cbc52c2a1b4612d7677abb117a89f4b4b631f5bc7b38c614609e5fcc69a",
+      "sha256": "819ee890f4724697ce2b0b37dbea22c2b7d3dbbf784e62d031e4bf236e6a718e",
       "bytes": 166694,
-      "retrieved": "2026-10-16",
+      "retrieved": "2026-10-17",
       "source": "gen-bundle 固化"
     },
     "static/cities_top500.csv": {
