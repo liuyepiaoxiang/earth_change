@@ -154,7 +154,7 @@ export default function Dashboard({ embed = false }: { embed?: boolean }) {
         <EventNotification event={activeEvent} onDismiss={() => setActiveEvent(null)} />
         {showAnalysis && sim && (
           <AnalysisDrawer sim={sim} year={year} onClose={() => setShowAnalysis(false)}
-            exp={exp} onExpChange={setExp} onExitExp={() => setExp(undefined)} onJumpYear={setYear} />
+            exp={exp} onExpChange={setExp} onExitExp={() => setExp(undefined)} onJumpYear={setYear} snap={snap} pattern={pattern} onSelectCity={setCity} />
         )}
       </section>
 
