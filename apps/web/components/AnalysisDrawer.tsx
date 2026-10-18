@@ -13,9 +13,10 @@ import SharePanel from "./SharePanel";
 import RegionPanel from "./RegionPanel";
 import ImpactPanel from "./ImpactPanel";
 import MilestoneFeed from "./MilestoneFeed";
+import MissionPanel from "./MissionPanel";
 import type { ExperimentControls } from "@future-earth/engine";
 
-const TABS = ["时间序列", "观测对照", "海平面分量", "为什么会这样", "结果说明", "大事记", "对比", "区域", "影响", "实验室", "分享"] as const;
+const TABS = ["时间序列", "观测对照", "海平面分量", "为什么会这样", "结果说明", "🎓 任务", "大事记", "对比", "区域", "影响", "实验室", "分享"] as const;
 const btn = (on: boolean): React.CSSProperties => ({
   padding: "3px 10px", fontSize: 12, borderRadius: 6, cursor: "pointer",
   border: `1px solid ${on ? "#38bdf8" : "#334155"}`, background: on ? "#0c4a6e" : "transparent", color: on ? "#e0f2fe" : "#94a3b8",
@@ -47,6 +48,7 @@ export default function AnalysisDrawer(props: {
       {tab === "海平面分量" && <SlrStacked sim={props.sim} markerX={props.year} />}
       {tab === "为什么会这样" && <ContributionPanel sim={props.sim} year={props.year} />}
       {tab === "结果说明" && <MetadataPanel sim={props.sim} />}
+      {tab === "🎓 任务" && <MissionPanel sim={props.sim} />}
       {tab === "大事记" && <MilestoneFeed sim={props.sim} year={props.year} onJump={props.onJumpYear ?? (() => {})} />}
       {tab === "对比" && <ComparePanel a={props.sim} year={props.year} />}
       {tab === "区域" && <RegionPanel sim={props.sim} year={props.year} />}
