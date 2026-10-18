@@ -1,5 +1,6 @@
 import { loadOverviewData } from "@future-earth/spec/overview-data";
 import OverviewContent from "./OverviewContent";
+import GuidedTour from "../../components/GuidedTour";
 import { tokens } from "../../lib/design";
 
 export default function OverviewPage() {
@@ -11,6 +12,7 @@ export default function OverviewPage() {
         <nav className="overview-main-nav" aria-label="主导航"><a href="/">地球模拟</a><span aria-current="page">模型导览</span></nav>
         <a href="/?scenario=ssp245&year=2100" className="overview-header-cta">开始实验 →</a>
       </header>
+      <GuidedTour />
       <OverviewContent data={data} />
     </main>
   );
