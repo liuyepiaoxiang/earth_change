@@ -86,8 +86,8 @@ export function useSimulation(
   });
   useEffect(() => {
     let alive = true;
-    // 同情景下追加/撤销不确定性时保留旧结果（MC 计算期间继续显示中心路径，避免闪回装载中）
-    setState((s) => (s.sim && s.sim.scenario === scenario && !exp !== !s.sim.experiment ? s : { sim: null, error: null }));
+    // 同情景下保留旧结果——切不确定性 / 调实验参数 / MC 计算期间继续显示旧路径，避免闪回装载中
+    setState((s) => (s.sim && s.sim.scenario === scenario ? s : { sim: null, error: null }));
     loadSim(scenario, uncertainty, exp).then(
       (sim) => {
         if (alive) setState({ sim, error: null });
