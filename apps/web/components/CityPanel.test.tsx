@@ -13,6 +13,7 @@ const city: CityRow = {
   lat: 31.22,
   lon: 121.46,
   elevation: 0,
+  elevationSource: "worldclim",
   population: 24874500,
   tbase: 16.42,
   pbase: 1049,

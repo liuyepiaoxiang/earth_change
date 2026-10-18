@@ -19,7 +19,8 @@ export default function CityPanel({
   const dtLocal = localDTs(snap.tempAnomaly, city.lat, pattern.length ? pattern : undefined);
   const tFuture = city.tbase + dtLocal;
   const pFuture = scaledPrecip(city.pbase, snap.tempAnomaly);
-  const flooded = isCityFlooded(city.elevation, snap.seaLevel.total);
+  const elevationKnown = city.elevationSource !== "unknown";
+  const flooded = elevationKnown && isCityFlooded(city.elevation, snap.seaLevel.total);
   const biome = classifyBiome(tFuture, pFuture);
 
   return (
@@ -51,7 +52,7 @@ export default function CityPanel({
         </button>
       </div>
       <div style={{ color: flooded ? "#38bdf8" : "#eab308" }}>
-        {flooded ? "⚠ 已被海平面淹没" : "未淹没"}（高程 {city.elevation} m vs SLR +{snap.seaLevel.total.toFixed(2)} m）
+        {!elevationKnown ? "\u26a0 \u9ad8\u7a0b\u6570\u636e\u7f3a\u5931\uff0c\u6682\u4e0d\u5224\u5b9a\u6df9\u6ca1" : flooded ? "\u26a0 \u5df2\u88ab\u6d77\u5e73\u9762\u6df9\u6ca1" : "\u672a\u6df9\u6ca1"}（高程 {city.elevation} m vs SLR +{snap.seaLevel.total.toFixed(2)} m）
       </div>
       <div style={{ color: tokens.textMuted }}>
         本地升温 <strong style={{ color: "#f87171" }}>+{dtLocal.toFixed(2)}°C</strong>（全球 +{snap.tempAnomaly.toFixed(2)}°C）

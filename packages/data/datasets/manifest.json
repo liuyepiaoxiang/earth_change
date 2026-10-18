@@ -50,16 +50,16 @@
       "source": "gen-forcing 合成（AR6/Riahi/Meinshausen 锚点）"
     },
     "generated/datasets.gen.ts": {
-      "sha256": "6506068a28f15e4f7c1cc97b0fdb119bd75d0a22721c9eea07d4d2b7c689c998",
-      "bytes": 166694,
-      "retrieved": "2026-10-17",
+      "sha256": "bdd440d724b34c56f21c96e836fdee8dad0e7f008bbe402682c62fb23c2dd0dc",
+      "bytes": 182334,
+      "retrieved": "2026-10-18",
       "source": "gen-bundle 固化"
     },
     "static/cities_top500.csv": {
-      "sha256": "9216a87b312780ffe5e7288115fb9c87d6e958c6bf9a43f01747ad822b2df85f",
-      "bytes": 25192,
-      "retrieved": "2026-10-11",
-      "source": "GeoNames + WorldClim 2.1"
+      "sha256": "c3f2652ff9efce9b8fb8067800aab4c05e3faa1b608030475c9bb23f7cccbef4",
+      "bytes": 30841,
+      "retrieved": "2026-10-17",
+      "source": "GeoNames + WorldClim 2.1 elevation fallback + WorldClim 2.1 climate"
     },
     "static/warming_pattern_lat.csv": {
       "sha256": "f221f33ac78cb9615e69ee94153a7d280ea906ddddefdd9cb20b72ddf0afc217",

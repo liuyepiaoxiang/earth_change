@@ -25,6 +25,7 @@ export function firstFloodedCities(sim: SimResult | SimResultWithUnc, cities: Ci
   const slr = sim.metrics.seaLevel.total;
   const out: Array<{ name: string; country: string; year: number }> = [];
   for (const c of cities) {
+    if (c.elevationSource === "unknown") continue;
     const threshold = c.elevation + defenseOf(c, defense);
     for (let i = 0; i < sim.years.length; i++) {
       if (slr[i]! >= threshold) { out.push({ name: c.name, country: c.country, year: sim.years[i]! }); break; }

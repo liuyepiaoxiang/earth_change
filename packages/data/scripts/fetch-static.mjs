@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 import { createHash } from "node:crypto";
 import { execSync } from "node:child_process";
 import * as GeoTIFF from "geotiff";
+import { PNG } from "pngjs";
 
 const DATA = join(dirname(fileURLToPath(import.meta.url)), "..", "datasets");
 const TMP = join(DATA, "_tmp");
@@ -23,16 +24,41 @@ async function dl(url, file) {
 const unzip = (zip, dest) => execSync(`powershell -NoProfile -Command "Expand-Archive -Force -LiteralPath '${zip}' -DestinationPath '${dest}'"`, { stdio: "ignore" });
 
 // ---------- 1) GeoNames 城市 ----------
+// WorldClim 5 arc-min elevation PNG, encoded as RGB uint16 by fetch-dem.mjs.
+// GeoNames remains the primary source; empty/zero values use the same WorldClim grid.
+const elevationPngPath = join(STATIC, "elevation_5min.png");
+const elevationPng = existsSync(elevationPngPath) ? PNG.sync.read(readFileSync(elevationPngPath)) : null;
+if (!elevationPng) throw new Error("elevation_5min.png is required for city elevation fallback; run fetch-dem.mjs --res 5 first.");
+function sampleElevation(lat, lon) {
+  if (!elevationPng) return null;
+  const x = Math.min(elevationPng.width - 1, Math.max(0, Math.floor(((lon + 180) / 360) * elevationPng.width)));
+  const y = Math.min(elevationPng.height - 1, Math.max(0, Math.floor(((90 - lat) / 180) * elevationPng.height)));
+  const i = (y * elevationPng.width + x) * 4;
+  const value = elevationPng.data[i] * 256 + elevationPng.data[i + 1];
+  return value > 0 ? value : null;
+}
+
 const zipFile = join(TMP, "cities15000.zip");
 if (!existsSync(zipFile)) { mkdirSync(TMP, { recursive: true }); await dl("https://download.geonames.org/export/dump/cities15000.zip", zipFile); }
 unzip(zipFile, TMP);
 const lines = readFileSync(join(TMP, "cities15000.txt"), "utf8").split(/\r?\n/);
 const cities = lines.filter(Boolean).map((l) => l.split("\t"))
-  .map((c) => ({ name: c[1], country: c[8], lat: +c[4], lon: +c[5], elevation: +c[15] || 0, population: +c[14] || 0 }))
+  .map((c) => {
+    const rawElevation = c[15]?.trim() ?? "";
+    const parsedElevation = rawElevation === "" ? null : Number(rawElevation);
+    const hasGeoNamesElevation = Number.isFinite(parsedElevation) && parsedElevation !== 0;
+    const fallbackElevation = sampleElevation(+c[4], +c[5]);
+    return {
+      name: c[1], country: c[8], lat: +c[4], lon: +c[5],
+      elevation: hasGeoNamesElevation ? parsedElevation : fallbackElevation ?? 0,
+      elevationSource: hasGeoNamesElevation ? "geonames" : fallbackElevation !== null ? "worldclim" : "unknown",
+      population: +c[14] || 0,
+    };
+  })
   .filter((c) => c.population > 0)
   .sort((a, b) => b.population - a.population)
   .slice(0, 500);
-console.log(`GeoNames: top ${cities.length} 城市`);
+console.log(`GeoNames: top ${cities.length} cities; WorldClim elevation fallback used for ${cities.filter((c) => c.elevationSource === "worldclim").length}`);
 
 // ---------- 2) WorldClim 基准气候（每张 tif 一次性载入内存，之后 O(1) 采样） ----------
 const gridCache = new Map();
@@ -80,8 +106,8 @@ gridCache.clear();
 const ok = cities.filter((c) => Number.isFinite(c.tbase));
 console.log(`WorldClim: ${ok.length}/${cities.length} 城市成功`);
 writeFileSync(join(STATIC, "cities_top500.csv"),
-  "name,country,lat,lon,elevation,population,tbase,pbase\n" +
-  ok.map((c) => `${c.name.replace(/,/g, " ")},${c.country},${c.lat},${c.lon},${c.elevation},${c.population},${c.tbase},${c.pbase}`).join("\n") + "\n");
+  "name,country,lat,lon,elevation,elevation_source,population,tbase,pbase\n" +
+  ok.map((c) => `${c.name.replace(/,/g, " ")},${c.country},${c.lat},${c.lon},${c.elevation},${c.elevationSource},${c.population},${c.tbase},${c.pbase}`).join("\n") + "\n");
 console.log(`cities_top500.csv: ${ok.length} 行`);
 // ---------- 3) GISTEMP 纬度带升温模式（分带 vs 全球 回归 1960-2024） ----------
 const zon = await (await fetch("https://data.giss.nasa.gov/gistemp/tabledata_v4/ZonAnn.Ts+dSST.csv", { headers: { "User-Agent": "fe/0.1" } })).text();

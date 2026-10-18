@@ -35,10 +35,20 @@ describe("数据加载", () => {
       expect(Math.abs(r.lat)).toBeLessThanOrEqual(90);
       expect(Math.abs(r.lon)).toBeLessThanOrEqual(180);
       expect(r.elevation).toBeGreaterThanOrEqual(-10);
+      expect(["geonames", "worldclim", "grid-fallback", "unknown"]).toContain(r.elevationSource);
       expect(r.population).toBeGreaterThan(0);
       expect(r.tbase).toBeGreaterThan(-30);
       expect(r.tbase).toBeLessThan(40);
       expect(r.pbase).toBeGreaterThanOrEqual(0);
+    }
+  });
+  it("city elevations use the WorldClim fallback when GeoNames is empty or zero", () => {
+    const cities = loadCities();
+    for (const name of ["Shanghai", "Chongqing", "Chengdu", "Beijing"]) {
+      const city = cities.find((r) => r.name === name);
+      expect(city, name).toBeDefined();
+      expect(city!.elevation).toBeGreaterThan(0);
+      expect(city!.elevationSource).toBe("worldclim");
     }
   });
   it("纬度带升温模式：7-9 带、amp 0.2-4（南半球海洋带可低于 0.5）、带区间不重叠", () => {

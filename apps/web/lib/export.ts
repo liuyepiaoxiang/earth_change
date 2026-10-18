@@ -4,11 +4,28 @@ import type { SimResult } from "@future-earth/engine";
 export type SimResultLike = Omit<SimResult, "schemaVersion"> & { schemaVersion: number };
 
 export function exportCsv(sim: SimResultLike): void {
-  const head = "year,tempAnomaly_C,co2_ppm,seaLevel_m,slThermal_m,slGlacier_m,slIceSheet_m,slLandWater_m";
+  const dg = sim.metrics.diagnostics;
+  const hasBox = !!sim.metrics.biomass;
+  const head = [
+    "year", "tempAnomaly_C", "co2_ppm", "seaLevel_m",
+    "slThermal_m", "slGlacier_m", "slIceSheet_m", "slLandWater_m",
+    "forcingCo2_Wm2", "forcingCh4_Wm2", "forcingN2o_Wm2", "forcingOther_Wm2", "forcingTotal_Wm2",
+    "oceanHeatUptake_Wm2", "seaIceArea_Mkm2",
+    "precip_mm", "evap_mm", "runoff_mm",
+    "npp_GtC", "fireAnomaly_GtC",
+    "permafrostCo2_GtC", "permafrostCh4_GtC",
+    ...(hasBox ? ["biomass_GtC", "soilMoisture_mm", "permafrost_GtC"] : []),
+  ].join(",");
   const rows = sim.years.map((y, i) => [
     y, sim.metrics.tempAnomaly[i], sim.metrics.co2[i], sim.metrics.seaLevel.total[i],
     sim.metrics.seaLevel.thermal[i], sim.metrics.seaLevel.glacier[i],
     sim.metrics.seaLevel.iceSheet[i], sim.metrics.seaLevel.landWater[i],
+    dg?.forcing.co2[i] ?? "", dg?.forcing.ch4[i] ?? "", dg?.forcing.n2o[i] ?? "", dg?.forcing.other[i] ?? "", dg?.forcing.total[i] ?? "",
+    dg?.oceanHeatUptake[i] ?? "", dg?.seaIceArea[i] ?? "",
+    dg?.water.precip[i] ?? "", dg?.water.evap[i] ?? "", dg?.water.runoff[i] ?? "",
+    dg?.bio.npp[i] ?? "", dg?.bio.fireAnomaly[i] ?? "",
+    dg?.carbon?.permafrostCo2[i] ?? "", dg?.carbon?.permafrostCh4[i] ?? "",
+    ...(hasBox ? [sim.metrics.biomass?.[i] ?? "", sim.metrics.soilMoisture?.[i] ?? "", sim.metrics.permafrost?.[i] ?? ""] : []),
   ].join(","));
   download(new Blob(["\uFEFF" + [head, ...rows].join("\n")], { type: "text/csv;charset=utf-8" }),
     `future-earth-${sim.scenario}${sim.experiment ? "-exp" : ""}-${sim.years.at(-1)}.csv`);

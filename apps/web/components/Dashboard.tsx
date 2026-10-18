@@ -12,6 +12,9 @@ import Timeline from "./Timeline";
 import GlobeView from "./GlobeView";
 import CityPanel from "./CityPanel";
 import AnalysisDrawer from "./AnalysisDrawer";
+import EventNotification from "./EventNotification";
+import { milestoneEvents } from "@future-earth/engine";
+import type { MilestoneEvent } from "@future-earth/engine";
 
 const centerStyle = { height: "100%", display: "grid", placeItems: "center", color: "#475569" } as const;
 
@@ -42,6 +45,18 @@ export default function Dashboard({ embed = false }: { embed?: boolean }) {
 
   const snap = sim ? metricsAt(sim, year) : null;
   const unc = sim ? metricsUncAt(sim, year) : null;
+
+  // V4.1 里程碑事件通知——用 Set 防重复（向后拖再向前不会重复弹）
+  const [activeEvent, setActiveEvent] = useState<MilestoneEvent | null>(null);
+  const shownEventsRef = useRef<Set<number>>(new Set());
+  const allEvents = useMemo(() => (sim ? milestoneEvents(sim) : []), [sim]);
+  useEffect(() => {
+    const next = allEvents.find((e) => !shownEventsRef.current.has(e.year) && e.year <= year && e.year > 2025);
+    if (next) {
+      shownEventsRef.current.add(next.year);
+      setActiveEvent(next);
+    }
+  }, [year, allEvents]);
 
   return (
     <main style={{ height: "100vh", display: "grid", gridTemplateRows: "auto 1fr auto" }}>
@@ -136,6 +151,7 @@ export default function Dashboard({ embed = false }: { embed?: boolean }) {
           <div style={centerStyle}>{error ? `引擎加载失败：${error}` : "引擎装载中…"}</div>
         )}
         {city && snap && <CityPanel city={city} snap={snap} pattern={pattern} onClose={() => setCity(null)} />}
+        <EventNotification event={activeEvent} onDismiss={() => setActiveEvent(null)} />
         {showAnalysis && sim && (
           <AnalysisDrawer sim={sim} year={year} onClose={() => setShowAnalysis(false)}
             exp={exp} onExpChange={setExp} onExitExp={() => setExp(undefined)} onJumpYear={setYear} />

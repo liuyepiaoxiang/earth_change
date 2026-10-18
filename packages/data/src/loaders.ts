@@ -8,7 +8,7 @@ export type TemperatureRow = { year: number; anomaly: number };
 export type Co2Row = { year: number; ppm: number };
 export type EmissionsRow = { year: number; efossil: number; eluluc: number };
 export type ForcingRow = { year: number; ch4: number; n2o: number; fOther: number };
-export interface CityRow { name: string; country: string; lat: number; lon: number; elevation: number; population: number; tbase: number; pbase: number }
+export interface CityRow { name: string; country: string; lat: number; lon: number; elevation: number; elevationSource: "geonames" | "worldclim" | "grid-fallback" | "unknown"; population: number; tbase: number; pbase: number }
 export interface PatternBand { latMin: number; latMax: number; amp: number }
 
 export const loadTemperature = (): TemperatureRow[] => [...TEMPERATURE];

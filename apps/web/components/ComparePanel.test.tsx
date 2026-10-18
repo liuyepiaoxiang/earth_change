@@ -8,7 +8,7 @@ import type { SimResultWithUnc } from "../lib/sim";
 
 const sim = runScenario("ssp585", 2500) as SimResultWithUnc;
 const city = (elevation: number, population: number): CityRow =>
-  ({ name: "TestCity", country: "XX", lat: 0, lon: 0, elevation, population, tbase: 15, pbase: 800 });
+  ({ name: "TestCity", country: "XX", lat: 0, lon: 0, elevation, elevationSource: "worldclim", population, tbase: 15, pbase: 800 });
 
 describe("defenseOf / firstFloodedCities", () => {
   it("防护档位：none=0；fixed 大城 +2m；adaptive 大城 +3m 小城 +1.5m", () => {

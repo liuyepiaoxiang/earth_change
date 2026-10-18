@@ -12,14 +12,18 @@ describe("V2.0 影响模块 I-01~I-05", () => {
 
   it("I-01：暴露人口与城市逐点聚合一致", () => {
     const e = impacts.exposure;
-    expect(e.floodedCount).toBeGreaterThan(0); // ssp585 2100 SLR ~1m
+    const slr = sim.metrics.seaLevel.total[sim.years.indexOf(2100)]!;
+    const expected = cities.filter((c) => c.elevationSource !== "unknown" && c.elevation <= slr).length;
+    expect(e.floodedCount).toBe(expected);
     expect(e.floodedCount).toBeLessThanOrEqual(cities.length);
     // 逐点复核：floodedCities 的每个城市高程 ≤ SLR
-    const slr = sim.metrics.seaLevel.total[sim.years.indexOf(2100)]!;
     for (const fc of e.floodedCities) {
       const c = cities.find((x) => x.name === fc.name)!;
       expect(c.elevation).toBeLessThanOrEqual(slr + 0.01);
     }
+  });
+  it("I-01b?2026 ??? GeoNames 0 ????????", () => {
+    expect(exposedPopulation(sim, 2026, cities).floodedCount).toBe(0);
   });
   it("I-02：水资源与引擎水循环一致（径流量级/人均合理）", () => {
     expect(impacts.water.perCapitaM3).toBeGreaterThan(1000);

@@ -1,167 +1,65 @@
+"use client";
+
+import { useMemo, useState } from "react";
 import type { OverviewData } from "@future-earth/spec/overview-data";
 import { tokens } from "../../lib/design";
 
-const IMPL_BADGE: Record<string, { label: string; bg: string; fg: string }> = {
-  v0: { label: "已实现", bg: "#14532d", fg: "#bbf7d0" },
-  v1: { label: "诊断式已实现", bg: "#1e3a8a", fg: "#bfdbfe" },
-  v2: { label: "规划", bg: "#713f12", fg: "#fde68a" },
-  v3: { label: "规划", bg: "#3f3f46", fg: "#d4d4d8" },
-};
+type CatalogKind = "variables" | "equations" | "parameters" | "datasets";
+type CatalogRow = { kind: CatalogKind; id: string; title: string; detail: string; status: string; search: string };
 
-function Badge({ label, bg, fg }: { label: string; bg: string; fg: string }) {
-  return (
-    <span style={{ background: bg, color: fg, borderRadius: 4, padding: "0 6px", fontSize: 11, whiteSpace: "nowrap" }}>
-      {label}
-    </span>
-  );
-}
+const pipeline = [
+  ["排放情景", "SSP1-2.6 到 SSP5-8.5", "#facc15"], ["大气成分", "CO₂ · CH₄ · N₂O", "#fb923c"],
+  ["辐射强迫", "地球获得多少额外能量", "#f87171"], ["海洋吸热", "表层海洋 · 深海", "#38bdf8"],
+  ["全球温度", "ΔT 相对 1850", "#fb7185"], ["海平面", "热膨胀 · 冰川 · 冰盖", "#60a5fa"], ["城市结果", "温度 · 降水 · 淹没", "#a3e635"],
+] as const;
+const scenarios = [
+  ["ssp126", "低排放", "更快转向可持续路径", "#4ade80"], ["ssp245", "中排放", "中间路线", "#facc15"],
+  ["ssp370", "中高排放", "区域竞争加剧", "#fb923c"], ["ssp585", "高排放", "化石燃料持续发展", "#f87171"],
+] as const;
+const layers = [
+  ["01", "全球气候核心", "先算地球平均温度和海平面怎样随强迫变化。", "CO₂ 碳收支、温室气体辐射强迫、两层海洋能量平衡与海平面四分量。", "动态耦合", "#f87171", "温度 · CO₂ · 海平面"],
+  ["02", "冰冻圈与碳反馈", "再看冰川、冰盖、植被、火灾和冻土怎样响应变暖。", "冰川/冰盖海平面贡献、生物量聚合箱、火灾异常碳通量、冻土碳释放和海冰诊断。", "聚合箱 + 诊断", "#c4b5fd", "冰川 · 冻土 · 植被 · 海冰"],
+  ["03", "水循环与区域降尺度", "把全球平均变化转换成纬度带、区域和城市可以理解的条件。", "纬度带温度模式缩放、降水底图、蒸发/径流/土壤水诊断和城市基准气候。", "诊断 + 模式缩放", "#38bdf8", "局地温度 · 降水 · 水循环"],
+  ["04", "城市与海岸", "选择一个城市，查看它在某个年份的局地气候和简化淹没状态。", "城市高程优先使用 GeoNames，有效值缺失时使用 WorldClim 高程网格后备；淹没判定比较城市高程与全球平均海平面。", "城市点级估计", "#60a5fa", "城市温度 · 群系 · 淹没"],
+  ["05", "影响与实验", "最后把气候状态变成情景比较、暴露和适应实验。", "情景 A/B 对比、阈值首超年份、城市暴露人口和教育性影响函数。", "教育性影响函数", "#a3e635", "对比 · 暴露 · 适应"],
+] as const;
+const steps = [["01", "选择情景", "先选一条未来路径。SSP 是一组情景假设，不是四个精确预言。"], ["02", "拖动年份", "从 2030、2050、2100 到 2500，观察变化何时发生、怎样累积。"], ["03", "打开图层", "温度场、降水、淹没模拟和城市点可以组合查看。"], ["04", "点选城市", "查看本地升温、年均温、降水、群系、高程和淹没判定。"]] as const;
+const limits = [["全球平均不是局地天气", "ΔT 是全球平均温度异常；城市结果是模式缩放估计，不是天气预报。", "#fbbf24"], ["海平面不是风暴潮", "淹没判定使用城市高程与全球平均海平面上升的比较，不包含潮汐、风暴潮和局地沉降。", "#38bdf8"], ["2500 年是探索性外推", "2100 年有公开评估区间可对照；2100 年以后主要用于观察长期趋势和反馈。", "#c4b5fd"], ["不确定性区间不是共识区间", "当前 p10–p90 主要反映参数扰动，不覆盖所有情景、结构和数据不确定性。", "#a3e635"]] as const;
+const panel = { background: tokens.panel, border: `1px solid ${tokens.panelBorder}`, borderRadius: 14, backdropFilter: "blur(8px)" } as const;
+const button = { border: `1px solid ${tokens.panelBorderActive}`, background: "rgba(15, 23, 42, .7)", color: tokens.textMuted, borderRadius: 999, padding: "7px 11px", fontSize: 12, cursor: "pointer" } as const;
+const th = { textAlign: "left", padding: "8px 9px", borderBottom: `1px solid ${tokens.panelBorder}`, color: tokens.textFaint, fontWeight: 600, whiteSpace: "nowrap" } as const;
+const td = { padding: "9px", borderBottom: `1px solid ${tokens.panelBorder}`, verticalAlign: "top" } as const;
 
-function Th({ children }: { children: React.ReactNode }) {
-  return <th style={{ textAlign: "left", padding: "4px 10px", borderBottom: `1px solid ${tokens.panelBorder}`, color: tokens.textFaint, fontWeight: 500 }}>{children}</th>;
+function SectionHeading({ eyebrow, title, children }: { eyebrow: string; title: string; children?: React.ReactNode }) {
+  return <div style={{ marginBottom: 18 }}><div style={{ color: tokens.accent, fontSize: 11, letterSpacing: ".16em", textTransform: "uppercase", fontWeight: 700 }}>{eyebrow}</div><h2 style={{ color: tokens.textStrong, fontSize: 26, lineHeight: 1.2, margin: "7px 0 8px", letterSpacing: "-.02em" }}>{title}</h2>{children && <p style={{ color: tokens.textMuted, maxWidth: 700, lineHeight: 1.75, margin: 0, fontSize: 14 }}>{children}</p>}</div>;
 }
-function Td({ children, mono, dim, formula }: { children: React.ReactNode; mono?: boolean; dim?: boolean; formula?: boolean }) {
-  return (
-    <td style={{ textAlign: "left", padding: "4px 10px", borderBottom: `1px solid ${tokens.panelBorder}`, verticalAlign: "top", fontFamily: mono ? "ui-monospace, monospace" : undefined, fontSize: mono ? 12.5 : undefined, color: dim ? tokens.textFaint : formula ? "#a5f3fc" : undefined }}>
-      {children}
-    </td>
-  );
-}
+function Pill({ text, color = "#64748b" }: { text: string; color?: string }) { return <span style={{ border: `1px solid ${color}55`, background: `${color}14`, color, borderRadius: 999, padding: "3px 8px", fontSize: 11, whiteSpace: "nowrap" }}>{text}</span>; }
 
-function Stat({ n, label }: { n: number | string; label: string }) {
-  return (
-    <div style={{ border: `1px solid ${tokens.panelBorder}`, borderRadius: 8, padding: "10px 14px", background: "#0b1220" }}>
-      <b style={{ fontSize: 24, color: "#7dd3fc", display: "block" }}>{n}</b>
-      <span style={{ color: tokens.textFaint, fontSize: 12 }}>{label}</span>
-    </div>
-  );
+function Catalog({ data }: { data: OverviewData }) {
+  const [kind, setKind] = useState<CatalogKind>("variables");
+  const [query, setQuery] = useState("");
+  const [all, setAll] = useState(false);
+  const labels: Record<CatalogKind, string> = { variables: "变量", equations: "方程", parameters: "参数", datasets: "数据集" };
+  const rows = useMemo<CatalogRow[]>(() => [
+    ...data.variables.map((v) => ({ kind: "variables" as const, id: v.id, title: v.name_zh, detail: `${v.domain} · ${v.unit || "无单位"}`, status: v.state ? "状态量" : "诊断量", search: `${v.id} ${v.name_zh} ${v.domain} ${v.unit}` })),
+    ...data.equations.map((e) => ({ kind: "equations" as const, id: e.id, title: e.name_zh, detail: e.formula, status: e.impl, search: `${e.id} ${e.name_zh} ${e.formula}` })),
+    ...data.parameters.map((p) => ({ kind: "parameters" as const, id: p.id, title: p.name_zh, detail: `${p.default} · [${p.min}, ${p.max}] ${p.unit || ""}`, status: "参数", search: `${p.id} ${p.name_zh} ${p.unit}` })),
+    ...data.datasets.map((d) => ({ kind: "datasets" as const, id: d.id, title: d.name, detail: "规格数据源", status: "数据", search: `${d.id} ${d.name}` })),
+  ], [data]);
+  const filtered = rows.filter((r) => r.kind === kind && r.search.toLowerCase().includes(query.toLowerCase())).slice(0, all ? 1000 : 12);
+  return <div style={{ ...panel, padding: 18 }}><div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center", marginBottom: 12 }}>{(Object.keys(labels) as CatalogKind[]).map((key) => <button key={key} onClick={() => setKind(key)} aria-pressed={kind === key} style={{ ...button, ...(kind === key ? { borderColor: tokens.accent, background: "#0c4a6e", color: tokens.textStrong } : {}) }}>{labels[key]}</button>)}<input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="搜索 id、名称或公式" style={{ flex: "1 1 220px", minWidth: 180, border: `1px solid ${tokens.panelBorder}`, background: "#050b16", color: tokens.text, borderRadius: 999, padding: "8px 12px", outline: "none" }} /></div><div style={{ overflowX: "auto" }}><table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}><thead><tr><th style={th}>ID</th><th style={th}>名称</th><th style={th}>说明</th><th style={th}>状态</th></tr></thead><tbody>{filtered.map((row) => <tr key={`${row.kind}-${row.id}`}><td style={td}><code>{row.id}</code></td><td style={td}>{row.title}</td><td style={{ ...td, color: tokens.textMuted }}>{row.detail}</td><td style={td}><Pill text={row.status} /></td></tr>)}</tbody></table></div><div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "center", marginTop: 12, color: tokens.textFaint, fontSize: 12 }}><span>显示 {filtered.length} 条 · 完整事实源来自规格 YAML</span><button onClick={() => setAll((v) => !v)} style={{ ...button, color: tokens.accent }}>{all ? "收起索引" : "展开更多"}</button></div></div>;
 }
 
 export default function OverviewContent({ data }: { data: OverviewData }) {
-  const stateVars = data.variables.filter((v) => v.state).length;
-  const byDomain: Record<string, typeof data.variables> = {};
-  for (const v of data.variables) (byDomain[v.domain] = byDomain[v.domain] || []).push(v);
-  const domName = Object.fromEntries(data.domains.map((d) => [d.id, `${d.name_zh} ${d.name_en}`]));
-
-  return (
-    <div style={{ padding: 32, maxWidth: 1200, margin: "0 auto", overflow: "auto", height: "100%" }}>
-      <h1 style={{ color: tokens.textStrong, fontSize: 22, margin: "0 0 8px" }}>实体与公式总览</h1>
-      <p style={{ color: tokens.textFaint, fontSize: 13, margin: "0 0 16px" }}>
-        由规格 YAML（唯一事实源）构建时生成——与模拟运行同一份规格，天然无漂移
-      </p>
-
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))", gap: 10, margin: "16px 0" }}>
-        <Stat n={data.domains.length} label="本体域" />
-        <Stat n={data.variables.length} label="实体（变量）" />
-        <Stat n={stateVars} label="状态量" />
-        <Stat n={data.variables.length - stateVars} label="诊断量" />
-        <Stat n={data.equations.length} label="方程" />
-        <Stat n={data.parameters.length} label="参数" />
-        <Stat n={data.scenarios.length} label="排放情景" />
-        <Stat n={data.causalEdges} label="因果边" />
-        <Stat n={data.loops.length} label="反馈回路" />
-        <Stat n={data.datasets.length} label="数据集" />
-      </div>
-
-      <div style={{ ...{ background: "#0b1220", borderLeft: "3px solid #38bdf8", padding: "8px 14px", borderRadius: 4, color: tokens.textMuted, fontSize: 13, marginBottom: 24 } }}>
-        53 条方程全部实现并注册；solver 积分状态量中的核心子集（CO₂ / 温度两层 / 海平面四项 + v2 四箱
-        B/W/Mpf/PTh），其余为诊断派生。实现批次标记 v0 = 已实现。
-      </div>
-
-      <h2 style={{ color: "#7dd3fc", borderBottom: `1px solid ${tokens.panelBorder}`, paddingBottom: 6 }}>一、本体域（{data.domains.length}）</h2>
-      <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 24 }}>
-        <tr><Th>域</Th><Th>名称</Th><Th>子域</Th></tr>
-        {data.domains.map((d) => (
-          <tr key={d.id}>
-            <Td mono>{d.id}</Td>
-            <Td>{d.name_zh} {d.name_en}</Td>
-            <Td mono dim>{d.children?.join(", ")}</Td>
-          </tr>
-        ))}
-      </table>
-
-      <h2 style={{ color: "#7dd3fc", borderBottom: `1px solid ${tokens.panelBorder}`, paddingBottom: 6 }}>
-        二、实体（变量）{data.variables.length} —— 按域分组
-      </h2>
-      {Object.entries(byDomain).map(([dom, list]) => (
-        <div key={dom}>
-          <h3 style={{ color: tokens.textMuted, marginTop: 20 }}>
-            {dom} <span style={{ color: tokens.textFaint, fontWeight: 400 }}>{domName[dom] ?? ""}</span>{" "}
-            <span style={{ background: "#1e293b", borderRadius: 10, padding: "0 8px", fontSize: 12, color: "#7dd3fc" }}>{list.length}</span>
-          </h3>
-          <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 16 }}>
-            <tr><Th>id</Th><Th>名称</Th><Th>单位</Th><Th>类型</Th><Th>批次</Th><Th>关联方程</Th></tr>
-            {list.map((v) => (
-              <tr key={v.id}>
-                <Td mono>{v.id}</Td>
-                <Td>{v.name_zh}</Td>
-                <Td mono>{v.unit || "—"}</Td>
-                <Td>{v.state ? <Badge label="状态量" bg="#4c1d95" fg="#ddd6fe" /> : <Badge label="诊断量" bg="#334155" fg="#cbd5e1" />}</Td>
-                <Td>{(() => { const b = IMPL_BADGE[v.impl]; return b ? <Badge label={b.label} bg={b.bg} fg={b.fg} /> : v.impl; })()}</Td>
-                <Td mono dim>{v.equations?.join(" ")}</Td>
-              </tr>
-            ))}
-          </table>
-        </div>
-      ))}
-
-      <h2 style={{ color: "#7dd3fc", borderBottom: `1px solid ${tokens.panelBorder}`, paddingBottom: 6 }}>
-        三、方程 {data.equations.length}（全部已实现）
-      </h2>
-      <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 24 }}>
-        <tr><Th>id</Th><Th>名称</Th><Th>公式</Th><Th>批次</Th></tr>
-        {data.equations.map((e) => (
-          <tr key={e.id}>
-            <Td mono>{e.id}</Td>
-            <Td>{e.name_zh}</Td>
-            <Td mono formula>{e.formula}</Td>
-            <Td>{(() => { const b = IMPL_BADGE[e.impl]; return b ? <Badge label={b.label} bg={b.bg} fg={b.fg} /> : e.impl; })()}</Td>
-          </tr>
-        ))}
-      </table>
-
-      <h2 style={{ color: "#7dd3fc", borderBottom: `1px solid ${tokens.panelBorder}`, paddingBottom: 6 }}>
-        四、参数 {data.parameters.length}
-      </h2>
-      <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 24 }}>
-        <tr><Th>id</Th><Th>名称</Th><Th>默认值</Th><Th>先验范围</Th><Th>单位</Th></tr>
-        {data.parameters.map((p) => (
-          <tr key={p.id}>
-            <Td mono>{p.id}</Td>
-            <Td>{p.name_zh}</Td>
-            <Td mono>{p.default}</Td>
-            <Td mono dim>[{p.min}, {p.max}]</Td>
-            <Td mono>{p.unit || "—"}</Td>
-          </tr>
-        ))}
-      </table>
-
-      <h2 style={{ color: "#7dd3fc", borderBottom: `1px solid ${tokens.panelBorder}`, paddingBottom: 6 }}>
-        五、因果图 {data.causalEdges} 边 · {data.loops.length} 反馈回路
-      </h2>
-      <p style={{ marginBottom: 24 }}>
-        {data.loops.map((l) => (
-          <span key={l.id} style={{ background: "#334155", color: "#cbd5e1", borderRadius: 4, padding: "0 6px", fontSize: 11, marginRight: 8 }}>
-            {l.id} ×{l.count}
-          </span>
-        ))}
-      </p>
-
-      <h2 style={{ color: "#7dd3fc", borderBottom: `1px solid ${tokens.panelBorder}`, paddingBottom: 6 }}>
-        六、数据集 {data.datasets.length}
-      </h2>
-      <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 24 }}>
-        <tr><Th>id</Th><Th>名称</Th></tr>
-        {data.datasets.map((d, i) => (
-          <tr key={d.id ?? i}>
-            <Td mono>{d.id ?? ""}</Td>
-            <Td>{d.name ?? ""}</Td>
-          </tr>
-        ))}
-      </table>
-
-      <p style={{ color: tokens.textDisabled, fontSize: 12 }}>
-        完整边表与数据源详情见 packages/spec/src/spec/*.yaml 与 docs/实体与公式总览.html
-      </p>
-    </div>
-  );
+  const stats = [[data.scenarios.length, "未来情景"], [data.equations.length, "条方程"], [data.variables.filter((v) => v.state).length, "个状态量"], [data.datasets.length, "组数据"]] as const;
+  return <div className="overview-page" style={{ maxWidth: 1220, margin: "0 auto", padding: "0 24px 80px" }}>
+    <nav className="overview-section-nav" aria-label="Overview 章节导航"><a href="#understand">看懂它</a><a href="#pipeline">看模型</a><a href="#layers">看能力</a><a href="#how-to">学会用</a><a href="#limits">看边界</a><a href="#catalog">完整规格</a></nav>
+    <section id="understand" className="overview-hero" style={{ padding: "58px 0 46px", display: "grid", gridTemplateColumns: "1.15fr .85fr", gap: 42, alignItems: "center" }}><div><div style={{ color: tokens.accent, fontSize: 12, letterSpacing: ".18em", fontWeight: 700, textTransform: "uppercase" }}>Future Earth Engine · Model Guide</div><h1 style={{ color: tokens.textStrong, fontSize: "clamp(36px, 6vw, 68px)", lineHeight: 1.02, letterSpacing: "-.055em", margin: "18px 0 20px", maxWidth: 700 }}>如果我们走不同的路，<span style={{ color: tokens.accent }}>地球会变成什么样？</span></h1><p style={{ color: tokens.textMuted, fontSize: 17, lineHeight: 1.8, maxWidth: 650, margin: "0 0 24px" }}>选择一条未来路径，拖动时间轴，从 2026 年看到 2500 年的全球温度、CO₂、海平面、冰冻圈和城市变化。</p><p style={{ color: tokens.textFaint, fontSize: 13, lineHeight: 1.7, maxWidth: 600 }}>这是一个可运行的教育性气候情景模拟器：帮助你理解趋势、因果和量级，不替代天气预报或区域气候预报。</p><div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 26 }}><a href="/?scenario=ssp245&year=2100" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: tokens.accent, color: "#042033", borderRadius: 999, padding: "11px 16px", fontSize: 13, fontWeight: 700, textDecoration: "none" }}>进入地球模拟 <span>→</span></a><a href="#pipeline" style={{ display: "inline-flex", alignItems: "center", border: `1px solid ${tokens.panelBorderActive}`, color: tokens.textMuted, borderRadius: 999, padding: "10px 15px", fontSize: 13, textDecoration: "none" }}>先看懂模型</a></div><div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 25 }}>{["4 个排放情景", "1850–2500 年", "3D 地球", "城市级查询", "参数区间"].map((x) => <span key={x} style={{ color: tokens.textFaint, border: `1px solid ${tokens.panelBorder}`, borderRadius: 999, padding: "5px 9px", fontSize: 11 }}>{x}</span>)}</div></div><div className="overview-hero-orbit" style={{ position: "relative", minHeight: 330, ...panel, overflow: "hidden", padding: 24, display: "flex", alignItems: "center", justifyContent: "center" }}><div className="overview-glow" /><div className="overview-orbit-ring overview-orbit-ring-a" /><div className="overview-orbit-ring overview-orbit-ring-b" /><div style={{ width: 190, height: 190, borderRadius: "50%", background: "radial-gradient(circle at 32% 25%, #bae6fd 0 2%, #38bdf8 8%, #14532d 30%, #0f3b54 54%, #07111f 74%)", boxShadow: "0 0 60px rgba(56, 189, 248, .35), inset -24px -18px 50px rgba(0,0,0,.55)", position: "relative", zIndex: 2 }} /></div></section>
+    <section className="overview-section" style={{ padding: "46px 0 34px" }}><SectionHeading eyebrow="一分钟看懂" title="输入一条未来路径，模拟一组地球状态，再把结果带到地图和城市。">不用先学会气候学。先记住这三个问题，之后再按需展开技术细节。</SectionHeading><div className="overview-quick-grid">{[["你给它什么？", "一个未来情景", "继续高排放、逐步减排，或者更快走向净零。", "#facc15"], ["它计算什么？", "地球状态如何变化", "碳循环改变 CO₂，辐射强迫改变能量平衡，海洋和冰冻圈继续响应。", "#f87171"], ["你能看到什么？", "全球趋势与城市体验", "拖动时间轴，观察温度、海平面、海冰、植被、冻土和城市条件。", "#38bdf8"]].map(([eyebrow, title, text, color], i) => <article key={title} className="overview-quick-card" style={{ ...panel, padding: 22, borderTop: `3px solid ${color}` }}><span style={{ color, fontSize: 12, fontWeight: 700 }}>{String(i + 1).padStart(2, "0")} · {eyebrow}</span><h3 style={{ color: tokens.textStrong, fontSize: 20, margin: "12px 0 8px" }}>{title}</h3><p style={{ color: tokens.textMuted, fontSize: 13, lineHeight: 1.7, margin: 0 }}>{text}</p></article>)}</div></section>
+    <section id="pipeline" className="overview-section" style={{ padding: "48px 0 34px" }}><SectionHeading eyebrow="模型怎样运行" title="从排放情景，到温度、海平面和城市结果。">实线代表进入主状态演化的核心链；诊断模块会根据状态计算结果，但不一定反过来改变主状态。</SectionHeading><div className="overview-pipeline">{pipeline.map(([title, text, color], i) => <div className="overview-pipeline-step" key={title}><div style={{ borderColor: color, color }} className="overview-pipeline-node"><span>{String(i + 1).padStart(2, "0")}</span><b>{title}</b><small>{text}</small></div>{i < pipeline.length - 1 && <div className="overview-pipeline-arrow">→</div>}</div>)}</div></section>
+    <section id="layers" className="overview-section" style={{ padding: "48px 0 34px" }}><SectionHeading eyebrow="模型能力" title="五个层级，分别回答五类问题。">当前模型并不是所有部分都以同一种方式计算。看懂层级，才能正确理解结果。</SectionHeading><div className="overview-layer-grid">{layers.map(([number, title, plain, technical, status, color, outputs]) => <details key={number} className="overview-layer-card" style={{ ...panel, borderLeft: `3px solid ${color}` }}><summary><span className="overview-layer-number" style={{ color }}>{number}</span><span><b>{title}</b><small>{plain}</small></span><Pill text={status} color={color} /></summary><div className="overview-layer-detail"><p>{technical}</p><div style={{ color, fontSize: 12 }}>主要输出：{outputs}</div></div></details>)}</div></section>
+    <section id="how-to" className="overview-section" style={{ padding: "48px 0 34px" }}><SectionHeading eyebrow="具体怎么用" title="用一个问题，完成第一次实验。">试试：如果世界走 SSP5-8.5，2100 年会怎样？</SectionHeading><div className="overview-steps-grid">{steps.map(([number, title, text]) => <article key={number} className="overview-step-card" style={{ ...panel, padding: 20 }}><span style={{ color: tokens.accent, fontFamily: "ui-monospace, monospace", fontSize: 12 }}>{number}</span><h3 style={{ color: tokens.textStrong, fontSize: 18, margin: "12px 0 8px" }}>{title}</h3><p style={{ color: tokens.textMuted, fontSize: 13, lineHeight: 1.7, margin: 0 }}>{text}</p></article>)}</div><div style={{ ...panel, padding: 16, marginTop: 14 }}><div style={{ color: tokens.textFaint, fontSize: 12, marginBottom: 9 }}>从这里直接开始</div><div className="overview-scenario-grid">{scenarios.map(([id, title, subtitle, color]) => <a key={id} href={`/?scenario=${id}&year=2100`} style={{ display: "grid", gap: 5, textDecoration: "none", background: "#07111f", border: `1px solid ${color}66`, borderRadius: 10, padding: "12px 13px", minWidth: 150 }}><span style={{ color, fontWeight: 700 }}>{id.toUpperCase()}</span><b style={{ color: tokens.textStrong }}>{title}</b><small style={{ color: tokens.textMuted }}>{subtitle}</small><span style={{ color: tokens.textFaint, fontSize: 11 }}>打开 2100 →</span></a>)}</div></div></section>
+    <section id="limits" className="overview-section" style={{ padding: "48px 0 34px" }}><SectionHeading eyebrow="结果怎样理解" title="模型的价值是帮助你看懂趋势，也要知道它的边界。">每个结果都应该结合年份、单位、模型层级和数据来源一起看。</SectionHeading><div className="overview-limit-grid">{limits.map(([title, text, color]) => <article key={title} style={{ ...panel, padding: 18, borderLeft: `3px solid ${color}` }}><h3 style={{ color: tokens.textStrong, fontSize: 16, margin: "0 0 8px" }}>{title}</h3><p style={{ color: tokens.textMuted, lineHeight: 1.7, fontSize: 13, margin: 0 }}>{text}</p></article>)}</div></section>
+    <section id="catalog" className="overview-section" style={{ padding: "48px 0 0" }}><SectionHeading eyebrow="完整规格索引" title="想继续深入？从这里核对变量、方程、参数和数据。">这些内容来自规格 YAML，是模拟器的事实源；默认先看上面的模型导览，需要时再展开技术索引。</SectionHeading><div className="overview-stat-strip">{stats.map(([n, label]) => <div key={label}><b>{n}</b><span>{label}</span></div>)}</div><Catalog data={data} /><p style={{ color: tokens.textDisabled, fontSize: 12, marginTop: 18 }}>完整因果图、参数来源和原始数据说明见 packages/spec/src/spec/*.yaml。</p></section>
+  </div>;
 }

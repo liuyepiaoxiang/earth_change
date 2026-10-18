@@ -83,14 +83,14 @@ export function milestoneEvents(sim: SimLike): MilestoneEvent[] {
   // 城市淹没（首城 / 百万人口首城）
   try {
     const cities = loadCities();
-    const firstFlood = cities.findIndex((c) => c.elevation <= slr[0]!);
+    const firstFlood = cities.findIndex((c) => c.elevationSource !== "unknown" && c.elevation <= slr[0]!);
     for (const [th, icon, desc] of [
       [0.5, "🏙️", "首个沿海大城市被淹"],
       [1.0, "🌃", "首个百万人口城市被淹"],
     ] as const) {
       const idx = slr.findIndex((v) => v >= th);
       if (idx >= 0 && sim.years[idx]! > 2025) {
-        const flooded = cities.filter((c) => c.elevation <= th);
+        const flooded = cities.filter((c) => c.elevationSource !== "unknown" && c.elevation <= th);
         const big = flooded.filter((c) => c.population >= 1_000_000);
         if (th === 0.5 && flooded.length > 0) evts.push({
           year: sim.years[idx]!, icon, title: desc,

@@ -33,7 +33,7 @@ export function exposedPopulation(sim: SimLike, year: number, cities: CityRow[],
   let pop = 0;
   for (const c of cities) {
     const defense = defH + (adaptation !== "none" && c.population >= 5_000_000 ? 1.5 : 0); // 大城额外防护
-    if (c.elevation + defense <= slr) { flooded.push({ name: c.name, country: c.country, population: c.population }); pop += c.population; }
+    if (c.elevationSource !== "unknown" && c.elevation + defense <= slr) { flooded.push({ name: c.name, country: c.country, population: c.population }); pop += c.population; }
   }
   return {
     exposedPopulation: pop, floodedCount: flooded.length, floodedCities: flooded.slice(0, 10),

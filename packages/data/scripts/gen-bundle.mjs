@@ -16,8 +16,25 @@ const forcing = csv("historical/forcing_natural_1850_2024.csv").map((c) => ({ ye
 const scenarios = ["ssp126", "ssp245", "ssp370", "ssp585"].map((id) => JSON.parse(read(`scenarios/${id}.json`)));
 const cities = [];
 try {
+  // 高程后备：GeoNames 高程 0/空 → 从 2.5° 网格高程采样（防止数据重抓后退回 bug）
+  const gridPath = join(DATA, "../src/generated/grid.gen.ts");
+  let gridElev = null;
+  try { gridElev = JSON.parse(read("../src/generated/grid.gen.ts").match(/GRID_ELEV = (\[[\s\S]*?\]);/)[1]); } catch {}
+  const cellElev = (lat, lon) => {
+    if (!gridElev) return 50;
+    const r = Math.min(71, Math.max(0, Math.floor((90 - lat) / 2.5)));
+    const c = Math.min(143, Math.max(0, Math.floor((lon + 180) / 2.5)));
+    return gridElev[r * 144 + c] ?? 50;
+  };
   const cl = csv("static/cities_top500.csv");
-  for (const c of cl) cities.push({ name: c[0], country: c[1], lat: +c[2], lon: +c[3], elevation: +c[4], population: +c[5], tbase: +c[6], pbase: +c[7] });
+  for (const c of cl) {
+    const rawElev = +c[4];
+    const elevation = rawElev <= 0 ? Math.round(cellElev(+c[2], +c[3])) : rawElev;
+    const elevationSource = rawElev <= 0 ? "grid-fallback" : (c[5] || "geonames");
+    cities.push({ name: c[0], country: c[1], lat: +c[2], lon: +c[3], elevation, elevationSource, population: +c[6], tbase: +c[7], pbase: +c[8] });
+  }
+  const fallbackCount = cities.filter((c,i) => +cl[i][4] <= 0).length;
+  if (fallbackCount > 0) console.log(`  高程后备：${fallbackCount} 城使用网格高程`);
 } catch {}
 let pattern = [];
 try {
