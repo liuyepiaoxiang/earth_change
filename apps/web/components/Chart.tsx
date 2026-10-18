@@ -7,7 +7,7 @@ export default function Chart(props: {
   years: number[]; series: ChartSeries[]; band?: ChartBand; unit: string;
   markerX?: number; height?: number; yZero?: boolean;
 }) {
-  const { years, series, band, unit, markerX, height = 200, yZero } = props;
+  const { years, series, band, unit, markerX, height = 280, yZero } = props;
   const W = 640, H = height, L = 44, R = 10, T = 10, B = 24;
   if (years.length === 0) return <div>无数据</div>;
   const x0 = years[0]!, x1 = years[years.length - 1]!;
@@ -45,11 +45,11 @@ export default function Chart(props: {
         {series.map((s, i) => (
           <g key={s.name} transform={`translate(${L + 6 + i * 96}, ${T + 8})`}>
             <rect width={10} height={3} y={3} fill={s.color} />
-            <text x={14} y={7} fontSize={10} fill="#94a3b8">{s.name}</text>
+            <text x={14} y={7} fontSize={12} fill="#94a3b8">{s.name}</text>
           </g>
         ))}
       </g>
-      <text x={W - R} y={T + 8} fontSize={9} fill="#475569" textAnchor="end">{unit}</text>
+      <text x={W - R} y={T + 8} fontSize={12} fill="#64748b" textAnchor="end">{unit}</text>
     </svg>
   );
 }

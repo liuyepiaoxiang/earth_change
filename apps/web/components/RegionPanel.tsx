@@ -6,8 +6,8 @@ import { cellIndexOf } from "@future-earth/data";
 import type { SimResultWithUnc } from "../lib/sim";
 
 const num = (v: string): number => Number(v);
-const input: React.CSSProperties = { width: 64, background: "#0f172a", color: "#e2e8f0", border: "1px solid #334155", borderRadius: 6, padding: 4, fontSize: 12 };
-const btn: React.CSSProperties = { padding: "4px 10px", fontSize: 12, borderRadius: 6, cursor: "pointer", border: "1px solid #334155", background: "#0f172a", color: "#e2e8f0" };
+const input: React.CSSProperties = { width: 64, background: "#0f172a", color: "#e2e8f0", border: "1px solid #334155", borderRadius: 6, padding: 4, fontSize: 16 };
+const btn: React.CSSProperties = { padding: "4px 10px", fontSize: 16, borderRadius: 6, cursor: "pointer", border: "1px solid #334155", background: "#0f172a", color: "#e2e8f0" };
 
 export default function RegionPanel(props: { sim: SimResultWithUnc; year: number }) {
   const { sim, year } = props;
@@ -32,13 +32,13 @@ export default function RegionPanel(props: { sim: SimResultWithUnc; year: number
   }), [sim, year, box]);
 
   return (
-    <div data-testid="region-panel" style={{ fontSize: 12, color: "#94a3b8" }}>
+    <div data-testid="region-panel" style={{ fontSize: 16, color: "#94a3b8" }}>
       <b style={{ color: "#e0f2fe" }}>点采样（{GRID.res}° 格）</b>
       <div style={{ display: "flex", gap: 6, alignItems: "center", margin: "6px 0" }}>
         纬 <input style={input} value={lat} aria-label="纬度" onChange={(e) => setLat(e.target.value)} />
         经 <input style={input} value={lon} aria-label="经度" onChange={(e) => setLon(e.target.value)} />
       </div>
-      <table data-testid="point-sample" style={{ width: "100%", fontSize: 11, borderCollapse: "collapse" }}>
+      <table data-testid="point-sample" style={{ width: "100%", fontSize: 15, borderCollapse: "collapse" }}>
         <tbody>
           <tr><td style={{ padding: 3 }}>温度异常</td><td>{point.anomaly?.toFixed(2) ?? "—"} °C</td></tr>
           <tr><td style={{ padding: 3 }}>年均温</td><td>{point.temperature?.toFixed(1) ?? "—"} °C</td></tr>
@@ -53,7 +53,7 @@ export default function RegionPanel(props: { sim: SimResultWithUnc; year: number
         西 <input style={input} value={box.w} aria-label="西经" onChange={(e) => setBox({ ...box, w: e.target.value })} />
         东 <input style={input} value={box.e} aria-label="东经" onChange={(e) => setBox({ ...box, e: e.target.value })} />
       </div>
-      <table data-testid="region-stats" style={{ width: "100%", fontSize: 11, borderCollapse: "collapse" }}>
+      <table data-testid="region-stats" style={{ width: "100%", fontSize: 15, borderCollapse: "collapse" }}>
         <thead><tr>{["场", "格数", "均值", "最小", "P10", "P90", "最大"].map((h) => (
           <th key={h} style={{ textAlign: "left", padding: 3, borderBottom: "1px solid #334155", color: "#cbd5e1" }}>{h}</th>
         ))}</tr></thead>

@@ -8,11 +8,11 @@ import type { SimResultWithUnc } from "../lib/sim";
 
 const LEVELS: Array<[AdaptationLevel, string]> = [["none", "无适应"], ["medium", "中等适应"], ["high", "高适应"]];
 const seg = (on: boolean): React.CSSProperties => ({
-  padding: "2px 8px", fontSize: 11, cursor: "pointer", border: `1px solid ${on ? "#38bdf8" : "#334155"}`,
+  padding: "2px 8px", fontSize: 15, cursor: "pointer", border: `1px solid ${on ? "#38bdf8" : "#334155"}`,
   background: on ? "#0c4a6e" : "transparent", color: on ? "#e0f2fe" : "#94a3b8",
 });
 const card: React.CSSProperties = { border: "1px solid #1e293b", borderRadius: 8, padding: 10, marginBottom: 8, background: "#0f172a" };
-const warn: React.CSSProperties = { color: "#f59e0b", fontSize: 11 };
+const warn: React.CSSProperties = { color: "#f59e0b", fontSize: 15 };
 
 function ImpactCard(props: { title: string; value: string; sub?: string; formula: string; source: string; range: string; warnings: string[] }) {
   return (
@@ -21,9 +21,9 @@ function ImpactCard(props: { title: string; value: string; sub?: string; formula
         <b style={{ color: "#e0f2fe" }}>{props.title}</b>
         <span style={{ color: "#fbbf24", fontSize: 16, fontVariantNumeric: "tabular-nums" }}>{props.value}</span>
       </div>
-      {props.sub && <div style={{ color: "#94a3b8", fontSize: 11, marginTop: 2 }}>{props.sub}</div>}
+      {props.sub && <div style={{ color: "#94a3b8", fontSize: 15, marginTop: 2 }}>{props.sub}</div>}
       {props.warnings.map((w) => <div key={w} style={warn}>⚠ {w}</div>)}
-      <details style={{ marginTop: 4, fontSize: 10, color: "#475569" }}>
+      <details style={{ marginTop: 4, fontSize: 16, color: "#475569" }}>
         <summary>公式/来源/范围</summary>
         <div>{props.formula}</div><div>来源：{props.source}</div><div>适用：{props.range}</div>
       </details>
@@ -38,7 +38,7 @@ export default function ImpactPanel(props: { sim: SimResultWithUnc; year: number
   const fmtPop = (n: number) => n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : n >= 1e3 ? `${(n / 1e3).toFixed(0)}K` : String(n);
 
   return (
-    <div data-testid="impact-panel" style={{ fontSize: 12 }}>
+    <div data-testid="impact-panel" style={{ fontSize: 16 }}>
       <div style={{ display: "flex", gap: 4, marginBottom: 10 }}>
         {LEVELS.map(([v, zh]) => <button key={v} style={seg(adaptation === v)} onClick={() => setAdaptation(v)}>{zh}</button>)}
       </div>

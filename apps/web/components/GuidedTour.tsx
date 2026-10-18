@@ -4,8 +4,8 @@ import { useState } from "react";
 
 const card: React.CSSProperties = { border: "1px solid #334155", borderRadius: 12, padding: 16, background: "#0f172a", cursor: "pointer", transition: "border-color 0.2s" };
 const conceptCard: React.CSSProperties = { ...card, cursor: "default" };
-const q: React.CSSProperties = { fontSize: 13, color: "#e0f2fe", fontWeight: "bold", marginBottom: 6 };
-const a: React.CSSProperties = { fontSize: 12, color: "#94a3b8", lineHeight: 1.5 };
+const q: React.CSSProperties = { fontSize: 15, color: "#e0f2fe", fontWeight: "bold", marginBottom: 6 };
+const a: React.CSSProperties = { fontSize: 16, color: "#94a3b8", lineHeight: 1.5 };
 
 interface Concept { icon: string; term: string; define: string; analogy: string; position: string; experiment: string; misread: string }
 const CONCEPTS: Concept[] = [
@@ -64,7 +64,7 @@ export default function GuidedTour() {
   return (
     <div data-testid="guided-tour" style={{ padding: "20px 16px", maxWidth: 720, margin: "0 auto" }}>
       <h2 style={{ color: "#e0f2fe", textAlign: "center", marginBottom: 6 }}>你想探索哪个问题？</h2>
-      <p style={{ color: "#64748b", textAlign: "center", fontSize: 12, marginBottom: 24 }}>选择一个入口，开始你的未来地球实验</p>
+      <p style={{ color: "#64748b", textAlign: "center", fontSize: 16, marginBottom: 24 }}>选择一个入口，开始你的未来地球实验</p>
 
       {/* 三个预设入口 */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))", gap: 12, marginBottom: 32 }}>
@@ -78,7 +78,7 @@ export default function GuidedTour() {
       </div>
 
       {/* 概念卡库 */}
-      <h3 style={{ color: "#94a3b8", fontSize: 14, marginBottom: 12, borderBottom: "1px solid #1e293b", paddingBottom: 8 }}>
+      <h3 style={{ color: "#94a3b8", fontSize: 16, marginBottom: 12, borderBottom: "1px solid #1e293b", paddingBottom: 8 }}>
         📚 核心概念（点击展开）
       </h3>
       <div style={{ display: "grid", gap: 8 }}>
@@ -86,8 +86,8 @@ export default function GuidedTour() {
           <div key={c.term} style={conceptCard} onClick={() => setOpenConcept(openConcept === i ? null : i)}>
             <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
               <span style={{ fontSize: 20 }}>{c.icon}</span>
-              <b style={{ color: "#e0f2fe", fontSize: 13, flex: 1 }}>{c.term}</b>
-              <span style={{ color: "#475569", fontSize: 11 }}>{openConcept === i ? "▼" : "▶"}</span>
+              <b style={{ color: "#e0f2fe", fontSize: 15, flex: 1 }}>{c.term}</b>
+              <span style={{ color: "#475569", fontSize: 15 }}>{openConcept === i ? "▼" : "▶"}</span>
             </div>
             {openConcept === i && (
               <div style={{ marginTop: 10, paddingLeft: 30, display: "grid", gap: 6 }}>

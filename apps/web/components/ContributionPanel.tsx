@@ -4,7 +4,7 @@ import type { SimResultWithUnc } from "../lib/sim";
 
 export default function ContributionPanel({ sim, year }: { sim: SimResultWithUnc; year: number }) {
   const dg = sim.metrics.diagnostics;
-  if (!dg) return <div style={{ color: "#64748b", fontSize: 12 }}>当前引擎版本未提供诊断分解（需 v0.2+）。</div>;
+  if (!dg) return <div style={{ color: "#64748b", fontSize: 16 }}>当前引擎版本未提供诊断分解（需 v0.2+）。</div>;
   const i = sim.years.indexOf(year);
   const idx = i >= 0 ? i : sim.years.length - 1;
   const y = sim.years[idx]!;
@@ -19,7 +19,7 @@ export default function ContributionPanel({ sim, year }: { sim: SimResultWithUnc
     ["热膨胀", sl.thermal[idx]!], ["冰川", sl.glacier[idx]!], ["冰盖", sl.iceSheet[idx]!], ["陆地水", sl.landWater[idx]!],
   ];
   return (
-    <div data-testid="contribution-panel" style={{ fontSize: 12, color: "#94a3b8" }}>
+    <div data-testid="contribution-panel" style={{ fontSize: 16, color: "#94a3b8" }}>
       <b style={{ color: "#e0f2fe" }}>{y} 年辐射强迫分解</b>（总 {dg.forcing.total[idx]!.toFixed(2)} W/m²）
       {f.map(([k, v]) => (
         <div key={k} style={{ display: "flex", alignItems: "center", gap: 8, margin: "3px 0" }}>

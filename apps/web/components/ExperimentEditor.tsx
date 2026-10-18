@@ -15,7 +15,7 @@ const TIERS = [
 const DEFENSE = [["none", "不防护"], ["fixed", "固定高程（>100 万人口 +2m）"], ["adaptive", "适应（>500 万 +3m / 其余 +1.5m）"]] as const;
 
 const seg = (on: boolean): React.CSSProperties => ({
-  padding: "2px 8px", fontSize: 11, cursor: "pointer", border: `1px solid ${on ? "#38bdf8" : "#334155"}`,
+  padding: "2px 8px", fontSize: 15, cursor: "pointer", border: `1px solid ${on ? "#38bdf8" : "#334155"}`,
   background: on ? "#0c4a6e" : "transparent", color: on ? "#e0f2fe" : "#94a3b8",
 });
 
@@ -45,7 +45,7 @@ export default function ExperimentEditor(props: {
   };
 
   return (
-    <div data-testid="experiment-editor" style={{ fontSize: 12, color: "#94a3b8" }}>
+    <div data-testid="experiment-editor" style={{ fontSize: 16, color: "#94a3b8" }}>
       <p style={{ color: "#fbbf24" }}>⚠ 教育性实验：排放驱动自由运行，未经 AR6 区间锚定。</p>
       <label style={{ display: "block", margin: "8px 0" }}>
         排放强度 ×{c.emissionScale.toFixed(2)}

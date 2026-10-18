@@ -14,7 +14,7 @@ const UNITS: Array<[string, string, string, string]> = [
 export default function MetadataPanel({ sim }: { sim: SimResultWithUnc }) {
   const md = sim.metadata;
   return (
-    <div data-testid="metadata-panel" style={{ fontSize: 12, lineHeight: 1.7, color: "#94a3b8" }}>
+    <div data-testid="metadata-panel" style={{ fontSize: 16, lineHeight: 1.7, color: "#94a3b8" }}>
       <p><b style={{ color: "#e0f2fe" }}>模型范围</b>：全球聚合箱（global-box）——非区域网格结果。</p>
       <p><b style={{ color: "#e0f2fe" }}>驱动模式</b>：{md.driverSegments.map((s) => `${s.from}–${s.to ?? "2500"} ${s.mode === "emissions-driven" ? "排放驱动" : "浓度驱动"}`).join("；")}</p>
       <div><b style={{ color: "#e0f2fe" }}>置信标注</b>：
@@ -25,7 +25,7 @@ export default function MetadataPanel({ sim }: { sim: SimResultWithUnc }) {
         </ul>
       </div>
       <p>模型版本 {sim.modelVersion} · 参数指纹 <code>{sim.paramsFingerprint.slice(0, 23)}</code> · 数据指纹 <code>{md.dataManifestHash}</code></p>
-      <table style={{ borderCollapse: "collapse", width: "100%", fontSize: 11 }}>
+      <table style={{ borderCollapse: "collapse", width: "100%", fontSize: 15 }}>
         <thead><tr>{["指标", "单位", "数据来源", "模型层级"].map((h) => (
           <th key={h} style={{ textAlign: "left", borderBottom: "1px solid #334155", padding: "3px 6px", color: "#cbd5e1" }}>{h}</th>
         ))}</tr></thead>

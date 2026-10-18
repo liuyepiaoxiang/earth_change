@@ -9,7 +9,7 @@ import type { SimResultWithUnc } from "../lib/sim";
 
 const SSPS: ScenarioId[] = ["ssp126", "ssp245", "ssp370", "ssp585"];
 const seg = (on: boolean): React.CSSProperties => ({
-  padding: "2px 8px", fontSize: 11, cursor: "pointer", border: `1px solid ${on ? "#38bdf8" : "#334155"}`,
+  padding: "2px 8px", fontSize: 15, cursor: "pointer", border: `1px solid ${on ? "#38bdf8" : "#334155"}`,
   background: on ? "#0c4a6e" : "transparent", color: on ? "#e0f2fe" : "#94a3b8",
 });
 
@@ -69,7 +69,7 @@ export default function ComparePanel(props: { a: SimResultWithUnc; year: number 
   const floodA = firstFloodedCities(a, cities, defense, 5);
 
   return (
-    <div data-testid="compare-panel" style={{ fontSize: 12, color: "#94a3b8" }}>
+    <div data-testid="compare-panel" style={{ fontSize: 16, color: "#94a3b8" }}>
       <div style={{ display: "flex", gap: 4, alignItems: "center", marginBottom: 8, flexWrap: "wrap" }}>
         <b style={{ color: "#fbbf24" }}>A：{aLabel}</b> vs
         {SSPS.map((id) => <button key={id} style={seg(bId === id)} aria-pressed={bId === id} onClick={() => setBId(id)}>{id}</button>)}
@@ -82,7 +82,7 @@ export default function ComparePanel(props: { a: SimResultWithUnc; year: number 
           ]} />
       )}
       {d2100 && d2500 && (
-        <table data-testid="compare-deltas" style={{ width: "100%", borderCollapse: "collapse", margin: "8px 0", fontSize: 11 }}>
+        <table data-testid="compare-deltas" style={{ width: "100%", borderCollapse: "collapse", margin: "8px 0", fontSize: 15 }}>
           <thead><tr>{["对比时点", "ΔT 差 (°C)", "海平面差 (m)", "CO₂ 差 (ppm)"].map((h) => (
             <th key={h} style={{ textAlign: "left", borderBottom: "1px solid #334155", padding: "3px 6px", color: "#cbd5e1" }}>{h}</th>
           ))}</tr></thead>
@@ -99,7 +99,7 @@ export default function ComparePanel(props: { a: SimResultWithUnc; year: number 
         </table>
       )}
       <b style={{ color: "#e0f2fe" }}>温度阈值首超年份（A / B）</b>
-      <table data-testid="compare-thresholds" style={{ width: "100%", borderCollapse: "collapse", fontSize: 11 }}>
+      <table data-testid="compare-thresholds" style={{ width: "100%", borderCollapse: "collapse", fontSize: 15 }}>
         <thead><tr>{["阈值", "A", "B"].map((h) => <th key={h} style={{ textAlign: "left", padding: "3px 6px", color: "#cbd5e1", borderBottom: "1px solid #334155" }}>{h}</th>)}</tr></thead>
         <tbody>{([["1.5°C", "t15"], ["2°C", "t20"], ["3°C", "t30"]] as const).map(([label, key]) => (
           <tr key={key}>

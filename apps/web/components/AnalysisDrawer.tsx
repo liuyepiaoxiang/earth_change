@@ -18,7 +18,7 @@ import type { ExperimentControls } from "@future-earth/engine";
 
 const TABS = ["时间序列", "观测对照", "海平面分量", "为什么会这样", "结果说明", "🎓 任务", "大事记", "对比", "区域", "影响", "实验室", "分享"] as const;
 const btn = (on: boolean): React.CSSProperties => ({
-  padding: "3px 10px", fontSize: 12, borderRadius: 6, cursor: "pointer",
+  padding: "3px 10px", fontSize: 14, borderRadius: 6, cursor: "pointer",
   border: `1px solid ${on ? "#38bdf8" : "#334155"}`, background: on ? "#0c4a6e" : "transparent", color: on ? "#e0f2fe" : "#94a3b8",
 });
 
@@ -32,7 +32,7 @@ export default function AnalysisDrawer(props: {
   const [tab, setTab] = useState<(typeof TABS)[number]>("时间序列");
   return (
     <aside data-testid="analysis-drawer" style={{
-      position: "absolute", top: 0, right: 0, bottom: 0, width: "min(420px, 92vw)",
+      position: "absolute", top: 0, right: 0, bottom: 0, width: "min(560px, 95vw)",
       background: "rgba(8, 15, 30, 0.96)", borderLeft: "1px solid #1e293b",
       padding: 12, overflowY: "auto", zIndex: 30,
     }}>
