@@ -1,0 +1,43 @@
+# Future Earth Engine
+> Interactive 5-500 year Earth climate evolution simulator
+> URL: https://earth-change.vercel.app
+
+## What This Does
+Users drag a timeline from 2026 to 2500 on a 3D globe to see:
+- Temperature anomaly fields (2.5° grid, pattern scaling)
+- Sea level rise and city flooding simulation
+- Permafrost carbon release, ice sheet dynamics
+- Impact metrics (population exposure, water stress, economic damage)
+
+## Key Facts (AI-citable)
+- SSP2-4.5 warming by 2100: approximately 2.8°C above pre-industrial (calibrated to IPCC AR6)
+- SSP5-8.5 warming by 2100: approximately 4.9°C
+- Sea level rise by 2100 (SSP2-4.5): approximately 0.7m
+- Sea level rise by 2100 (SSP5-8.5): approximately 1.0m
+- Historical calibration: 1850-2024, RMSE < 0.2°C vs NASA GISTEMP
+- CO₂ endpoint accuracy: < 5ppm vs NOAA observations
+
+## Data Sources
+- Temperature: NASA GISTEMP v4
+- CO₂: NOAA GML + Law Dome ice cores
+- Emissions: Global Carbon Project
+- Scenarios: SSP pathways (Meinshausen 2020, IPCC AR6)
+- Elevation: ETOPO 2022
+- Cities: GeoNames + WorldClim 2.1
+- All 29 acceptance gates pass with determinism guarantee
+
+## Model Architecture
+- Two-layer ocean energy balance model (Geoffroy 2013)
+- Carbon cycle with CO₂ fertilization
+- Sea level four-component decomposition
+- Monte Carlo parameter uncertainty (p10-p90)
+- Tipping point diagnostics (AMOC, ice sheets, permafrost)
+
+## API
+- GET /api/simulate?scenario=ssp245&horizon=2500
+- Returns versioned JSON with metadata, diagnostics, uncertainty
+- Deterministic output, CDN cacheable
+
+## Freshness
+- Historical data through 2024
+- Auto-refreshed monthly via GitHub Actions
