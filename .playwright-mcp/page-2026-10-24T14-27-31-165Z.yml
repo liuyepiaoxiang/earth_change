@@ -1,0 +1,31 @@
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e3]:
+      - strong [ref=e4]: 🌍 未来地球引擎
+      - navigation [ref=e5]:
+        - generic [ref=e6]: 地球
+        - link "要素总览" [ref=e7] [cursor=pointer]:
+          - /url: /overview
+      - generic [ref=e8]:
+        - button "SSP1-2.6" [ref=e9] [cursor=pointer]
+        - button "SSP2-4.5" [ref=e10] [cursor=pointer]
+        - button "SSP3-7.0" [ref=e11] [cursor=pointer]
+        - button "SSP5-8.5" [ref=e12] [cursor=pointer]
+      - button "±区间" [ref=e13] [cursor=pointer]
+      - button "📊 分析" [ref=e14] [cursor=pointer]
+      - button "🧪 实验" [ref=e15] [cursor=pointer]
+      - generic [ref=e16]: —
+    - generic [ref=e17]: 引擎装载中…
+    - generic [ref=e20]:
+      - button "播放时间演化" [disabled] [ref=e21]: ▶
+      - generic [ref=e22]: "2026"
+      - slider [disabled] [ref=e23]: "2100"
+      - generic "关键年份":
+        - generic: "|2030"
+        - generic: "|2050"
+        - generic: "|2100"
+        - generic: "|2200"
+        - generic: "|2500"
+      - generic [ref=e24]: "2500"
+      - strong [ref=e25]: "2100"
+  - alert [ref=e26]
