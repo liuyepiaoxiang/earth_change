@@ -1,0 +1,25 @@
+[    1085ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://rdap.identitydigital.services/rdap/domain/future.earth:0
+[    1282ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://rdap.identitydigital.services/favicon.ico:0
+[   16684ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://rdap.identitydigital.services/rdap/domain/future.earth:0
+[   16890ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://rdap.identitydigital.services/rdap/domain/futureearth.app:0
+[   17097ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://rdap.identitydigital.services/rdap/domain/earth2100.com:0
+[   17302ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://rdap.identitydigital.services/rdap/domain/dragfuture.com:0
+[   17507ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://rdap.identitydigital.services/rdap/domain/see-earth.com:0
+[   17726ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://rdap.identitydigital.services/rdap/domain/clima.glass:0
+[   17928ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://rdap.identitydigital.services/rdap/domain/mycity2100.com:0
+[   18364ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://rdap.identitydigital.services/rdap/domain/earthsim.io:0
+[   18574ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://rdap.identitydigital.services/rdap/domain/drag2100.com:0
+[   18780ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://rdap.identitydigital.services/rdap/domain/earthfuture.earth:0
+[   18983ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://rdap.identitydigital.services/rdap/domain/climate.earth:0
+[   19407ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://rdap.identitydigital.services/rdap/domain/seethefuture.earth:0
+[   19611ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://rdap.identitydigital.services/rdap/domain/earthcast.earth:0
+[   19813ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://rdap.identitydigital.services/rdap/domain/geo.earth:0
+[  196697ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ https://rdap.verisign.com/com/v1/domain/dragfuture.com:0
+[  197774ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ https://rdap.verisign.com/com/v1/domain/see-earth.com:0
+[  198871ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ https://rdap.verisign.com/com/v1/domain/mycity2100.com:0
+[  199940ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ https://rdap.verisign.com/com/v1/domain/drag2100.com:0
+[  201337ms] [ERROR] Access to fetch at 'https://www.registry.google/rdap/domain/futureearth.app' from origin 'https://rdap.identitydigital.services' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ https://rdap.identitydigital.services/rdap/domain/future.earth:0
+[  201337ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://www.registry.google/rdap/domain/futureearth.app:0
+[  201553ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://rdap.identitydigital.services/rdap/domain/earthsim.io:0
+[  234846ms] [ERROR] Failed to load resource: net::ERR_EMPTY_RESPONSE @ https://rdap.nominet.uk/futureearth.app:0
+[  236200ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_RESET @ https://pubapi.domain-registry-roundup.com/futureearth.app:0

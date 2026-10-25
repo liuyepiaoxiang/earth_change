@@ -1,0 +1,219 @@
+- generic [active] [ref=f5e1]:
+  - generic [ref=f5e2] [cursor=pointer]
+  - generic [ref=f5e8]:
+    - generic [ref=f5e9]:
+      - banner [ref=f5e10]:
+        - generic [ref=f5e12]:
+          - generic [ref=f5e14]:
+            - button [ref=f5e15] [cursor=pointer]
+            - link [ref=f5e18] [cursor=pointer]:
+              - /url: /
+              - img "NameSilo logo" [ref=f5e19]
+          - generic [ref=f5e21]:
+            - link "Support" [ref=f5e23] [cursor=pointer]:
+              - /url: /support/v2
+            - button [ref=f5e32] [cursor=pointer]
+            - button [ref=f5e37] [cursor=pointer]
+      - main [ref=f5e435]:
+        - generic [ref=f5e436]:
+          - generic [ref=f5e437]:
+            - heading "Search Domain Names – Find Your Perfect Domain" [level=1] [ref=f5e438]
+            - generic [ref=f5e440]:
+              - generic [ref=f5e442]:
+                - link "Single" [ref=f5e444] [cursor=pointer]:
+                  - /url: /domain/search-domains/
+                - link "Bulk" [ref=f5e446] [cursor=pointer]:
+                  - /url: /domain/search-domains/batch
+                - link "AI DomainGenerator" [ref=f5e448] [cursor=pointer]:
+                  - /url: /domain/search-domains/ai
+              - generic [ref=f5e453]:
+                - textbox "Type the domain name or search term" [ref=f5e454]: future.earth
+                - generic [ref=f5e455]:
+                  - button [disabled]
+              - generic [ref=f5e456]:
+                - generic [ref=f5e458]:
+                  - checkbox "Hide Registered" [ref=f5e459]
+                  - text: Hide Registered
+                - generic [ref=f5e461]:
+                  - checkbox "Hide Premium" [ref=f5e462]
+                  - text: Hide Premium
+                - generic [ref=f5e464]:
+                  - checkbox "All TLDs" [ref=f5e465]
+                  - text: All TLDs
+                - button "Show Advanced Search" [ref=f5e467] [cursor=pointer]
+          - generic [ref=f5e474]:
+            - generic [ref=f5e475]: NameSilo - The First and Last Stop in Your Domain Name Search
+            - generic [ref=f5e476]: Affordable Domain Names with Top-notch Security and Support.
+            - generic [ref=f5e477]:
+              - generic [ref=f5e479]:
+                - img "Extensive Domain Selection" [ref=f5e480]
+                - generic [ref=f5e481]: Extensive Domain Selection
+                - generic [ref=f5e482]: Hundreds of domain extensions to choose from (.com, .org, .net, and various gTLDs).
+              - generic [ref=f5e484]:
+                - img "Competitive Pricing"
+                - generic [ref=f5e485]: Competitive Pricing
+                - generic [ref=f5e486]: Competitive prices, promotions, and an unparalleled savings opportunity through our Discount Program
+              - generic [ref=f5e488]:
+                - img "Seamless Domain Registration"
+                - generic [ref=f5e489]: Seamless Domain Registration
+                - generic [ref=f5e490]: Simple and user-friendly registration process.
+              - generic [ref=f5e492]:
+                - img "Free Features"
+                - generic [ref=f5e493]: Free Features
+                - generic [ref=f5e494]: Free WHOIS privacy, email forwarding, DNS management, and domain defender with all domain registrations.
+              - generic [ref=f5e496]:
+                - img "Top-rated Security"
+                - generic [ref=f5e497]: Top-rated Security
+                - generic [ref=f5e498]: Emphasize secure transactions and domain privacy protection.
+          - generic [ref=f5e500]:
+            - generic [ref=f5e501]: How to Choose The Perfect Domain Name
+            - generic [ref=f5e504]:
+              - generic [ref=f5e505]:
+                - generic [ref=f5e506]:
+                  - generic [ref=f5e507]: Keep it Short & Sweet
+                  - generic [ref=f5e508]: Aim for a domain name between 6-14 characters for better memorability and ease of typing.
+                - generic [ref=f5e509]:
+                  - generic [ref=f5e510]: Clarity is King
+                  - generic [ref=f5e511]: Make sure your domain name is easy to spell and pronounce to avoid confusion.
+                - generic [ref=f5e512]:
+                  - generic [ref=f5e513]: Brandability is Key
+                  - generic [ref=f5e514]: Choose a name that reflects your brand identity and is unique.
+                - generic [ref=f5e515]:
+                  - generic [ref=f5e516]: Think about the Future
+                  - generic [ref=f5e517]: Select a domain name that allows room for growth as your business evolves.
+              - link "Search Now" [ref=f5e519] [cursor=pointer]:
+                - /url: "#search-form"
+          - generic [ref=f5e521]:
+            - generic [ref=f5e522]: Popular Domain Extensions
+            - generic [ref=f5e523]:
+              - generic [ref=f5e525]:
+                - generic [ref=f5e526]:
+                  - img ".com"
+                - generic [ref=f5e527]: The .com extension is one of the oldest open TLDs on the Internet. It was first used in 1985 and meant to represent commercial entities. It has since become the most used extension for all types of websites, including nonprofits, educational institutions, and individuals.
+              - generic [ref=f5e529]:
+                - generic [ref=f5e530]:
+                  - img ".net"
+                - generic [ref=f5e531]: This open TLD was first introduced in 1985 and was intended for organizations involved in networking technologies. The .net extension has since become the world's second most common general top-level domain extension after .com.
+              - generic [ref=f5e533]:
+                - generic [ref=f5e534]:
+                  - img ".org"
+                - generic [ref=f5e535]: This generic TLD extension was introduced in 1985 for organizations that didn't fit into other extensions. Although it is still primarily used by non-profits, communities, and open-source projects, it is an open TLD, and anyone can use it.
+              - generic [ref=f5e537]:
+                - generic [ref=f5e538]:
+                  - img ".co"
+                - generic [ref=f5e539]: The .co extension, introduced in 1991, is the Internet country-code top-level domain (ccTLD) assigned to Colombia. Despite this, many people do not associate it with the country and consider it similar to the .com extension. Consequently, Google treats .co as a generic top-level domain (gTLD). There are no restrictions, allowing anyone worldwide to register a .co domain.
+              - generic [ref=f5e541]:
+                - generic [ref=f5e542]:
+                  - img ".xyz"
+                - generic [ref=f5e543]: The .xyz extension launched in 2014 as a fresh, versatile option for individuals and organizations worldwide. As an open TLD, it's been embraced by startups, tech innovators, artists, and everyday users looking for a modern and memorable domain.
+            - link "Search Now" [ref=f5e545] [cursor=pointer]:
+              - /url: "#search-form"
+          - generic [ref=f5e547]:
+            - generic [ref=f5e548]: Not sure where to start? This might help you!
+            - generic [ref=f5e549]:
+              - generic [ref=f5e551]:
+                - 'link "Domain Essentials: A Beginner’s Guide for Seamless Domain Registration" [ref=f5e552] [cursor=pointer]':
+                  - /url: https://www.namesilo.com/blog/domain-management/a-beginners-guide-for-domain-registration
+                - generic [ref=f5e554]:
+                  - generic [ref=f5e555]: NameSilo Staff
+                  - generic [ref=f5e556]: 9 June, 2024
+              - generic [ref=f5e558]:
+                - link "How Does Domain Pricing Work?" [ref=f5e559] [cursor=pointer]:
+                  - /url: https://www.namesilo.com/blog/domain-names/how-does-domain-pricing-work
+                - generic [ref=f5e561]:
+                  - generic [ref=f5e562]: NameSilo Staff
+                  - generic [ref=f5e563]: Oct 13, 2023
+              - generic [ref=f5e565]:
+                - link "What Happens After You Back Order Domains?" [ref=f5e566] [cursor=pointer]:
+                  - /url: https://www.namesilo.com/blog/domain-names/what-happens-after-you-back-order-domains
+                - generic [ref=f5e568]:
+                  - generic [ref=f5e569]: NameSilo Staff
+                  - generic [ref=f5e570]: Sep 26, 2023
+          - generic [ref=f5e572]:
+            - generic [ref=f5e573]: Still have questions?
+            - generic [ref=f5e574]: Check out our frequently asked questions.
+            - generic [ref=f5e575]:
+              - button "What is a domain name?" [ref=f5e578] [cursor=pointer]
+              - button "What happens if the domain name I want is unavailable?" [ref=f5e583] [cursor=pointer]
+              - button "How do I search for a domain name on NameSilo?" [ref=f5e588] [cursor=pointer]
+              - button "What happens after I find a domain name I like?" [ref=f5e593] [cursor=pointer]
+              - button "How long does it take to register a domain name?" [ref=f5e598] [cursor=pointer]
+              - button "Can I buy a domain name for multiple years?" [ref=f5e603] [cursor=pointer]
+              - button "What happens after I register a domain name?" [ref=f5e608] [cursor=pointer]
+              - button "Do you offer WHOIS privacy protection?" [ref=f5e613] [cursor=pointer]
+              - button "How can I manage my domain name settings?" [ref=f5e618] [cursor=pointer]
+              - button "What security measures do you have in place to protect my domain?" [ref=f5e623] [cursor=pointer]
+            - generic [ref=f5e627]:
+              - text: Still have questions?
+              - link "Contact Us" [ref=f5e628] [cursor=pointer]:
+                - /url: /contact-us
+      - contentinfo [ref=f5e353]:
+        - generic [ref=f5e355]:
+          - generic [ref=f5e356]:
+            - link [ref=f5e357] [cursor=pointer]:
+              - /url: /
+              - img "NameSilo logo" [ref=f5e358]
+            - generic [ref=f5e359]: Fewer than 10 registrars worldwide manage over 5 million active domains, and we are proud to be part of this exclusive group.
+            - generic [ref=f5e360]:
+              - link [ref=f5e361] [cursor=pointer]:
+                - /url: https://twitter.com/namesilo
+              - link [ref=f5e364] [cursor=pointer]:
+                - /url: https://www.linkedin.com/company/namesilo
+              - link [ref=f5e367] [cursor=pointer]:
+                - /url: https://www.facebook.com/namesilo
+              - link [ref=f5e370] [cursor=pointer]:
+                - /url: https://www.youtube.com/channel/UCvS6kaUQdpfzz9j3OaJRQ7g
+          - generic [ref=f5e373]:
+            - generic [ref=f5e374]: SHOPPING
+            - generic [ref=f5e375]:
+              - link "Loyalty Program" [ref=f5e377] [cursor=pointer]:
+                - /url: /loyalty-program
+              - link "Domains" [ref=f5e379] [cursor=pointer]:
+                - /url: /domain/search-domains
+              - link "Transfer a Domain" [ref=f5e381] [cursor=pointer]:
+                - /url: /domain/transfer-domains
+              - link "Marketplace" [ref=f5e383] [cursor=pointer]:
+                - /url: /marketplace
+              - link "Pricing" [ref=f5e385] [cursor=pointer]:
+                - /url: /pricing
+          - generic [ref=f5e386]:
+            - generic [ref=f5e387]: ACCOUNT
+            - generic [ref=f5e388]:
+              - link "Create Account" [ref=f5e390] [cursor=pointer]:
+                - /url: /sign-up
+              - link "Login" [ref=f5e392] [cursor=pointer]:
+                - /url: /login
+          - generic [ref=f5e393]:
+            - generic [ref=f5e394]: SUPPORT
+            - generic [ref=f5e395]:
+              - link "Support Catalog" [ref=f5e397] [cursor=pointer]:
+                - /url: /support/v2
+              - link "Contact Us" [ref=f5e399] [cursor=pointer]:
+                - /url: /contact-us
+              - link "RDAP Disclosure Request Form" [ref=f5e401] [cursor=pointer]:
+                - /url: /support/rdap
+              - link "WHOIS" [ref=f5e403] [cursor=pointer]:
+                - /url: /whois
+              - link "Live Chat" [ref=f5e405] [cursor=pointer]:
+                - /url: "#"
+          - generic [ref=f5e406]:
+            - link "BLOG" [ref=f5e408] [cursor=pointer]:
+              - /url: /blog
+            - link "INVESTORS" [ref=f5e410] [cursor=pointer]:
+              - /url: /investors/
+        - generic [ref=f5e411]: ©2009-2026 NameSilo, LLC · All Rights Reserved.
+        - generic [ref=f5e412]:
+          - generic [ref=f5e413]:
+            - generic [ref=f5e414]: Shopping Cart
+            - button [ref=f5e415] [cursor=pointer]
+          - generic [ref=f5e419]:
+            - generic [ref=f5e420]: Your cart is empty.
+            - link "Start Shopping" [ref=f5e421] [cursor=pointer]:
+              - /url: /domain/search-domains
+    - generic [ref=f5e424]:
+      - generic [ref=f5e426]:
+        - generic [ref=f5e427]: We value your privacy
+        - generic [ref=f5e428]: We use cookies to enhance your browsing experience, serve personalized ads or content, and analyze our traffic. By clicking "Accept All", you consent to our use of cookies.
+      - button "Customize" [ref=f5e430] [cursor=pointer]
+      - button "Accept All" [ref=f5e432] [cursor=pointer]
+      - button "Accept Necessary" [ref=f5e434] [cursor=pointer]

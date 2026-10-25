@@ -7,6 +7,9 @@ const SITE_DESC = "拖动时间轴看地球从 2026 到 2500 年的变化——3
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+  verification: {
+    google: "Cv8r7GjGtspf_LKoBf3B0bTODUPGzf7J4aZocHAQStw",
+  },
   title: {
     default: `${SITE_NAME} — 互动气候模拟器`,
     template: `%s | ${SITE_NAME}`,

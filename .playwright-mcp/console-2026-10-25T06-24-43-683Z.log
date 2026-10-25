@@ -1,0 +1,10 @@
+[     514ms] [LOG] Client mode @ https://www.namesilo.com/spa/search-domains/js/app.3fef709f.js:0
+[     541ms] [LOG] mount @ https://www.namesilo.com/spa/search-domains/js/chunk-vendors.551be434.js:23
+[    2026ms] [LOG] SearchDomainService exact @ https://www.namesilo.com/spa/search-domains/js/chunk-vendors.551be434.js:23
+[    2026ms] [LOG] SearchDomainService simple @ https://www.namesilo.com/spa/search-domains/js/chunk-vendors.551be434.js:23
+[    2026ms] [LOG] SearchDomainService mix @ https://www.namesilo.com/spa/search-domains/js/chunk-vendors.551be434.js:23
+[    2026ms] [LOG] SearchDomainService aiSearch @ https://www.namesilo.com/spa/search-domains/js/chunk-vendors.551be434.js:23
+[    2038ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://www.namesilo.com/ai/widget/ai-chat-widget.mjs:0
+[    2768ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ https://www.namesilo.com/static/assets/img/icons/22.svg:0
+[    2769ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ https://www.namesilo.com/static/assets/img/brands/net.svg:0
+[    2769ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ https://www.namesilo.com/static/assets/img/brands/co.svg:0

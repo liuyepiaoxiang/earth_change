@@ -1,0 +1,545 @@
+- generic [active] [ref=f10e1]:
+  - navigation [ref=f10e2]:
+    - generic [ref=f10e3]:
+      - link [ref=f10e4] [cursor=pointer]:
+        - /url: "#"
+        - img "SleepNova" [ref=f10e5]
+      - generic [ref=f10e6]:
+        - button [ref=f10e8] [cursor=pointer]
+        - button "中文" [ref=f10e12] [cursor=pointer]
+        - button "Open menu" [ref=f10e19] [cursor=pointer]
+  - main [ref=f10e23]:
+    - generic [ref=f10e26]:
+      - heading "Bulk Mattress Manufacturer for Hotels & Global Buyers" [level=1] [ref=f10e27]:
+        - generic [ref=f10e28]: Bulk Mattress
+        - generic [ref=f10e29]: Manufacturer
+        - generic [ref=f10e30]: for Hotels & Global Buyers
+      - paragraph [ref=f10e31]: SleepNova manufactures OEM and ODM mattresses for hotels, distributors, retailers, and project buyers with 30+ years of experience, 30,000+ monthly units, and worldwide delivery from Foshan, China.
+      - generic [ref=f10e33]:
+        - link "Get Quote" [ref=f10e34] [cursor=pointer]:
+          - /url: "#rfq"
+        - link "WhatsApp" [ref=f10e35] [cursor=pointer]:
+          - /url: https://wa.me/19118831439
+      - generic [ref=f10e36]:
+        - generic [ref=f10e37]:
+          - generic [ref=f10e38]: 30+
+          - generic [ref=f10e39]: Years Heritage
+        - generic [ref=f10e40]:
+          - generic [ref=f10e41]: 30,000+
+          - generic [ref=f10e42]: Monthly Units
+        - generic [ref=f10e43]:
+          - generic [ref=f10e44]: OEM
+          - generic [ref=f10e45]: Custom Solutions
+        - generic [ref=f10e46]:
+          - generic [ref=f10e47]: 65+
+          - generic [ref=f10e48]: Countries
+    - region [ref=f10e49]:
+      - generic [ref=f10e50]:
+        - generic [ref=f10e51]: Cooperative Brands & Certifications
+        - heading "Cooperative Brands & Certifications" [level=2] [ref=f10e52]
+      - list "Certifications" [ref=f10e104]:
+        - listitem [ref=f10e105]: ISO 9001:2015
+        - listitem [ref=f10e106]: ISO 14001
+        - listitem [ref=f10e107]: OEKO-TEX Standard 100
+        - listitem [ref=f10e108]: CertiPUR-US
+        - listitem [ref=f10e109]: BS 5852
+        - listitem [ref=f10e110]: CFR 1633
+        - listitem [ref=f10e111]: QB/T 1952.2-2011
+        - listitem [ref=f10e112]: AAA Enterprise Credit
+        - listitem [ref=f10e113]: Environmental Product Certification
+        - listitem [ref=f10e114]: China Green Product
+        - listitem [aria-hidden] [ref=f10e115]: ISO 9001:2015
+        - listitem [aria-hidden] [ref=f10e116]: ISO 14001
+        - listitem [aria-hidden] [ref=f10e117]: OEKO-TEX Standard 100
+        - listitem [aria-hidden] [ref=f10e118]: CertiPUR-US
+        - listitem [aria-hidden] [ref=f10e119]: BS 5852
+        - listitem [aria-hidden] [ref=f10e120]: CFR 1633
+        - listitem [aria-hidden] [ref=f10e121]: QB/T 1952.2-2011
+        - listitem [aria-hidden] [ref=f10e122]: AAA Enterprise Credit
+        - listitem [aria-hidden] [ref=f10e123]: Environmental Product Certification
+        - listitem [aria-hidden] [ref=f10e124]: China Green Product
+    - generic [ref=f10e126]:
+      - generic [ref=f10e127]: Sector Optimization
+      - heading "Tailored Solutions for Your Business" [level=2] [ref=f10e128]
+      - generic [ref=f10e129]:
+        - generic [ref=f10e130]:
+          - generic [ref=f10e131]: "01"
+          - heading "Hotels & Resorts" [level=3] [ref=f10e132]
+          - paragraph [ref=f10e133]: Durable, high-comfort mattresses for peak guest rotation and long-term hospitality operations.
+          - link "Enquire" [ref=f10e134] [cursor=pointer]:
+            - /url: "#rfq"
+        - generic [ref=f10e135]:
+          - generic [ref=f10e136]: "02"
+          - heading "Airbnb & Rental" [level=3] [ref=f10e137]
+          - paragraph [ref=f10e138]: Standardized comfort for universal appeal. Maximize reviews with optimized costs.
+          - link "Enquire" [ref=f10e139] [cursor=pointer]:
+            - /url: "#rfq"
+        - generic [ref=f10e140]:
+          - generic [ref=f10e141]: "03"
+          - heading "Distributors" [level=3] [ref=f10e142]
+          - paragraph [ref=f10e143]: Scalable private-label supply. We produce; you own the brand.
+          - link "Enquire" [ref=f10e144] [cursor=pointer]:
+            - /url: "#rfq"
+        - generic [ref=f10e145]:
+          - generic [ref=f10e146]: "04"
+          - heading "Retail & E-commerce" [level=3] [ref=f10e147]
+          - paragraph [ref=f10e148]: Compression-packaged mattresses for Amazon, Shopify, and DTC logistics.
+          - link "Enquire" [ref=f10e149] [cursor=pointer]:
+            - /url: "#rfq"
+    - generic [ref=f10e151]:
+      - generic [ref=f10e152]:
+        - generic [ref=f10e153]: 产品体系
+        - heading "为性能而生" [level=2] [ref=f10e154]
+        - paragraph [ref=f10e155]: 从标准酒店供货到奢华套房——满足各类睡眠需求的专业床垫解决方案。
+      - tablist "产品体系" [ref=f10e156]:
+        - tab "床垫系列" [selected] [ref=f10e157] [cursor=pointer]
+      - tabpanel "床垫系列" [ref=f10e158]:
+        - generic [ref=f10e159]:
+          - article [ref=f10e160]:
+            - img "Pocket Essential 床垫" [ref=f10e162]
+            - generic [ref=f10e163]: 经济型
+            - heading "袋装弹簧基础款" [level=3] [ref=f10e164]
+            - paragraph [ref=f10e165]: 可靠的袋装弹簧支撑，环保海绵舒适层，适用于大批量酒店与零售供货。
+            - generic [ref=f10e166]:
+              - generic [ref=f10e167]: 芯材
+              - generic [ref=f10e168]: 独立袋装弹簧
+            - generic [ref=f10e169]:
+              - generic [ref=f10e170]: 舒适层
+              - generic [ref=f10e171]: 环保海绵+舒适海绵
+            - generic [ref=f10e172]:
+              - generic [ref=f10e173]: 高度
+              - generic [ref=f10e174]: 21–25 cm
+            - generic [ref=f10e175]:
+              - generic [ref=f10e176]: 硬度
+              - generic [ref=f10e177]: 适中
+            - link "获取报价" [ref=f10e179] [cursor=pointer]:
+              - /url: "#rfq"
+          - article [ref=f10e180]:
+            - img "Comfort Plus 床垫" [ref=f10e182]
+            - generic [ref=f10e183]: 标准系列
+            - heading "舒适升级款" [level=3] [ref=f10e184]
+            - paragraph [ref=f10e185]: 加强型支撑系统配以高回弹海绵——平衡的舒适感，适用于各类商业用途。
+            - generic [ref=f10e186]:
+              - generic [ref=f10e187]: 芯材
+              - generic [ref=f10e188]: 加强型弹簧
+            - generic [ref=f10e189]:
+              - generic [ref=f10e190]: 舒适层
+              - generic [ref=f10e191]: 高回弹海绵
+            - generic [ref=f10e192]:
+              - generic [ref=f10e193]: 高度
+              - generic [ref=f10e194]: 26–28 cm
+            - generic [ref=f10e195]:
+              - generic [ref=f10e196]: 硬度
+              - generic [ref=f10e197]: 适中
+            - link "获取报价" [ref=f10e199] [cursor=pointer]:
+              - /url: "#rfq"
+          - article [ref=f10e200]:
+            - img "Hybrid Hospitality 床垫" [ref=f10e202]
+            - generic [ref=f10e203]: 高端系列
+            - heading "混合酒店款" [level=3] [ref=f10e204]
+            - paragraph [ref=f10e205]: 防起球针织面料，高密舒适海绵多层结构，专为四至五星级酒店设计。
+            - generic [ref=f10e206]:
+              - generic [ref=f10e207]: 芯材
+              - generic [ref=f10e208]: 独立袋装弹簧
+            - generic [ref=f10e209]:
+              - generic [ref=f10e210]: 舒适层
+              - generic [ref=f10e211]: 多层高密海绵
+            - generic [ref=f10e212]:
+              - generic [ref=f10e213]: 高度
+              - generic [ref=f10e214]: 30 cm
+            - generic [ref=f10e215]:
+              - generic [ref=f10e216]: 硬度
+              - generic [ref=f10e217]: 偏硬
+            - link "获取报价" [ref=f10e219] [cursor=pointer]:
+              - /url: "#rfq"
+          - article [ref=f10e220]:
+            - img "Gel Memory Elite 床垫" [ref=f10e222]
+            - generic [ref=f10e223]: 奢华系列
+            - heading "凝胶记忆旗舰" [level=3] [ref=f10e224]
+            - paragraph [ref=f10e225]: 凝胶记忆棉+分体床网——极致释压与凉感体验，为奢华套房打造。
+            - generic [ref=f10e226]:
+              - generic [ref=f10e227]: 芯材
+              - generic [ref=f10e228]: 分体床网
+            - generic [ref=f10e229]:
+              - generic [ref=f10e230]: 舒适层
+              - generic [ref=f10e231]: 凝胶记忆棉
+            - generic [ref=f10e232]:
+              - generic [ref=f10e233]: 高度
+              - generic [ref=f10e234]: 33 cm
+            - generic [ref=f10e235]:
+              - generic [ref=f10e236]: 硬度
+              - generic [ref=f10e237]: 柔软
+            - link "获取报价" [ref=f10e239] [cursor=pointer]:
+              - /url: "#rfq"
+          - article [ref=f10e240]:
+            - img "全定制睡眠方案" [ref=f10e242]
+            - generic [ref=f10e243]: 定制系列
+            - heading "全定制睡眠方案" [level=3] [ref=f10e244]
+            - paragraph [ref=f10e245]: 全方位定制方案：尺寸、材质及软硬度均可按需调整，满足精品酒店及独特品牌需求。
+            - generic [ref=f10e246]:
+              - generic [ref=f10e247]: 芯材
+              - generic [ref=f10e248]: 按需定制
+            - generic [ref=f10e249]:
+              - generic [ref=f10e250]: 舒适层
+              - generic [ref=f10e251]: 定制选材
+            - generic [ref=f10e252]:
+              - generic [ref=f10e253]: 高度
+              - generic [ref=f10e254]: 按需定制
+            - generic [ref=f10e255]:
+              - generic [ref=f10e256]: 硬度
+              - generic [ref=f10e257]: 多级可选
+            - link "获取报价" [ref=f10e259] [cursor=pointer]:
+              - /url: "#rfq"
+          - article [ref=f10e260]:
+            - img "盒装床垫" [ref=f10e262]
+            - generic [ref=f10e263]: 卷包系列
+            - heading "盒装床垫" [level=3] [ref=f10e264]
+            - paragraph [ref=f10e265]: 真空压缩卷包床垫——适配电商、零售及高效仓储物流。
+            - generic [ref=f10e266]:
+              - generic [ref=f10e267]: 芯材
+              - generic [ref=f10e268]: 独立袋装弹簧
+            - generic [ref=f10e269]:
+              - generic [ref=f10e270]: 舒适层
+              - generic [ref=f10e271]: 环保海绵+舒适海绵
+            - generic [ref=f10e272]:
+              - generic [ref=f10e273]: 高度
+              - generic [ref=f10e274]: 22 cm
+            - generic [ref=f10e275]:
+              - generic [ref=f10e276]: 硬度
+              - generic [ref=f10e277]: 适中
+            - link "获取报价" [ref=f10e279] [cursor=pointer]:
+              - /url: "#rfq"
+    - generic [ref=f10e280]:
+      - img "SleepNova mattress manufacturing workshop in Foshan" [ref=f10e282]
+      - generic [ref=f10e284]:
+        - generic [ref=f10e285]:
+          - generic [ref=f10e286]: Manufacturing Power
+          - heading "Global Scale, Local Precision" [level=2] [ref=f10e287]
+          - paragraph [ref=f10e288]: Operating from our 200,000 m² state-of-the-art facility in Foshan, China, we combine 30+ years of heritage with fully automated production lines to deliver excellence at scale. From 70# high-carbon steel spring winding to multi-layer comfort assembly, every step is controlled in-house.
+          - list [ref=f10e289]:
+            - listitem [ref=f10e290]: 70# high-carbon steel pocket spring assembly lines
+            - listitem [ref=f10e291]: Zero-glue environmental bonding technology
+            - listitem [ref=f10e292]: Full-cycle quality control laboratory (QB/T 1952.2-2011)
+            - listitem [ref=f10e293]: Compressed roll-pack automation for e-commerce
+            - listitem [ref=f10e294]: From spring winding to final packaging — 100% in-house
+            - listitem [ref=f10e295]: Multi-temperature heat-treated springs for 80,000+ cycle durability
+        - generic [ref=f10e296]:
+          - generic [ref=f10e297]:
+            - generic [ref=f10e298]: 200,000
+            - generic [ref=f10e299]: Factory Area (m²)
+          - generic [ref=f10e300]:
+            - generic [ref=f10e301]: 30+
+            - generic [ref=f10e302]: Years Experience
+          - generic [ref=f10e303]:
+            - generic [ref=f10e304]: 1,200
+            - generic [ref=f10e305]: Daily Capacity
+          - generic [ref=f10e306]:
+            - generic [ref=f10e307]: 300+
+            - generic [ref=f10e308]: Skilled Workers
+          - generic [ref=f10e309]:
+            - generic [ref=f10e310]: 65+
+            - generic [ref=f10e311]: Exporting Countries
+          - generic [ref=f10e312]:
+            - generic [ref=f10e313]: 30,000+
+            - generic [ref=f10e314]: Global Projects
+    - generic [ref=f10e316]:
+      - generic [ref=f10e317]:
+        - generic [ref=f10e318]: Why SleepNova
+        - heading "Built for Long-Term Use, Not Short-Term Sales" [level=2] [ref=f10e319]
+        - paragraph [ref=f10e320]: 30+ years of hotel mattress engineering means every material choice, every spring gauge, and every foam density is selected for real-world durability — not showroom impressions.
+      - generic [ref=f10e321]:
+        - generic [ref=f10e322]:
+          - generic [ref=f10e323]: "01"
+          - heading "80,000+ Cycle Durability" [level=3] [ref=f10e324]
+          - paragraph [ref=f10e325]: 70# high-carbon steel springs undergo multi-temperature heat treatment, achieving 2.6× the national standard (QB/T 1952.2-2011 requires 30,000 cycles). This means years of consistent support even under high-rotation hotel use.
+        - generic [ref=f10e326]:
+          - generic [ref=f10e327]: "02"
+          - heading "Zero Motion Transfer" [level=3] [ref=f10e328]
+          - paragraph [ref=f10e329]: Each pocket spring operates independently, eliminating partner disturbance and noise during turning. Combined with high-density isolation pads and non-woven fabric layers, the sleep surface stays stable even on shared beds.
+        - generic [ref=f10e330]:
+          - generic [ref=f10e331]: "03"
+          - heading "Full Custom Capability" [level=3] [ref=f10e332]
+          - paragraph [ref=f10e333]: Non-standard sizes, firmness combinations, branded fabric covers, fire-retardant layers, and packaging — all customizable from 50 units. We support Twin to California King plus EU and custom dimensions.
+        - generic [ref=f10e334]:
+          - generic [ref=f10e335]: "04"
+          - heading "200+ Hotel Brand Trust" [level=3] [ref=f10e336]
+          - paragraph [ref=f10e337]: From Hilton and Marriott to Shangri-La and IHG — 200+ hotel brands and 30,000+ global hotel projects trust our products. This isn't marketing claim; it's decades of consistent delivery, quality, and repeat orders.
+        - generic [ref=f10e338]:
+          - generic [ref=f10e339]: "05"
+          - heading "Fast Global Delivery" [level=3] [ref=f10e340]
+          - paragraph [ref=f10e341]: 25–35 day production lead time. Sea freight (FCL/LCL via COSCO, Maersk, ZIM), air freight, and Amazon FBA direct shipping. FOB Guangzhou/Shanghai standard, CIF and DDP available on request.
+        - generic [ref=f10e342]:
+          - generic [ref=f10e343]: "06"
+          - heading "Certified Quality System" [level=3] [ref=f10e344]
+          - paragraph [ref=f10e345]: ISO 9001 quality management, ISO 14001 environmental management, OEKO-TEX Standard 100, CertiPUR-US, and AAA enterprise credit rating. Every mattress passes full-cycle QC from spring to packaging.
+    - generic [ref=f10e347]:
+      - generic [ref=f10e348]: Project Portfolio
+      - heading "Supplying Hotels Across 65+ Countries" [level=2] [ref=f10e349]
+      - paragraph [ref=f10e350]: Real projects. Real volumes. On spec, on time.
+      - generic [ref=f10e351]:
+        - generic [ref=f10e352]:
+          - img "M****** S**** Hotel project reference" [ref=f10e354]
+          - generic [ref=f10e355]: Middle East
+          - heading "M****** S**** Hotel" [level=3] [ref=f10e356]
+          - paragraph [ref=f10e357]: 2,000 Units · Custom Firmness · Premium Series
+        - generic [ref=f10e358]:
+          - img "N***** R*** Group OEM supply reference" [ref=f10e360]
+          - generic [ref=f10e361]: Northern Europe
+          - heading "N***** R*** Group" [level=3] [ref=f10e362]
+          - paragraph [ref=f10e363]: 12,000 Units/yr · White Label · Full OEM
+        - generic [ref=f10e364]:
+          - img "A**** B** Resort project reference" [ref=f10e366]
+          - generic [ref=f10e367]: Southeast Asia
+          - heading "A**** B** Resort" [level=3] [ref=f10e368]
+          - paragraph [ref=f10e369]: 450 Units · Luxury Tier
+    - region [ref=f10e370]:
+      - generic [ref=f10e371]:
+        - generic [ref=f10e372]:
+          - generic [ref=f10e373]: 常见问题
+          - heading "我们如何助力您的成功" [level=2] [ref=f10e374]
+        - generic [ref=f10e375]:
+          - article [ref=f10e376]:
+            - button "最低起订量（MOQ）是多少？" [ref=f10e377] [cursor=pointer]
+            - region "最低起订量（MOQ）是多少？":
+              - generic [ref=f10e380]: 酒店和 OEM 产品——每个 SKU 50 件。电子商务和批发——每个 SKU 100 件。代发货计划——无最低限制，按件计价。1–3 件的样品订单随时按样品价格提供。
+          - article [ref=f10e381]:
+            - button "可以在下大订单前订购样品吗？" [ref=f10e382] [cursor=pointer]
+            - region "可以在下大订单前订购样品吗？":
+              - generic [ref=f10e385]: 是的。样品交期为 7–10 个工作日。运费由买方承担。对于符合条件的批量订单，样品费可以抵扣。我们建议同时测试多个软硬度选项。
+          - article [ref=f10e386]:
+            - button "OEM 定制包含哪些内容？" [ref=f10e387] [cursor=pointer]
+            - region "OEM 定制包含哪些内容？":
+              - generic [ref=f10e390]: 尺寸（标准、房车、游艇、酒店专用）、材料规格（弹簧类型、圈数、海绵密度/ILD）、软硬度级别、面料（标准或买方提供）、品牌标签（织标、印标、绣花）以及包装（定制纸箱或零售包装）。
+          - article [ref=f10e391]:
+            - button "生产交期是多少？" [ref=f10e392] [cursor=pointer]
+            - region "生产交期是多少？":
+              - generic [ref=f10e395]: 标准：30% 定金后 25–35 个工作日。2000+ 件可能需要 35–45 天。春节增加 10–14 天。第 7、14、21 天更新进度；可安排第三方出货前质检。
+          - article [ref=f10e396]:
+            - button "提供哪些物流方式？" [ref=f10e397] [cursor=pointer]
+            - region "提供哪些物流方式？":
+              - generic [ref=f10e400]: 海运整柜/拼柜（COSCO、Maersk、ZIM），快递（DHL、FedEx、顺丰），加急空运，Amazon FBA 直发。报价基于 FOB 广州/上海，可安排 CIF 和 DDP 或自行安排物流。
+          - article [ref=f10e401]:
+            - button "产品有哪些认证？" [ref=f10e402] [cursor=pointer]
+            - region "产品有哪些认证？":
+              - generic [ref=f10e405]: ISO 9001:2015（质量管理）、ISO 14001（环境管理）、OEKO-TEX Standard 100（面料与填充）、CertiPUR-US（凝胶记忆棉）、AAA 企业信用、QB/T 1952.2-2011（超国标 2.6 倍）。BS 5852、CFR 1633、SGS 和 BV 报告可按需提供。
+          - article [ref=f10e406]:
+            - button "付款方式是什么？" [ref=f10e407] [cursor=pointer]
+            - region "付款方式是什么？":
+              - generic [ref=f10e410]: 30% 定金 + 70% 发货前。接受 T/T、即期信用证、Western Union（样品）。默认美元，国内客户可用人民币。
+          - article [ref=f10e411]:
+            - button "我可以要求定制尺寸吗？" [ref=f10e412] [cursor=pointer]
+            - region "我可以要求定制尺寸吗？":
+              - generic [ref=f10e415]: 是的。SleepNova 支持选定项目和渠道订单的标准尺寸、欧标尺寸及定制尺寸。
+          - article [ref=f10e416]:
+            - button "你们提供卷包床垫选项吗？" [ref=f10e417] [cursor=pointer]
+            - region "你们提供卷包床垫选项吗？":
+              - generic [ref=f10e420]: 是的。选定型号支持真空卷包和盒装床垫解决方案。
+          - article [ref=f10e421]:
+            - button "我可以要求防火或凉感配置吗？" [ref=f10e422] [cursor=pointer]
+            - region "我可以要求防火或凉感配置吗？":
+              - generic [ref=f10e425]: 是的。我们可以根据酒店、项目或渠道需求推荐配置。
+          - article [ref=f10e426]:
+            - button "你们提供样品安排吗？" [ref=f10e427] [cursor=pointer]
+            - region "你们提供样品安排吗？":
+              - generic [ref=f10e430]: 是的。可以根据型号、尺寸和包装方向准备样品选项。
+          - article [ref=f10e431]:
+            - button "关于售后？" [ref=f10e432] [cursor=pointer]
+            - region "关于售后？":
+              - generic [ref=f10e435]: 具体以双方实际沟通确定后以合同的方式明确售后服务条款。
+    - generic [ref=f10e437]:
+      - generic [ref=f10e438]:
+        - generic [ref=f10e439]: Client Reviews
+        - heading "Trusted by Global Buyers" [level=2] [ref=f10e440]
+      - generic [ref=f10e441]:
+        - article [ref=f10e442]:
+          - generic "5 out of 5" [ref=f10e443]: ★★★★★
+          - paragraph [ref=f10e444]: We've sourced 8,000+ mattresses from SleepNova over 3 years. Quality is remarkably consistent — zero returns from our hotel clients. Their customized series meets all project requirements with exceptional flexibility and comfort.
+          - generic [ref=f10e445]:
+            - strong [ref=f10e446]: James Mitchell
+            - generic [ref=f10e447]: Procurement Director · US Hotel Group
+        - article [ref=f10e448]:
+          - generic "5 out of 5" [ref=f10e449]: ★★★★★
+          - paragraph [ref=f10e450]: The OEM process was seamless. Custom firmness, branded covers, and EU-standard sizing — all delivered in 30 days. Our white-label mattress line now generates 40% higher margins than our previous supplier.
+          - generic [ref=f10e451]:
+            - strong [ref=f10e452]: Stefan Klein
+            - generic [ref=f10e453]: Managing Director · European Distributor
+        - article [ref=f10e454]:
+          - generic "5 out of 5" [ref=f10e455]: ★★★★★
+          - paragraph [ref=f10e456]: We switched to SleepNova for our resort chain across Southeast Asia. Guest satisfaction scores improved by 15% within the first quarter. The gel memory foam series is especially popular in tropical climates.
+          - generic [ref=f10e457]:
+            - strong [ref=f10e458]: Ananya Patel
+            - generic [ref=f10e459]: Operations VP · Resort Chain, SEA
+    - region [ref=f10e460]:
+      - generic [ref=f10e461]:
+        - heading "Get Your Mattress Solution Today" [level=2] [ref=f10e462]
+        - paragraph [ref=f10e463]: Quote within 24 hours. No commitment.
+        - generic [ref=f10e464]:
+          - link "Get Quote" [ref=f10e465] [cursor=pointer]:
+            - /url: "#rfq"
+          - link "WhatsApp" [ref=f10e466] [cursor=pointer]:
+            - /url: https://wa.me/19118831439
+    - generic [ref=f10e469]:
+      - generic [ref=f10e470]:
+        - generic [ref=f10e471]: 全球询盘
+        - heading "开启您的询价之旅" [level=2] [ref=f10e472]
+        - paragraph [ref=f10e473]: 请告诉我们您的项目需求、偏好的床垫配置、尺寸、数量及目的地。我们将根据您的业务场景准备一份结构化的定制报价。
+        - generic [ref=f10e474]:
+          - generic [ref=f10e475]:
+            - heading "您将收到什么" [level=3] [ref=f10e476]
+            - list [ref=f10e477]:
+              - listitem [ref=f10e478]: 基于您的业务场景的结构化报价
+              - listitem [ref=f10e479]: 推荐的产品方向和尺寸选项
+              - listitem [ref=f10e480]: 必要时提供包装和运输建议
+          - generic [ref=f10e481]:
+            - heading "我们如何报价" [level=3] [ref=f10e482]
+            - list [ref=f10e483]:
+              - listitem [ref=f10e484]: 基于产品结构和规格
+              - listitem [ref=f10e485]: 基于数量和尺寸
+              - listitem [ref=f10e486]: 基于包装和物流方式
+              - listitem [ref=f10e487]: 基于贸易条款和目标交付计划
+          - paragraph [ref=f10e488]: SleepNova 的报价旨在帮助买家更快地进行比较、决策并进入下一步。
+      - generic [ref=f10e490]:
+        - generic [ref=f10e491]:
+          - generic [ref=f10e492]:
+            - generic [ref=f10e493]: 姓名
+            - textbox "如：王伟" [ref=f10e494]
+          - generic [ref=f10e495]:
+            - generic [ref=f10e496]: 公司名称
+            - textbox "如：佳华国际酒店集团有限公司" [ref=f10e497]
+        - generic [ref=f10e498]:
+          - generic [ref=f10e499]:
+            - generic [ref=f10e500]: 商务邮箱
+            - textbox "如：procurement@yourcompany.com" [ref=f10e501]
+          - generic [ref=f10e502]:
+            - generic [ref=f10e503]: 所在国家
+            - textbox "如：阿联酋 / 英国 / 德国" [ref=f10e504]
+        - generic [ref=f10e505]:
+          - generic [ref=f10e506]:
+            - generic [ref=f10e507]: 项目类型
+            - combobox [ref=f10e508]:
+              - option "请选择项目类型" [disabled]
+              - option "酒店" [selected]
+              - option "批发"
+              - option "品牌"
+              - option "电子商务"
+              - option "分销商"
+          - generic [ref=f10e509]:
+            - generic [ref=f10e510]: 预计数量
+            - combobox [ref=f10e511]:
+              - option "请选择数量" [disabled]
+              - option "样品" [selected]
+              - option "试用订单"
+              - option "批量订单"
+        - generic [ref=f10e512]:
+          - generic [ref=f10e513]:
+            - generic [ref=f10e514]: 偏好床垫类型
+            - combobox [ref=f10e515]:
+              - option "请选择床垫类型" [disabled]
+              - option "基础系列 — 袋装弹簧 / 环保海绵" [selected]
+              - option "标准系列 — 加强弹簧 / 高回弹海绵"
+              - option "高端系列 — 袋装弹簧 / 多层高密海绵"
+              - option "奢华系列 — 凝胶记忆棉 / 凉感"
+              - option "定制系列 — 按需定制 / OEM & ODM"
+              - option "卷包系列 — 真空压缩 / 电商物流"
+              - option "不确定 — 需要咨询"
+          - generic [ref=f10e516]:
+            - generic [ref=f10e517]: 厚度
+            - combobox [ref=f10e518]:
+              - option "请选择厚度" [disabled]
+              - option "21cm" [selected]
+              - option "25cm"
+              - option "30cm"
+              - option "33cm"
+              - option "不确定"
+        - generic [ref=f10e519]:
+          - generic [ref=f10e520]:
+            - generic [ref=f10e521]: 尺寸
+            - combobox [ref=f10e522]:
+              - option "请选择尺寸" [disabled]
+              - option "单人" [selected]
+              - option "大号"
+              - option "特大号"
+              - option "欧标尺寸"
+              - option "定制"
+          - generic [ref=f10e523]:
+            - generic [ref=f10e524]: 目的地
+            - textbox "如：上海港 / 迪拜港 / 汉堡" [ref=f10e525]
+        - generic [ref=f10e526]:
+          - generic [ref=f10e527]:
+            - generic [ref=f10e528]: 包装方式
+            - combobox [ref=f10e529]:
+              - option "请选择包装方式" [disabled]
+              - option "平装" [selected]
+              - option "真空卷包"
+              - option "需要建议"
+          - generic [ref=f10e530]:
+            - generic [ref=f10e531]: 时间要求
+            - textbox "如：60天内到货 / 2025年Q3酒店开业" [ref=f10e532]
+        - generic [ref=f10e533]:
+          - generic [ref=f10e534]: 项目细节
+          - textbox "如：500张Queen尺寸独立袋装弹簧床垫，中偏硬，用于五星级酒店翻新。需OEM贴牌，真空卷包，FOB佛山。" [ref=f10e535]
+          - paragraph [ref=f10e536]: 注：我们通常会根据产品类型、数量和交付条件准备一份结构化的回复。
+        - button "提交询价" [ref=f10e537] [cursor=pointer]
+  - contentinfo [ref=f10e538]:
+    - generic [ref=f10e539]:
+      - generic [ref=f10e540]:
+        - generic [ref=f10e541]:
+          - img "SleepNova" [ref=f10e543]
+          - paragraph [ref=f10e544]: 30+ 年佛山床垫制造商，为酒店与全球买家提供 OEM/ODM 服务。
+          - generic [ref=f10e545]:
+            - link "WhatsApp" [ref=f10e546] [cursor=pointer]:
+              - /url: https://wa.me/19118831439
+            - link "TikTok" [ref=f10e550] [cursor=pointer]:
+              - /url: https://www.tiktok.com/@sleepnova.xyz
+            - link "YouTube" [ref=f10e553] [cursor=pointer]:
+              - /url: https://www.youtube.com/@sleepnova-xyz
+            - generic "LinkedIn" [ref=f10e556]
+            - link "Instagram" [ref=f10e559] [cursor=pointer]:
+              - /url: https://www.instagram.com/sleepnova.xyz/
+            - link "Twitter" [ref=f10e562] [cursor=pointer]:
+              - /url: https://x.com/sleepnovaxyz
+            - generic "Facebook" [ref=f10e565]
+        - generic [ref=f10e568]:
+          - heading "产品" [level=4] [ref=f10e569]
+          - link "酒店床垫" [ref=f10e570] [cursor=pointer]:
+            - /url: "#products"
+          - link "卷包床垫" [ref=f10e571] [cursor=pointer]:
+            - /url: "#products"
+          - link "定制床垫" [ref=f10e572] [cursor=pointer]:
+            - /url: "#products"
+        - generic [ref=f10e573]:
+          - heading "公司" [level=4] [ref=f10e574]
+          - link "工厂参观" [ref=f10e575] [cursor=pointer]:
+            - /url: "#factory"
+          - link "客户评价" [ref=f10e576] [cursor=pointer]:
+            - /url: "#reviews"
+          - link "常见问题" [ref=f10e577] [cursor=pointer]:
+            - /url: "#faq"
+        - generic [ref=f10e578]:
+          - heading "联系我们" [level=4] [ref=f10e579]
+          - link "提交询价" [ref=f10e580] [cursor=pointer]:
+            - /url: "#rfq"
+          - link "WhatsApp" [ref=f10e581] [cursor=pointer]:
+            - /url: https://wa.me/19118831439
+          - link "info@sleepnova.xyz" [ref=f10e582] [cursor=pointer]:
+            - /url: mailto:info@sleepnova.xyz
+      - generic [ref=f10e583]:
+        - paragraph [ref=f10e584]: © 2025 SleepNova. All rights reserved.
+        - generic [ref=f10e585]:
+          - link "服务条款" [ref=f10e586] [cursor=pointer]:
+            - /url: "#"
+          - link "隐私政策" [ref=f10e587] [cursor=pointer]:
+            - /url: "#"
+          - link "Cookie 政策" [ref=f10e588] [cursor=pointer]:
+            - /url: "#"
+        - link "回到顶部 ↑" [ref=f10e589] [cursor=pointer]:
+          - /url: "#"
+  - generic [ref=f10e590]:
+    - paragraph [ref=f10e591]:
+      - text: 我们使用 Cookie 来提升您的浏览体验、分析网站流量并个性化内容。点击"接受"即表示您同意我们使用 Cookie。
+      - link "了解更多" [ref=f10e592] [cursor=pointer]:
+        - /url: "#"
+    - generic [ref=f10e593]:
+      - button "拒绝" [ref=f10e594] [cursor=pointer]
+      - button "接受" [ref=f10e595] [cursor=pointer]
+  - alert [ref=f10e596]

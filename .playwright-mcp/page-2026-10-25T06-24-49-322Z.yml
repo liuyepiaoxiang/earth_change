@@ -1,0 +1,502 @@
+- generic [active] [ref=f8e1]:
+  - generic [ref=f8e4]:
+    - generic [ref=f8e5]:
+      - banner [ref=f8e6]:
+        - generic [ref=f8e8]:
+          - generic [ref=f8e10]:
+            - button [ref=f8e11] [cursor=pointer]
+            - link [ref=f8e14] [cursor=pointer]:
+              - /url: /
+              - img "NameSilo logo" [ref=f8e15]
+          - generic [ref=f8e17]:
+            - link "Support" [ref=f8e19] [cursor=pointer]:
+              - /url: /support/v2
+            - button [ref=f8e22] [cursor=pointer]
+            - button [ref=f8e27] [cursor=pointer]
+      - main [ref=f8e31]:
+        - generic [ref=f8e32]:
+          - generic [ref=f8e35]:
+            - generic [ref=f8e37]:
+              - link "Single" [ref=f8e39] [cursor=pointer]:
+                - /url: /domain/search-domains/
+              - link "Bulk" [ref=f8e41] [cursor=pointer]:
+                - /url: /domain/search-domains/batch
+              - link "AI DomainGenerator" [ref=f8e43] [cursor=pointer]:
+                - /url: /domain/search-domains/ai
+            - generic [ref=f8e48]:
+              - textbox "Type the domain name or search term" [ref=f8e49]: see-earth.com
+              - button "Search" [ref=f8e51] [cursor=pointer]
+            - generic [ref=f8e53]:
+              - generic [ref=f8e55]:
+                - checkbox "Hide Registered" [ref=f8e56]
+                - text: Hide Registered
+              - generic [ref=f8e58]:
+                - checkbox "Hide Premium" [ref=f8e59]
+                - text: Hide Premium
+              - generic [ref=f8e61]:
+                - checkbox "All TLDs" [ref=f8e62]
+                - text: All TLDs
+              - button "Show Advanced Search" [ref=f8e64] [cursor=pointer]
+          - generic [ref=f8e66]:
+            - generic [ref=f8e73]:
+              - generic [ref=f8e74]: see-earth.com
+              - generic [ref=f8e80]:
+                - generic [ref=f8e81]: $17.29
+                - generic [ref=f8e83]: "Renewal: $17.29"
+              - button [ref=f8e86] [cursor=pointer]
+            - generic [ref=f8e89]:
+              - generic [ref=f8e90]:
+                - generic [ref=f8e91]: Exact Match by keyword
+                - button "Download this list" [ref=f8e94] [cursor=pointer]
+              - generic [ref=f8e98]:
+                - generic [ref=f8e100]:
+                  - generic [ref=f8e101]:
+                    - generic [ref=f8e102]:
+                      - button "TLD Flip" [ref=f8e103] [cursor=pointer]:
+                        - generic [ref=f8e104]: TLD
+                        - generic [ref=f8e108]: Flip
+                      - button "Expand" [ref=f8e109] [cursor=pointer]
+                    - generic [ref=f8e114]:
+                      - button [ref=f8e115] [cursor=pointer]
+                      - generic [ref=f8e118]: see-earth
+                  - generic [ref=f8e122]:
+                    - generic [ref=f8e123]:
+                      - generic [ref=f8e124]: .top
+                      - generic [ref=f8e126]:
+                        - generic [ref=f8e127]:
+                          - generic [ref=f8e128]: $1.88
+                          - generic [ref=f8e129]: $4.88
+                        - button "see-earth.top" [ref=f8e130] [cursor=pointer]
+                        - 'generic "Renewal: $4.88" [ref=f8e133]': "Ren.: $4.88"
+                    - generic [ref=f8e134]:
+                      - generic [ref=f8e135]: .com
+                      - generic [ref=f8e137]:
+                        - generic [ref=f8e138]: $17.29
+                        - button "see-earth.com" [ref=f8e140] [cursor=pointer]
+                        - 'generic "Renewal: $17.29" [ref=f8e143]': "Ren.: $17.29"
+                    - generic [ref=f8e144]:
+                      - generic [ref=f8e145]: .cc
+                      - generic [ref=f8e147]:
+                        - generic [ref=f8e148]:
+                          - generic [ref=f8e149]: $4.19
+                          - generic [ref=f8e150]: $9.99
+                        - button "see-earth.cc" [ref=f8e151] [cursor=pointer]
+                        - 'generic "Renewal: $9.99" [ref=f8e154]': "Ren.: $9.99"
+                    - generic [ref=f8e155]:
+                      - generic [ref=f8e156]: .wiki
+                      - generic [ref=f8e158]:
+                        - generic [ref=f8e159]:
+                          - generic [ref=f8e160]: $2.99
+                          - generic [ref=f8e161]: $32.49
+                        - button "see-earth.wiki" [ref=f8e162] [cursor=pointer]
+                        - 'generic "Renewal: $32.49" [ref=f8e165]': "Ren.: $32.49"
+                    - generic [ref=f8e166]:
+                      - generic [ref=f8e167]: .sbs
+                      - generic [ref=f8e169]:
+                        - generic [ref=f8e170]:
+                          - generic [ref=f8e171]: $1.88
+                          - generic [ref=f8e172]: $19.49
+                        - button "see-earth.sbs" [ref=f8e173] [cursor=pointer]
+                        - 'generic "Renewal: $19.49" [ref=f8e176]': "Ren.: $19.49"
+                    - generic [ref=f8e177]:
+                      - generic [ref=f8e178]: .org
+                      - generic [ref=f8e180]:
+                        - generic [ref=f8e181]:
+                          - generic [ref=f8e182]: $10.79
+                          - generic [ref=f8e183]: $14.99
+                        - button "see-earth.org" [ref=f8e184] [cursor=pointer]
+                        - 'generic "Renewal: $14.99" [ref=f8e187]': "Ren.: $14.99"
+                    - generic [ref=f8e188]:
+                      - generic [ref=f8e189]: .one
+                      - generic [ref=f8e191]:
+                        - generic [ref=f8e192]:
+                          - generic [ref=f8e193]: $5.99
+                          - generic [ref=f8e194]: $24.75
+                        - button "see-earth.one" [ref=f8e195] [cursor=pointer]
+                        - 'generic "Renewal: $24.75" [ref=f8e198]': "Ren.: $24.75"
+                    - generic [ref=f8e199]:
+                      - generic [ref=f8e200]: .click
+                      - generic [ref=f8e202]:
+                        - generic [ref=f8e203]:
+                          - generic [ref=f8e204]: $2.19
+                          - generic [ref=f8e205]: $12.99
+                        - button "see-earth.click" [ref=f8e206] [cursor=pointer]
+                        - 'generic "Renewal: $12.99" [ref=f8e209]': "Ren.: $12.99"
+                    - generic [ref=f8e210]:
+                      - generic [ref=f8e211]: .vip
+                      - generic [ref=f8e213]:
+                        - generic [ref=f8e214]:
+                          - generic [ref=f8e215]: $4.99
+                          - generic [ref=f8e216]: $19.49
+                        - button "see-earth.vip" [ref=f8e217] [cursor=pointer]
+                        - 'generic "Renewal: $19.49" [ref=f8e220]': "Ren.: $19.49"
+                    - generic [ref=f8e221]:
+                      - generic [ref=f8e222]: .club
+                      - generic [ref=f8e224]:
+                        - generic [ref=f8e225]:
+                          - generic [ref=f8e226]: $4.99
+                          - generic [ref=f8e227]: $19.49
+                        - button "see-earth.club" [ref=f8e228] [cursor=pointer]
+                        - 'generic "Renewal: $19.49" [ref=f8e231]': "Ren.: $19.49"
+                    - generic [ref=f8e232]:
+                      - generic [ref=f8e233]: .work
+                      - generic [ref=f8e235]:
+                        - generic [ref=f8e236]:
+                          - generic [ref=f8e237]: $2.99
+                          - generic [ref=f8e238]: $12.99
+                        - button "see-earth.work" [ref=f8e239] [cursor=pointer]
+                        - 'generic "Renewal: $12.99" [ref=f8e242]': "Ren.: $12.99"
+                    - generic [ref=f8e243]:
+                      - generic [ref=f8e244]: .help
+                      - generic [ref=f8e246]:
+                        - generic [ref=f8e247]:
+                          - generic [ref=f8e248]: $2.19
+                          - generic [ref=f8e249]: $32.49
+                        - button "see-earth.help" [ref=f8e250] [cursor=pointer]
+                        - 'generic "Renewal: $32.49" [ref=f8e253]': "Ren.: $32.49"
+                    - generic [ref=f8e254]: .shop
+                    - generic [ref=f8e257]:
+                      - generic [ref=f8e258]: .net
+                      - button "Try To Buy" [ref=f8e261] [cursor=pointer]
+                    - generic [ref=f8e262]:
+                      - generic [ref=f8e263]: .xyz
+                      - generic [ref=f8e265]:
+                        - generic [ref=f8e266]:
+                          - generic [ref=f8e267]: $2.79
+                          - generic [ref=f8e268]: $17.29
+                        - button "see-earth.xyz" [ref=f8e269] [cursor=pointer]
+                        - 'generic "Renewal: $17.29" [ref=f8e272]': "Ren.: $17.29"
+                - button "Show More TLDs" [ref=f8e274] [cursor=pointer]
+            - generic [ref=f8e276]:
+              - generic [ref=f8e277]:
+                - generic [ref=f8e278]: AI Generated Results
+                - generic [ref=f8e280]: New!
+              - generic [ref=f8e283]:
+                - generic [ref=f8e284]:
+                  - generic [ref=f8e285]:
+                    - generic [ref=f8e286]: A website about...
+                    - textbox "Description" [ref=f8e287]: see-earth.com
+                  - generic [ref=f8e288]:
+                    - generic [ref=f8e289]: which sounds
+                    - combobox [ref=f8e290]:
+                      - 'option "Random: brandable names of different styles" [selected]'
+                      - 'option "Alliteration: names in alliteration (e.g. DoorDash)"'
+                      - 'option "Metaphore: metaphorical names (e.g. RedBull)"'
+                      - 'option "Twoword: names made of two words (e.g. FaceBook)"'
+                      - 'option "Misspelled: purposely misspelled brandable names (e.g. Reddit)"'
+                      - 'option "Ify: names ending in ify or ly (e.g. Spotify, Bitly)"'
+                  - generic [ref=f8e291]:
+                    - generic [ref=f8e292]: with keyword...
+                    - combobox [ref=f8e293]:
+                      - option "Anywhere" [selected]
+                      - option "At the start"
+                      - option "At the end"
+                  - textbox "Add keyword (optional)" [ref=f8e296]
+                - button "Generate more AI" [ref=f8e298] [cursor=pointer]
+            - generic [ref=f8e303]:
+              - generic [ref=f8e304]: Suggestions
+              - generic [ref=f8e307]:
+                - generic [ref=f8e309]:
+                  - generic [ref=f8e310]: .top
+                  - generic [ref=f8e313]:
+                    - generic [ref=f8e315]:
+                      - generic [ref=f8e316]:
+                        - generic [ref=f8e317]: seeearth.top
+                        - generic [ref=f8e318]:
+                          - text: $1.88
+                          - generic [ref=f8e319]: $4.88
+                        - generic [ref=f8e320]: "Renewal: $4.88"
+                      - button [ref=f8e321] [cursor=pointer]
+                    - generic [ref=f8e325]:
+                      - generic [ref=f8e326]:
+                        - generic [ref=f8e327]: seeearths.top
+                        - generic [ref=f8e328]:
+                          - text: $1.88
+                          - generic [ref=f8e329]: $4.88
+                        - generic [ref=f8e330]: "Renewal: $4.88"
+                      - button [ref=f8e331] [cursor=pointer]
+                - generic [ref=f8e335]:
+                  - generic [ref=f8e336]: .com
+                  - generic [ref=f8e339]:
+                    - generic [ref=f8e341]:
+                      - generic [ref=f8e342]:
+                        - generic [ref=f8e343]: seeearths.com
+                        - generic [ref=f8e344]: $17.29
+                        - generic [ref=f8e345]: "Renewal: $17.29"
+                      - button [ref=f8e346] [cursor=pointer]
+                    - generic [ref=f8e349]: seeearth.com
+                - generic [ref=f8e355]:
+                  - generic [ref=f8e356]: .cc
+                  - generic [ref=f8e359]:
+                    - generic [ref=f8e361]:
+                      - generic [ref=f8e362]:
+                        - generic [ref=f8e363]: seeearths.cc
+                        - generic [ref=f8e364]:
+                          - text: $4.19
+                          - generic [ref=f8e365]: $9.99
+                        - generic [ref=f8e366]: "Renewal: $9.99"
+                      - button [ref=f8e367] [cursor=pointer]
+                    - generic [ref=f8e371]:
+                      - generic [ref=f8e372]:
+                        - generic [ref=f8e373]: seeearth.cc
+                        - generic [ref=f8e374]:
+                          - text: $4.19
+                          - generic [ref=f8e375]: $9.99
+                        - generic [ref=f8e376]: "Renewal: $9.99"
+                      - button [ref=f8e377] [cursor=pointer]
+                - generic [ref=f8e381]:
+                  - generic [ref=f8e382]: .wiki
+                  - generic [ref=f8e385]:
+                    - generic [ref=f8e387]:
+                      - generic [ref=f8e388]:
+                        - generic [ref=f8e389]: seeearths.wiki
+                        - generic [ref=f8e390]:
+                          - text: $2.99
+                          - generic [ref=f8e391]: $32.49
+                        - generic [ref=f8e392]: "Renewal: $32.49"
+                      - button [ref=f8e393] [cursor=pointer]
+                    - generic [ref=f8e397]:
+                      - generic [ref=f8e398]:
+                        - generic [ref=f8e399]: seeearth.wiki
+                        - generic [ref=f8e400]:
+                          - text: $2.99
+                          - generic [ref=f8e401]: $32.49
+                        - generic [ref=f8e402]: "Renewal: $32.49"
+                      - button [ref=f8e403] [cursor=pointer]
+                - generic [ref=f8e407]:
+                  - generic [ref=f8e408]: .org
+                  - generic [ref=f8e411]:
+                    - generic [ref=f8e412]: seeearth.org
+                    - generic [ref=f8e418]:
+                      - generic [ref=f8e419]:
+                        - generic [ref=f8e420]: seeearths.org
+                        - generic [ref=f8e421]:
+                          - text: $10.79
+                          - generic [ref=f8e422]: $14.99
+                        - generic [ref=f8e423]: "Renewal: $14.99"
+                      - button [ref=f8e424] [cursor=pointer]
+                - generic [ref=f8e428]:
+                  - generic [ref=f8e429]: .one
+                  - generic [ref=f8e432]:
+                    - generic [ref=f8e434]:
+                      - generic [ref=f8e435]:
+                        - generic [ref=f8e436]: seeearth.one
+                        - generic [ref=f8e437]:
+                          - text: $5.99
+                          - generic [ref=f8e438]: $24.75
+                        - generic [ref=f8e439]: "Renewal: $24.75"
+                      - button [ref=f8e440] [cursor=pointer]
+                    - generic [ref=f8e444]:
+                      - generic [ref=f8e445]:
+                        - generic [ref=f8e446]: seeearths.one
+                        - generic [ref=f8e447]:
+                          - text: $5.99
+                          - generic [ref=f8e448]: $24.75
+                        - generic [ref=f8e449]: "Renewal: $24.75"
+                      - button [ref=f8e450] [cursor=pointer]
+                - generic [ref=f8e454]:
+                  - generic [ref=f8e455]: .click
+                  - generic [ref=f8e458]:
+                    - generic [ref=f8e460]:
+                      - generic [ref=f8e461]:
+                        - generic [ref=f8e462]: seeearths.click
+                        - generic [ref=f8e463]:
+                          - text: $2.19
+                          - generic [ref=f8e464]: $12.99
+                        - generic [ref=f8e465]: "Renewal: $12.99"
+                      - button [ref=f8e466] [cursor=pointer]
+                    - generic [ref=f8e470]:
+                      - generic [ref=f8e471]:
+                        - generic [ref=f8e472]: seeearth.click
+                        - generic [ref=f8e473]:
+                          - text: $2.19
+                          - generic [ref=f8e474]: $12.99
+                        - generic [ref=f8e475]: "Renewal: $12.99"
+                      - button [ref=f8e476] [cursor=pointer]
+                - generic [ref=f8e480]:
+                  - generic [ref=f8e481]: .vip
+                  - generic [ref=f8e484]:
+                    - generic [ref=f8e486]:
+                      - generic [ref=f8e487]:
+                        - generic [ref=f8e488]: seeearth.vip
+                        - generic [ref=f8e489]:
+                          - text: $4.99
+                          - generic [ref=f8e490]: $19.49
+                        - generic [ref=f8e491]: "Renewal: $19.49"
+                      - button [ref=f8e492] [cursor=pointer]
+                    - generic [ref=f8e496]:
+                      - generic [ref=f8e497]:
+                        - generic [ref=f8e498]: seeearths.vip
+                        - generic [ref=f8e499]:
+                          - text: $4.99
+                          - generic [ref=f8e500]: $19.49
+                        - generic [ref=f8e501]: "Renewal: $19.49"
+                      - button [ref=f8e502] [cursor=pointer]
+                - generic [ref=f8e506]:
+                  - generic [ref=f8e507]: .club
+                  - generic [ref=f8e510]:
+                    - generic [ref=f8e512]:
+                      - generic [ref=f8e513]:
+                        - generic [ref=f8e514]: seeearth.club
+                        - generic [ref=f8e515]:
+                          - text: $4.99
+                          - generic [ref=f8e516]: $19.49
+                        - generic [ref=f8e517]: "Renewal: $19.49"
+                      - button [ref=f8e518] [cursor=pointer]
+                    - generic [ref=f8e522]:
+                      - generic [ref=f8e523]:
+                        - generic [ref=f8e524]: seeearths.club
+                        - generic [ref=f8e525]:
+                          - text: $4.99
+                          - generic [ref=f8e526]: $19.49
+                        - generic [ref=f8e527]: "Renewal: $19.49"
+                      - button [ref=f8e528] [cursor=pointer]
+                - generic [ref=f8e532]:
+                  - generic [ref=f8e533]: .work
+                  - generic [ref=f8e536]:
+                    - generic [ref=f8e538]:
+                      - generic [ref=f8e539]:
+                        - generic [ref=f8e540]: seeearth.work
+                        - generic [ref=f8e541]:
+                          - text: $2.99
+                          - generic [ref=f8e542]: $12.99
+                        - generic [ref=f8e543]: "Renewal: $12.99"
+                      - button [ref=f8e544] [cursor=pointer]
+                    - generic [ref=f8e548]:
+                      - generic [ref=f8e549]:
+                        - generic [ref=f8e550]: seeearths.work
+                        - generic [ref=f8e551]:
+                          - text: $2.99
+                          - generic [ref=f8e552]: $12.99
+                        - generic [ref=f8e553]: "Renewal: $12.99"
+                      - button [ref=f8e554] [cursor=pointer]
+                - generic [ref=f8e558]:
+                  - generic [ref=f8e559]: .help
+                  - generic [ref=f8e562]:
+                    - generic [ref=f8e564]:
+                      - generic [ref=f8e565]:
+                        - generic [ref=f8e566]: seeearth.help
+                        - generic [ref=f8e567]:
+                          - text: $2.19
+                          - generic [ref=f8e568]: $32.49
+                        - generic [ref=f8e569]: "Renewal: $32.49"
+                      - button [ref=f8e570] [cursor=pointer]
+                    - generic [ref=f8e574]:
+                      - generic [ref=f8e575]:
+                        - generic [ref=f8e576]: seeearths.help
+                        - generic [ref=f8e577]:
+                          - text: $2.19
+                          - generic [ref=f8e578]: $32.49
+                        - generic [ref=f8e579]: "Renewal: $32.49"
+                      - button [ref=f8e580] [cursor=pointer]
+                - generic [ref=f8e584]:
+                  - generic [ref=f8e585]: .shop
+                  - generic [ref=f8e588]:
+                    - generic [ref=f8e589]: seeearth.shop
+                    - generic [ref=f8e594]: seeearths.shop
+                - generic [ref=f8e600]:
+                  - generic [ref=f8e601]: .net
+                  - generic [ref=f8e604]:
+                    - generic [ref=f8e606]:
+                      - generic [ref=f8e607]:
+                        - generic [ref=f8e608]: seeearth.net
+                        - generic [ref=f8e609]: $15.95
+                        - generic [ref=f8e610]: "Renewal: $15.95"
+                      - button [ref=f8e611] [cursor=pointer]
+                    - generic [ref=f8e615]:
+                      - generic [ref=f8e616]:
+                        - generic [ref=f8e617]: seeearths.net
+                        - generic [ref=f8e618]: $15.95
+                        - generic [ref=f8e619]: "Renewal: $15.95"
+                      - button [ref=f8e620] [cursor=pointer]
+                - generic [ref=f8e624]:
+                  - generic [ref=f8e625]: .xyz
+                  - generic [ref=f8e628]:
+                    - generic [ref=f8e630]:
+                      - generic [ref=f8e631]:
+                        - generic [ref=f8e632]: seeearth.xyz
+                        - generic [ref=f8e633]:
+                          - text: $2.79
+                          - generic [ref=f8e634]: $17.29
+                        - generic [ref=f8e635]: "Renewal: $17.29"
+                      - button [ref=f8e636] [cursor=pointer]
+                    - generic [ref=f8e640]:
+                      - generic [ref=f8e641]:
+                        - generic [ref=f8e642]: seeearths.xyz
+                        - generic [ref=f8e643]:
+                          - text: $2.79
+                          - generic [ref=f8e644]: $17.29
+                        - generic [ref=f8e645]: "Renewal: $17.29"
+                      - button [ref=f8e646] [cursor=pointer]
+              - button "Check more extensions" [ref=f8e650] [cursor=pointer]
+      - contentinfo [ref=f8e651]:
+        - generic [ref=f8e653]:
+          - generic [ref=f8e654]:
+            - link [ref=f8e655] [cursor=pointer]:
+              - /url: /
+              - img "NameSilo logo" [ref=f8e656]
+            - generic [ref=f8e657]: Fewer than 10 registrars worldwide manage over 5 million active domains, and we are proud to be part of this exclusive group.
+            - generic [ref=f8e658]:
+              - link [ref=f8e659] [cursor=pointer]:
+                - /url: https://twitter.com/namesilo
+              - link [ref=f8e662] [cursor=pointer]:
+                - /url: https://www.linkedin.com/company/namesilo
+              - link [ref=f8e665] [cursor=pointer]:
+                - /url: https://www.facebook.com/namesilo
+              - link [ref=f8e668] [cursor=pointer]:
+                - /url: https://www.youtube.com/channel/UCvS6kaUQdpfzz9j3OaJRQ7g
+          - generic [ref=f8e671]:
+            - generic [ref=f8e672]: SHOPPING
+            - generic [ref=f8e673]:
+              - link "Loyalty Program" [ref=f8e675] [cursor=pointer]:
+                - /url: /loyalty-program
+              - link "Domains" [ref=f8e677] [cursor=pointer]:
+                - /url: /domain/search-domains
+              - link "Transfer a Domain" [ref=f8e679] [cursor=pointer]:
+                - /url: /domain/transfer-domains
+              - link "Marketplace" [ref=f8e681] [cursor=pointer]:
+                - /url: /marketplace
+              - link "Pricing" [ref=f8e683] [cursor=pointer]:
+                - /url: /pricing
+          - generic [ref=f8e684]:
+            - generic [ref=f8e685]: ACCOUNT
+            - generic [ref=f8e686]:
+              - link "Create Account" [ref=f8e688] [cursor=pointer]:
+                - /url: /sign-up
+              - link "Login" [ref=f8e690] [cursor=pointer]:
+                - /url: /login
+          - generic [ref=f8e691]:
+            - generic [ref=f8e692]: SUPPORT
+            - generic [ref=f8e693]:
+              - link "Support Catalog" [ref=f8e695] [cursor=pointer]:
+                - /url: /support/v2
+              - link "Contact Us" [ref=f8e697] [cursor=pointer]:
+                - /url: /contact-us
+              - link "RDAP Disclosure Request Form" [ref=f8e699] [cursor=pointer]:
+                - /url: /support/rdap
+              - link "WHOIS" [ref=f8e701] [cursor=pointer]:
+                - /url: /whois
+              - link "Live Chat" [ref=f8e703] [cursor=pointer]:
+                - /url: "#"
+          - generic [ref=f8e704]:
+            - link "BLOG" [ref=f8e706] [cursor=pointer]:
+              - /url: /blog
+            - link "INVESTORS" [ref=f8e708] [cursor=pointer]:
+              - /url: /investors/
+        - generic [ref=f8e709]: ©2009-2026 NameSilo, LLC · All Rights Reserved.
+        - generic [ref=f8e710]:
+          - generic [ref=f8e711]:
+            - generic [ref=f8e712]: Shopping Cart
+            - button [ref=f8e713] [cursor=pointer]
+          - generic [ref=f8e717]:
+            - generic [ref=f8e718]: Your cart is empty.
+            - link "Start Shopping" [ref=f8e719] [cursor=pointer]:
+              - /url: /domain/search-domains
+    - generic [ref=f8e722]:
+      - generic [ref=f8e724]:
+        - generic [ref=f8e725]: We value your privacy
+        - generic [ref=f8e726]: We use cookies to enhance your browsing experience, serve personalized ads or content, and analyze our traffic. By clicking "Accept All", you consent to our use of cookies.
+      - button "Customize" [ref=f8e728] [cursor=pointer]
+      - button "Accept All" [ref=f8e730] [cursor=pointer]
+      - button "Accept Necessary" [ref=f8e732] [cursor=pointer]
+  - generic [ref=f8e733] [cursor=pointer]
