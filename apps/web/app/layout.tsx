@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { Analytics } from "@vercel/analytics/react";
 import "./animations.css";
 
 const SITE_URL = "https://earth-change.vercel.app";
@@ -121,6 +122,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <h2>数据源</h2>
           <p>NASA GISTEMP v4（温度）、NOAA GML + Law Dome（CO₂）、Global Carbon Project（排放）、IPCC AR6（情景校准）、GeoNames + WorldClim 2.1（城市/高程/气候）。</p>
         </div>
+        <Analytics />
       </body>
     </html>
   );

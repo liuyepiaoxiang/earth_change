@@ -16,6 +16,19 @@ Users drag a timeline from 2026 to 2500 on a 3D globe to see:
 - Sea level rise by 2100 (SSP5-8.5): approximately 1.0m
 - Historical calibration: 1850-2024, RMSE < 0.2°C vs NASA GISTEMP
 - CO₂ endpoint accuracy: < 5ppm vs NOAA observations
+- Cities most at risk: Jakarta (sinking 25cm/yr), Bangkok (1.5m elevation), Miami (2m, porous limestone), Alexandria (5m), Manila (5m)
+
+## Educational Pages
+- /learn/ssp-scenarios — What are SSP scenarios? IPCC pathway explained with data tables
+- /learn/sea-level-rise — How much will sea levels rise by 2100? Four-component breakdown
+- /learn/cities-underwater — Which cities will be underwater? Timeline and vulnerability factors
+
+## City Climate Reports (50 cities)
+- /city/shanghai — Shanghai climate change and flooding risk
+- /city/miami — Miami sea level rise and limestone geology
+- /city/bangkok — Bangkok flooding timeline (lowest elevation megacity)
+- /city/jakarta — Jakarta sinking and sea level rise compound crisis
+- /city/manila, /city/alexandria, /city/osaka, /city/mumbai — more city reports
 
 ## Data Sources
 - Temperature: NASA GISTEMP v4
