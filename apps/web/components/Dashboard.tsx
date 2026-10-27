@@ -13,6 +13,7 @@ import GlobeView from "./GlobeView";
 import CityPanel from "./CityPanel";
 import AnalysisDrawer from "./AnalysisDrawer";
 import EventNotification from "./EventNotification";
+import LiveEarth from "./LiveEarth";
 import { milestoneEvents } from "@future-earth/engine";
 import type { MilestoneEvent } from "@future-earth/engine";
 
@@ -97,6 +98,19 @@ export default function Dashboard({ embed = false }: { embed?: boolean }) {
           >
             要素总览
           </a>
+          <a
+            href="/ask"
+            style={{
+              padding: "4px 10px",
+              borderRadius: 6,
+              fontSize: 13,
+              border: "1px solid #7c3aed",
+              color: "#c4b5fd",
+              textDecoration: "none",
+            }}
+          >
+            🤖 AI 问答
+          </a>
         </nav>}
         <ScenarioSelector value={scenario} onChange={setScenario} />
         {!embed && <button
@@ -143,6 +157,8 @@ export default function Dashboard({ embed = false }: { embed?: boolean }) {
         </button>}
         <MetricsBar snap={snap} unc={unc} />
       </header>
+
+      {!embed && <LiveEarth />}
 
       <section style={{ position: "relative", minHeight: 0 }}>
         {sim && snap ? (
