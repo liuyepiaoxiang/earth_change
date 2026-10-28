@@ -1,7 +1,7 @@
 "use client";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
-import { DataTexture, LinearFilter, MeshPhongMaterial, NearestFilter, RGBAFormat, SRGBColorSpace, Texture, TextureLoader } from "three";
+import { Color, DataTexture, LinearFilter, MeshPhongMaterial, NearestFilter, RGBAFormat, SRGBColorSpace, Texture, TextureLoader } from "three";
 import { isCityFlooded, localDTs } from "@future-earth/engine";
 import { buildTempLut, patternAmpInterp, tempColorHex } from "../lib/colormap";
 import { GRID, ampField } from "@future-earth/engine";
@@ -49,7 +49,8 @@ const getLat = (d: object) => (d as GlobePoint).lat;
 const getLng = (d: object) => (d as GlobePoint).lng;
 const getColor = (d: object) => {
   const p = d as GlobePoint;
-  return p.flooded ? "#38bdf8" : "#eab308";
+  // 视觉降噪：未淹没 = 柔和暖琥珀（低饱和，密度高时不成噪点）；淹没 = 亮青（与水色带同语言）
+  return p.flooded ? "#22d3ee" : "#f0c27a";
 };
 const getAltitude = (d: object) => {
   const p = d as GlobePoint;
@@ -112,6 +113,9 @@ export default function GlobeView({
   // 自定义地球材质：注入 DEM 高程采样，elev ∈ (0, SLR] 的陆地渲染为水色（SPEC §8.2 淹没层）
   const globeMaterial = useMemo(() => {
     const mat = new MeshPhongMaterial({ color: 0x0b1e33 });
+    // 海洋湿润感：微弱青蓝高光（底图海洋正对光源处产生 sun glint）
+    mat.specular = new Color(0x2a5a8a);
+    mat.shininess = 14;
     // 无论有无底图纹理都保证 vUv 可用（淹没采样依赖球面 UV）
     mat.defines = { USE_UV: "" };
     mat.onBeforeCompile = (shader) => {
@@ -138,7 +142,11 @@ export default function GlobeView({
            uniform float uTempOn;
            uniform float uTempReady;
            uniform float uFade;
-           uniform float uTime;`,
+           uniform float uTime;
+           float decodeElev(vec2 uv) {
+             vec2 d = texture2D(uDem, uv).rg;
+             return floor(d.r * 255.0 + 0.5) * 256.0 + floor(d.g * 255.0 + 0.5);
+           }`,
         )
         .replace(
           "#include <map_fragment>",
@@ -157,17 +165,24 @@ export default function GlobeView({
              }
            }
            if (uTempOn > 0.5 && uTempReady > 0.5) {
-             // 温度连续覆盖层（F14/F18）：纬度 LUT 采样 + 等温线 + 入场淡入（uFade 0→1）
-             vec4 T = texture2D(uTempLut, vUv); // v1.0：2.5° 格点场（陆海/区域结构）
-             diffuseColor.rgb = mix(diffuseColor.rgb, T.rgb, T.a * uFade);
+             // 温度连续覆盖层（F14/F18）：2.5° 格点场采样 + 陆海区分强度。
+             // 陆地全强度；海洋异常保留科学信号但降到 30%（保持地球"水蓝"可读性，
+             // 避免整球被色带洗成单色——格点海洋异常的价值低于陆地异常）。
+             vec4 T = texture2D(uTempLut, vUv);
+             float elevM = decodeElev(vUv);
+             float landF = elevM > 0.5 ? 1.0 : 0.30;
+             diffuseColor.rgb = mix(diffuseColor.rgb, T.rgb, T.a * uFade * landF);
            }
            if (uFlood > 0.5) {
-             vec2 d = texture2D(uDem, vUv).rg;
-             float elevM = floor(d.r * 255.0 + 0.5) * 256.0 + floor(d.g * 255.0 + 0.5);
-             // ?????? DEM ?? <= ???????????? 3m ???????????
+             float elevM = decodeElev(vUv);
+             // 陆地高程 <= 当前 SLR → 淹没（DEM 高程 0 = 海洋本身，step(0.5) 排除）
              float flood = (1.0 - step(uSlr, elevM)) * step(0.5, elevM);
+             // 淹没水色带高程余量：贴 SLR 线的窄带（≤3m）更亮——静态"新海岸线"描边
+             float shore = flood * (1.0 - smoothstep(0.0, 3.0, uSlr - elevM));
              vec3 floodC = vec3(0.219, 0.741, 0.973);
-             diffuseColor.rgb = mix(diffuseColor.rgb, floodC, flood * 0.75);
+             vec3 shoreC = vec3(0.55, 0.88, 1.0);
+             vec3 fc = mix(floodC, shoreC, shore * 0.45);
+             diffuseColor.rgb = mix(diffuseColor.rgb, fc, flood * 0.75);
            }`,
         );
     };
@@ -327,15 +342,15 @@ export default function GlobeView({
   }, [cities, layers.cities, slrBucket]);
 
   return (
-    <div ref={ref} style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 50% 46%, rgba(56, 189, 248, 0.10) 0%, rgba(56, 189, 248, 0.04) 34%, transparent 62%)" }}>
+    <div ref={ref} className="fe-starfield" style={{ position: "absolute", inset: 0 }}>
       {size.w > 0 && (
         <Globe
           width={size.w}
           height={size.h}
           globeMaterial={globeMaterial}
           backgroundColor="rgba(0,0,0,0)"
-          atmosphereColor="#5b7fa6"
-          atmosphereAltitude={layers.atmosphere ? 0.12 : 0}
+          atmosphereColor="#4d9de0"
+          atmosphereAltitude={layers.atmosphere ? 0.15 : 0}
           pointsData={points}
           pointLat={getLat}
           pointLng={getLng}
