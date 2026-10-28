@@ -5,7 +5,8 @@ test.describe("v0.2 UX 验收门", () => {
     const errors: string[] = [];
     page.on("pageerror", (e) => errors.push(String(e)));
     await page.goto("/");
-    await expect(page.getByText("未来地球引擎")).toBeVisible({ timeout: 30000 });
+    // noscript 的 SEO H1 也含同名文本，限定 header 内品牌（strict mode 安全）
+    await expect(page.locator("header").getByText("未来地球引擎")).toBeVisible({ timeout: 30000 });
     // 年份显示（Timeline）
     await expect(page.locator("footer")).toContainText(/\d{4}/, { timeout: 30000 });
     // 情景选择器

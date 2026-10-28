@@ -60,7 +60,14 @@ export default function Dashboard({ embed = false }: { embed?: boolean }) {
   }, [year, allEvents]);
 
   return (
-    <main style={{ height: "100vh", display: "grid", gridTemplateRows: "auto 1fr auto" }}>
+    <main
+      style={{
+        height: "100vh",
+        display: "grid",
+        // 非 embed 模式多一行 LiveEarth 卡片，防止地球 section 被挤进隐式 auto 行（高度塌 0）
+        gridTemplateRows: embed ? "auto 1fr auto" : "auto auto 1fr auto",
+      }}
+    >
       <header
         style={{
           display: "flex",

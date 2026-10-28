@@ -70,21 +70,20 @@ test.describe("S4 画布点选城市", () => {
       await page.waitForTimeout(300);
     }
 
-    // 西非海岸带（几内亚湾城市密集：Abidjan/Accra/Lagos）网格扫描，move 悬停 + click
-    // 命中判定：CityPanel 出现「本地升温」（验证过的确定性坐标区）
+    // 网格扫描 + click，命中判定：CityPanel 出现「本地升温」（任意城市即可）。
+    // 扫描窗口不依赖本地实测的精确像素位置（CI 的字体/布局渲染有细微差异会平移投影），
+    // 覆盖中央大区域、由内向外扫描，控制总耗时 < 40s。
     let hit = false;
-    // 扫描窗口 = three 0.186 缩放后实测命中区（Abidjan@480,240 附近，几内亚湾城市带）
     const targets: Array<[number, number]> = [];
-    for (let x = 430; x <= 540; x += 10) for (let y = 210; y <= 270; y += 10) targets.push([x, y]);
+    for (let y = 160; y <= 400; y += 40) for (let x = 340; x <= 940; x += 40) targets.push([x, y]);
     for (const [x, y] of targets) {
       await page.mouse.move(x, y);
-      await page.waitForTimeout(120);
       await page.mouse.click(x, y);
-      await page.waitForTimeout(250);
       if ((await page.getByText(/本地升温/).count()) > 0) {
         hit = true;
         break;
       }
+      await page.waitForTimeout(80);
     }
     expect(hit).toBe(true);
     await expect(page.getByText(/已被海平面淹没|未淹没/)).toBeVisible();
