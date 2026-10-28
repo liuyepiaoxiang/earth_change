@@ -23,8 +23,11 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     const saved = localStorage.getItem("fe-locale") as Locale | null;
     const url = new URL(window.location.href);
     const urlLang = url.searchParams.get("lang");
-    if (urlLang === "en" || urlLang === "zh") setLocaleState(urlLang);
-    else if (saved === "en" || saved === "zh") setLocaleState(saved);
+    let restored: Locale = "zh";
+    if (urlLang === "en" || urlLang === "zh") restored = urlLang;
+    else if (saved === "en" || saved === "zh") restored = saved;
+    setLocaleState(restored);
+    document.documentElement.lang = restored === "en" ? "en" : "zh-CN";
   }, []);
   const setLocale = useCallback((l: Locale) => {
     setLocaleState(l);

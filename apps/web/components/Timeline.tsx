@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { useI18n } from "../lib/i18n";
 
 const MIN = 2026;
 const MAX = 2500;
@@ -18,6 +19,7 @@ export default function Timeline({
   // setInterval 由定时器驱动，与渲染耗时解耦。
   const [playing, setPlaying] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const { t } = useI18n();
 
   useEffect(() => {
     if (!playing || disabled) return;
@@ -45,8 +47,8 @@ export default function Timeline({
           setPlaying((v) => !v);
         }}
         disabled={disabled}
-        aria-label={playing ? "暂停时间轴播放" : "播放时间演化"}
-        title="自动播放时间演化（约 60 年/秒）"
+        aria-label={playing ? t("timeline.pause") : t("timeline.play")}
+        title={t("timeline.autoTitle")}
         className={playing ? "fe-breathe" : undefined}
         style={{
           width: 26,
@@ -78,13 +80,13 @@ export default function Timeline({
         }}
         style={{ flex: 1, accentColor: "#38bdf8" }}
       />
-      <div aria-label="关键年份" style={{ display: "flex", justifyContent: "space-between", width: "100%", fontSize: 9, color: "#475569", position: "absolute", bottom: -2, left: 0, right: 0, pointerEvents: "none" }}>
+      <div aria-label={t("timeline.keyYears")} style={{ display: "flex", justifyContent: "space-between", width: "100%", fontSize: 9, color: "#475569", position: "absolute", bottom: -2, left: 0, right: 0, pointerEvents: "none" }}>
         {[2030, 2050, 2100, 2200, 2500].map((y) => <span key={y}>|{y}</span>)}
       </div>
       <span style={{ fontSize: 12, color: "#64748b" }}>2500</span>
       <strong style={{ minWidth: 52, textAlign: "center", color: "#e0f2fe", fontVariantNumeric: "tabular-nums" }}>
         <span data-testid="timeline-year">{year}</span>{year > 2100 && (
-          <span title="2100 年后为探索性外推，置信度低于 AR6 校准区间" style={{ color: "#f59e0b", fontSize: 11, marginLeft: 6, border: "1px solid #92400e", borderRadius: 6, padding: "1px 6px" }}>探索性外推</span>
+          <span title="2100 年后为探索性外推，置信度低于 AR6 校准区间" style={{ color: "#f59e0b", fontSize: 11, marginLeft: 6, border: "1px solid #92400e", borderRadius: 6, padding: "1px 6px" }}>{t("timeline.extrapolation")}</span>
         )}
       </strong>
     </div>

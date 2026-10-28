@@ -14,12 +14,15 @@ import CityPanel from "./CityPanel";
 import AnalysisDrawer from "./AnalysisDrawer";
 import EventNotification from "./EventNotification";
 import LiveEarth from "./LiveEarth";
+import LanguageSwitcher from "./LanguageSwitcher";
+import { useI18n } from "../lib/i18n";
 import { milestoneEvents } from "@future-earth/engine";
 import type { MilestoneEvent } from "@future-earth/engine";
 
 const centerStyle = { height: "100%", display: "grid", placeItems: "center", color: "#475569" } as const;
 
 export default function Dashboard({ embed = false }: { embed?: boolean }) {
+  const { t } = useI18n();
   // SSR 安全：默认值渲染，挂载后从 URL 恢复可复现状态（v0.3 分享链接入口）
   const [scenario, setScenario] = useState<ScenarioId>("ssp245");
   const [year, setYear] = useState(2100);
@@ -78,7 +81,7 @@ export default function Dashboard({ embed = false }: { embed?: boolean }) {
           flexWrap: "wrap",
         }}
       >
-        <strong style={{ color: "#e0f2fe" }}>🌍 未来地球引擎</strong>
+        <strong style={{ color: "#e0f2fe" }}>🌍 {t("app.title")}</strong>
         {!embed && <nav style={{ display: "flex", gap: 6 }}>
           <span
             style={{
@@ -90,7 +93,7 @@ export default function Dashboard({ embed = false }: { embed?: boolean }) {
               color: "#e0f2fe",
             }}
           >
-            地球
+            {t("app.nav.earth")}
           </span>
           <a
             href="/overview"
@@ -103,7 +106,7 @@ export default function Dashboard({ embed = false }: { embed?: boolean }) {
               textDecoration: "none",
             }}
           >
-            要素总览
+            {t("app.nav.overview")}
           </a>
           <a
             href="/ask"
@@ -116,7 +119,7 @@ export default function Dashboard({ embed = false }: { embed?: boolean }) {
               textDecoration: "none",
             }}
           >
-            🤖 AI 问答
+            🤖 {t("app.nav.ask")}
           </a>
         </nav>}
         <ScenarioSelector value={scenario} onChange={setScenario} />
@@ -134,7 +137,7 @@ export default function Dashboard({ embed = false }: { embed?: boolean }) {
             color: uncertain ? "#ede9fe" : "#94a3b8",
           }}
         >
-          ±区间
+          ±{t("app.btn.range")}
         </button>}
         {!embed && <button
           onClick={() => setShowAnalysis((v) => !v)}
@@ -147,7 +150,7 @@ export default function Dashboard({ embed = false }: { embed?: boolean }) {
             color: showAnalysis ? "#dcfce7" : "#94a3b8",
           }}
         >
-          📊 分析
+          📊 {t("app.btn.analysisPlain")}
         </button>}
         {!embed && <button
           onClick={() => setExp((v) => (v ? undefined : { ...DEFAULT_CONTROLS }))}
@@ -160,9 +163,10 @@ export default function Dashboard({ embed = false }: { embed?: boolean }) {
             color: exp ? "#fef3c7" : "#94a3b8",
           }}
         >
-          🧪 实验
+          🧪 {t("app.btn.experimentPlain")}
         </button>}
         <MetricsBar snap={snap} unc={unc} />
+        {!embed && <LanguageSwitcher />}
       </header>
 
       {!embed && <LiveEarth />}
@@ -171,7 +175,7 @@ export default function Dashboard({ embed = false }: { embed?: boolean }) {
         {sim && snap ? (
           <GlobeView snap={snap} cities={cities} pattern={pattern} onSelectCity={setCity} />
         ) : (
-          <div style={centerStyle}>{error ? `引擎加载失败：${error}` : "引擎装载中…"}</div>
+          <div style={centerStyle}>{error ? `${t("common.loadFail")}：${error}` : t("common.loading")}</div>
         )}
         {city && snap && <CityPanel city={city} snap={snap} pattern={pattern} onClose={() => setCity(null)} />}
         <EventNotification event={activeEvent} onDismiss={() => setActiveEvent(null)} />

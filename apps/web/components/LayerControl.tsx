@@ -1,5 +1,6 @@
 "use client";
 import { panelStyle, tokens } from "../lib/design";
+import { useI18n, type TranslationKey } from "../lib/i18n";
 
 export interface LayerState {
   temperature: boolean;
@@ -19,13 +20,13 @@ export const DEFAULT_LAYERS: LayerState = {
   prec: false, // 着色类图层默认关（与温度场叠加视觉嘈杂）
 };
 
-const ITEMS: Array<{ key: keyof LayerState; label: string; color: string }> = [
-  { key: "temperature", label: "温度场", color: "#26e74d" },
-  { key: "cities", label: "城市点", color: "#eab308" },
-  { key: "flood", label: "淹没模拟", color: "#38bdf8" },
-  { key: "prec", label: "降水图层", color: "#84cc16" },
-  { key: "basemap", label: "卫星底图", color: "#8b6f47" },
-  { key: "atmosphere", label: "大气辉光", color: "#5b7fa6" },
+const ITEMS: Array<{ key: keyof LayerState; labelKey: TranslationKey; color: string }> = [
+  { key: "temperature", labelKey: "layer.temperature", color: "#26e74d" },
+  { key: "cities", labelKey: "layer.cities", color: "#eab308" },
+  { key: "flood", labelKey: "layer.flood", color: "#38bdf8" },
+  { key: "prec", labelKey: "layer.prec", color: "#84cc16" },
+  { key: "basemap", labelKey: "layer.basemap", color: "#8b6f47" },
+  { key: "atmosphere", labelKey: "layer.atmosphere", color: "#5b7fa6" },
 ];
 
 export default function LayerControl({
@@ -35,6 +36,7 @@ export default function LayerControl({
   layers: LayerState;
   onToggle: (key: keyof LayerState) => void;
 }) {
+  const { t } = useI18n();
   return (
     <div
       className="fe-fade-up"
@@ -50,7 +52,7 @@ export default function LayerControl({
         backdropFilter: "blur(4px)",
       }}
     >
-      <div style={{ fontSize: 11, color: tokens.textFaint, marginBottom: 6 }}>图层（点击切换）</div>
+      <div style={{ fontSize: 11, color: tokens.textFaint, marginBottom: 6 }}>{t("layer.title")}</div>
       {ITEMS.map((it) => {
         const on = layers[it.key];
         return (
@@ -83,9 +85,9 @@ export default function LayerControl({
                 background: on ? it.color : "#334155",
               }}
             />
-            {it.label}
+            {t(it.labelKey)}
             <span style={{ marginLeft: "auto", fontSize: 10, color: on ? "#64748b" : "#334155" }}>
-              {on ? "显示中" : "已隐藏"}
+              {on ? t("layer.on") : t("layer.off")}
             </span>
           </button>
         );

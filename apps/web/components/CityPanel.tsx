@@ -4,6 +4,7 @@ import type { WarmingPatternBand } from "@future-earth/engine";
 import type { CityRow } from "@future-earth/data";
 import type { MetricsSnapshot } from "../lib/sim";
 import { panelStyle, tokens } from "../lib/design";
+import { useI18n } from "../lib/i18n";
 
 export default function CityPanel({
   city,
@@ -16,6 +17,7 @@ export default function CityPanel({
   pattern: WarmingPatternBand[];
   onClose: () => void;
 }) {
+  const { t } = useI18n();
   const dtLocal = localDTs(snap.tempAnomaly, city.lat, pattern.length ? pattern : undefined);
   const tFuture = city.tbase + dtLocal;
   const pFuture = scaledPrecip(city.pbase, snap.tempAnomaly);
@@ -46,25 +48,25 @@ export default function CityPanel({
         <button
           onClick={onClose}
           style={{ background: "none", border: "none", color: tokens.textFaint, cursor: "pointer", fontSize: 14 }}
-          aria-label="关闭城市面板"
+          aria-label={t("city.close")}
         >
           ✕
         </button>
       </div>
       <div style={{ color: flooded ? "#38bdf8" : "#eab308" }}>
-        {!elevationKnown ? "\u26a0 \u9ad8\u7a0b\u6570\u636e\u7f3a\u5931\uff0c\u6682\u4e0d\u5224\u5b9a\u6df9\u6ca1" : flooded ? "\u26a0 \u5df2\u88ab\u6d77\u5e73\u9762\u6df9\u6ca1" : "\u672a\u6df9\u6ca1"}（高程 {city.elevation} m vs SLR +{snap.seaLevel.total.toFixed(2)} m）
+        {!elevationKnown ? t("city.elevUnknown") : flooded ? t("city.flooded") : t("city.safe")}（{t("city.elevation")} {city.elevation} m vs SLR +{snap.seaLevel.total.toFixed(2)} m）
       </div>
       <div style={{ color: tokens.textMuted }}>
-        本地升温 <strong style={{ color: "#f87171" }}>+{dtLocal.toFixed(2)}°C</strong>（全球 +{snap.tempAnomaly.toFixed(2)}°C）
+        {t("city.localWarming")} <strong style={{ color: "#f87171" }}>+{dtLocal.toFixed(2)}°C</strong>（{t("city.global")} +{snap.tempAnomaly.toFixed(2)}°C）
       </div>
       <div style={{ color: tokens.textMuted }}>
-        年均温 <strong style={{ color: tokens.text }}>{tFuture.toFixed(1)}°C</strong>（基准 {city.tbase.toFixed(1)}°C）
+        {t("city.annualTemp")} <strong style={{ color: tokens.text }}>{tFuture.toFixed(1)}°C</strong>（{t("city.baseline")} {city.tbase.toFixed(1)}°C）
       </div>
       <div style={{ color: tokens.textMuted }}>
-        年降水 <strong style={{ color: tokens.text }}>{pFuture.toFixed(0)}mm</strong>（基准 {city.pbase.toFixed(0)}mm）
+        {t("city.precip")} <strong style={{ color: tokens.text }}>{pFuture.toFixed(0)}mm</strong>（{t("city.baseline")} {city.pbase.toFixed(0)}mm）
       </div>
       <div style={{ color: tokens.textMuted }}>
-        群系 <strong style={{ color: "#a3e635" }}>{biome}</strong>
+        {t("city.biome")} <strong style={{ color: "#a3e635" }}>{biome}</strong>
       </div>
     </div>
   );

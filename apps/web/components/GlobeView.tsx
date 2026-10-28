@@ -11,11 +11,12 @@ import type { MetricsSnapshot } from "../lib/sim";
 import LayerControl from "./LayerControl";
 import Colorbar from "./Colorbar";
 import { DEFAULT_LAYERS, type LayerState } from "./LayerControl";
+import { useI18n, zh, en } from "../lib/i18n";
 
 // react-globe.gl 依赖 WebGL/浏览器 API，仅客户端装载
 const Globe = dynamic(() => import("react-globe.gl"), {
   ssr: false,
-  loading: () => <div style={centerStyle}>地球渲染器装载中…</div>,
+  loading: () => <div style={centerStyle}>🌍</div>,
 });
 
 const centerStyle = { height: "100%", display: "grid", placeItems: "center", color: "#475569" } as const;
@@ -39,6 +40,8 @@ const maxPop = (cities: CityRow[]) => Math.max(...cities.map((c) => c.population
 // 由组件每次渲染同步写入；这样 points 的 useMemo 可以收窄依赖（播放期不重建点层）
 let snapRefCurrent: MetricsSnapshot | null = null;
 let patternRefCurrent: WarmingPatternBand[] = [];
+// tooltip（组件外 accessor）读取当前词典——组件每次渲染同步写入
+let dictCurrent: Record<string, string> = zh;
 
 
 // react-globe.gl 的 ObjAccessor 参数是 object，收窄在内部完成
@@ -64,8 +67,8 @@ const getLabel = (d: object) => {
   const snap = snapRefCurrent;
   const dt = snap ? localDTs(snap.tempAnomaly, c.lat, patternRefCurrent.length ? patternRefCurrent : undefined) : 0;
   return (
-    `<div style="font:12px system-ui;color:#e2e8f0"><b>${c.name}</b>（${c.country}，人口 ${(c.population / 10000).toFixed(0)} 万）` +
-    `<br/>高程 ${c.elevation} m · 本地 ΔT +${dt.toFixed(2)}°C${p.flooded ? " · 已淹没" : ""}</div>`
+    `<div style="font:12px system-ui;color:#e2e8f0"><b>${c.name}</b>（${c.country}，${dictCurrent["tooltip.population"]} ${(c.population / 10000).toFixed(0)} 万）` +
+    `<br/>${dictCurrent["city.elevation"]} ${c.elevation} m · ${dictCurrent["city.localWarming"]} +${dt.toFixed(2)}°C${p.flooded ? ` · ${dictCurrent["tooltip.floodedShort"]}` : ""}</div>`
   );
 };
 const onPointClick = (point: object, onSelectCity: (c: CityRow) => void) => {
@@ -85,6 +88,8 @@ export default function GlobeView({
 }) {
   // 同步最新快照到模块级（getLabel 等 accessor 读取）；并保留组件内 ref 供其他 effect 用
   snapRefCurrent = snap;
+  const { locale } = useI18n();
+  dictCurrent = locale === "en" ? en : zh;
   patternRefCurrent = pattern.length ? pattern : [];
   const ref = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ w: 0, h: 0 });

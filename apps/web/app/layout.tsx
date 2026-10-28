@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Analytics } from "@vercel/analytics/react";
+import { I18nProvider } from "../lib/i18n";
 import "./animations.css";
 
 const SITE_URL = "https://earth-change.vercel.app";
@@ -90,7 +91,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body style={{ margin: 0, background: "#05070f", color: "#e2e8f0", fontFamily: "system-ui, sans-serif" }}>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
-        {children}
+        <I18nProvider>{children}</I18nProvider>
         <noscript>
           <div style={{ padding: 40, maxWidth: 640, margin: "0 auto" }}>
             <h1>🌍 {SITE_NAME} — Interactive Climate Simulator</h1>

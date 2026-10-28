@@ -2,6 +2,7 @@
 import { seaIceArea } from "@future-earth/engine";
 import type { MetricsSnapshot, UncertaintySnapshot } from "../lib/sim";
 import { tokens } from "../lib/design";
+import { useI18n } from "../lib/i18n";
 
 function Metric({
   label,
@@ -34,6 +35,7 @@ export default function MetricsBar({
   snap: MetricsSnapshot | null;
   unc: UncertaintySnapshot | null;
 }) {
+  const { t } = useI18n();
   if (!snap) {
     return <div style={{ marginLeft: "auto", color: tokens.textDisabled, fontSize: 13 }}>—</div>;
   }
@@ -69,20 +71,20 @@ export default function MetricsBar({
         range={unc ? showT(unc.slP10, unc.slP90, 2) : undefined}
       />
       <Metric
-        label="海冰"
+        label={t("metric.seaIce")}
         value={`${seaIceArea(snap.tempAnomaly).toFixed(1)}M`}
         color="#93c5fd"
         // 海冰随温度单调递减：温度 p90（更暖）→ 海冰 p10
         range={unc && unc.tempP90 > unc.tempP10 ? showT(seaIceArea(unc.tempP90), seaIceArea(unc.tempP10)) : undefined}
       />
       {snap.biomass !== undefined && (
-        <Metric label="植被" value={`${((snap.biomass / 550) * 100).toFixed(0)}%`} color="#a3e635" />
+        <Metric label={t("metric.vegetation")} value={`${((snap.biomass / 550) * 100).toFixed(0)}%`} color="#a3e635" />
       )}
       {snap.permafrost !== undefined && (
-        <Metric label="冻土" value={`${snap.permafrost.toFixed(0)}Gt`} color="#d8b4fe" />
+        <Metric label={t("metric.permafrost")} value={`${snap.permafrost.toFixed(0)}Gt`} color="#d8b4fe" />
       )}
       <span style={{ color: tokens.textFaint, fontSize: 12 }}>
-        热膨 {sl.thermal.toFixed(2)} / 冰川 {sl.glacier.toFixed(2)} / 冰盖 {sl.iceSheet.toFixed(2)} / 陆水{" "}
+        {t("metric.thermal")} {sl.thermal.toFixed(2)} / {t("metric.glacier")} {sl.glacier.toFixed(2)} / {t("metric.iceSheet")} {sl.iceSheet.toFixed(2)} / {t("metric.landWater")}{" "}
         {sl.landWater.toFixed(2)} m
       </span>
     </div>
