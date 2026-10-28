@@ -11,6 +11,9 @@ export const zh = {
   "app.btn.analysisPlain": "分析",
   "app.btn.experiment": "🧪 实验",
   "app.btn.experimentPlain": "实验",
+  "app.btn.rangeTitle": "种子化确定性蒙特卡洛：参数先验采样 → p10/p90 区间（约 1 秒）",
+  "app.btn.analysisTitle": "v0.2 分析面板：时间序列 / 观测对照 / 海平面分量 / 贡献分解 / 结果说明",
+  "app.btn.experimentTitle": "v0.3 情景实验室：自定义排放路径/甲烷/碳汇/海岸防护（教育性实验，排放驱动）",
   // Tabs
   "tab.games": "🎮 趣玩",
   "tab.missions": "🎓 任务",

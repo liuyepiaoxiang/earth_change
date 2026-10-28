@@ -5,6 +5,7 @@ import type { CityRow } from "@future-earth/data";
 import type { MetricsSnapshot } from "../lib/sim";
 import { panelStyle, tokens } from "../lib/design";
 import { useI18n } from "../lib/i18n";
+import { biomeName } from "../lib/biome-i18n";
 
 export default function CityPanel({
   city,
@@ -17,7 +18,7 @@ export default function CityPanel({
   pattern: WarmingPatternBand[];
   onClose: () => void;
 }) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const dtLocal = localDTs(snap.tempAnomaly, city.lat, pattern.length ? pattern : undefined);
   const tFuture = city.tbase + dtLocal;
   const pFuture = scaledPrecip(city.pbase, snap.tempAnomaly);
@@ -66,7 +67,7 @@ export default function CityPanel({
         {t("city.precip")} <strong style={{ color: tokens.text }}>{pFuture.toFixed(0)}mm</strong>（{t("city.baseline")} {city.pbase.toFixed(0)}mm）
       </div>
       <div style={{ color: tokens.textMuted }}>
-        {t("city.biome")} <strong style={{ color: "#a3e635" }}>{biome}</strong>
+        {t("city.biome")} <strong style={{ color: "#a3e635" }}>{biomeName(biome, locale)}</strong>
       </div>
     </div>
   );

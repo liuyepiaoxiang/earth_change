@@ -6,6 +6,7 @@ import { crossingYears } from "@future-earth/engine";
 import { loadCities, type CityRow } from "@future-earth/data";
 import Chart from "./Chart";
 import type { SimResultWithUnc } from "../lib/sim";
+import { useI18n } from "../lib/i18n";
 
 const SSPS: ScenarioId[] = ["ssp126", "ssp245", "ssp370", "ssp585"];
 const seg = (on: boolean): React.CSSProperties => ({
@@ -40,7 +41,9 @@ export default function ComparePanel(props: { a: SimResultWithUnc; year: number 
   const [b, setB] = useState<SimResult | null>(null);
   const cities = useMemo(() => loadCities(), []);
   const defense = a.experiment?.controls.coastalDefense ?? "none";
-  const aLabel = a.experiment ? `${a.scenario} 实验(×${a.experiment.controls.emissionScale})` : a.scenario;
+  const { locale } = useI18n();
+  const en = locale === "en";
+  const aLabel = a.experiment ? `${a.scenario} ${en ? "exp" : "实验"}(×${a.experiment.controls.emissionScale})` : a.scenario;
 
   useEffect(() => {
     let alive = true;
@@ -71,7 +74,7 @@ export default function ComparePanel(props: { a: SimResultWithUnc; year: number 
   return (
     <div data-testid="compare-panel" style={{ fontSize: 16, color: "#94a3b8" }}>
       <div style={{ display: "flex", gap: 4, alignItems: "center", marginBottom: 8, flexWrap: "wrap" }}>
-        <b style={{ color: "#fbbf24" }}>A：{aLabel}</b> vs
+        <b style={{ color: "#fbbf24" }}>{en ? "A: " : "A："}{aLabel}</b> vs
         {SSPS.map((id) => <button key={id} style={seg(bId === id)} aria-pressed={bId === id} onClick={() => setBId(id)}>{id}</button>)}
       </div>
       {b && (
@@ -83,7 +86,7 @@ export default function ComparePanel(props: { a: SimResultWithUnc; year: number 
       )}
       {d2100 && d2500 && (
         <table data-testid="compare-deltas" style={{ width: "100%", borderCollapse: "collapse", margin: "8px 0", fontSize: 15 }}>
-          <thead><tr>{["对比时点", "ΔT 差 (°C)", "海平面差 (m)", "CO₂ 差 (ppm)"].map((h) => (
+          <thead><tr>{(en ? ["Horizon", "ΔT diff (°C)", "Sea-level diff (m)", "CO₂ diff (ppm)"] : ["对比时点", "ΔT 差 (°C)", "海平面差 (m)", "CO₂ 差 (ppm)"]).map((h) => (
             <th key={h} style={{ textAlign: "left", borderBottom: "1px solid #334155", padding: "3px 6px", color: "#cbd5e1" }}>{h}</th>
           ))}</tr></thead>
           <tbody>
@@ -98,9 +101,9 @@ export default function ComparePanel(props: { a: SimResultWithUnc; year: number 
           </tbody>
         </table>
       )}
-      <b style={{ color: "#e0f2fe" }}>温度阈值首超年份（A / B）</b>
+      <b style={{ color: "#e0f2fe" }}>{en ? "First year of exceeding temperature thresholds (A / B)" : "温度阈值首超年份（A / B）"}</b>
       <table data-testid="compare-thresholds" style={{ width: "100%", borderCollapse: "collapse", fontSize: 15 }}>
-        <thead><tr>{["阈值", "A", "B"].map((h) => <th key={h} style={{ textAlign: "left", padding: "3px 6px", color: "#cbd5e1", borderBottom: "1px solid #334155" }}>{h}</th>)}</tr></thead>
+        <thead><tr>{(en ? ["Threshold", "A", "B"] : ["阈值", "A", "B"]).map((h) => <th key={h} style={{ textAlign: "left", padding: "3px 6px", color: "#cbd5e1", borderBottom: "1px solid #334155" }}>{h}</th>)}</tr></thead>
         <tbody>{([["1.5°C", "t15"], ["2°C", "t20"], ["3°C", "t30"]] as const).map(([label, key]) => (
           <tr key={key}>
             <td style={{ padding: "3px 6px" }}>{label}</td>
@@ -109,10 +112,10 @@ export default function ComparePanel(props: { a: SimResultWithUnc; year: number 
           </tr>
         ))}</tbody>
       </table>
-      <b style={{ color: "#e0f2fe", display: "block", marginTop: 8 }}>最早受影响城市（防护：{{ none: "不防护", fixed: "固定高程", adaptive: "适应" }[defense]}）</b>
-      {floodA.length === 0 ? <span>至 2500 年无城市被淹</span> : (
+      <b style={{ color: "#e0f2fe", display: "block", marginTop: 8 }}>{en ? "Earliest affected cities (defense: " : "最早受影响城市（防护："}{en ? { none: "no defense", fixed: "fixed elevation", adaptive: "adaptive" }[defense] : { none: "不防护", fixed: "固定高程", adaptive: "适应" }[defense]}{en ? ")" : "）"}</b>
+      {floodA.length === 0 ? <span>{en ? "No cities flooded by 2500" : "至 2500 年无城市被淹"}</span> : (
         <ol data-testid="flooded-list" style={{ margin: "4px 0", paddingLeft: 18 }}>
-          {floodA.map((c) => <li key={c.name + c.year}>{c.name}（{c.country}）· {c.year}</li>)}
+          {floodA.map((c) => <li key={c.name + c.year}>{c.name}{en ? ` (${c.country}) · ${c.year}` : `（${c.country}）· ${c.year}`}</li>)}
         </ol>
       )}
     </div>

@@ -126,7 +126,7 @@ export default function Dashboard({ embed = false }: { embed?: boolean }) {
         {!embed && <button
           onClick={() => setUncertain((v) => !v)}
           aria-pressed={uncertain}
-          title="种子化确定性蒙特卡洛：参数先验采样 → p10/p90 区间（约 1 秒）"
+          title={t("app.btn.rangeTitle")}
           style={{
             padding: "4px 10px",
             borderRadius: 6,
@@ -142,7 +142,7 @@ export default function Dashboard({ embed = false }: { embed?: boolean }) {
         {!embed && <button
           onClick={() => setShowAnalysis((v) => !v)}
           aria-pressed={showAnalysis}
-          title="v0.2 分析面板：时间序列 / 观测对照 / 海平面分量 / 贡献分解 / 结果说明"
+          title={t("app.btn.analysisTitle")}
           style={{
             padding: "4px 10px", borderRadius: 6, cursor: "pointer", fontSize: 13,
             border: `1px solid ${showAnalysis ? "#4ade80" : "#334155"}`,
@@ -155,7 +155,7 @@ export default function Dashboard({ embed = false }: { embed?: boolean }) {
         {!embed && <button
           onClick={() => setExp((v) => (v ? undefined : { ...DEFAULT_CONTROLS }))}
           aria-pressed={!!exp}
-          title="v0.3 情景实验室：自定义排放路径/甲烷/碳汇/海岸防护（教育性实验，排放驱动）"
+          title={t("app.btn.experimentTitle")}
           style={{
             padding: "4px 10px", borderRadius: 6, cursor: "pointer", fontSize: 13,
             border: `1px solid ${exp ? "#fbbf24" : "#334155"}`,

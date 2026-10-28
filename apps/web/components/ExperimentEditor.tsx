@@ -3,16 +3,17 @@
 import { useEffect, useState } from "react";
 import type { ExperimentControls } from "@future-earth/engine";
 import { DEFAULT_CONTROLS } from "@future-earth/engine";
+import { useI18n } from "../lib/i18n";
 
 const STORE_KEY = "fe-lab-experiments-v1";
 export interface SavedExperiment { name: string; note: string; controls: ExperimentControls; savedAt: string }
 
 const TIERS = [
-  { key: "methanePath", label: "甲烷路径", opts: [["low", "低"], ["medium", "中"], ["high", "高"]] },
-  { key: "lulucPath", label: "土地利用排放", opts: [["low", "低"], ["medium", "基准"], ["high", "高"]] },
-  { key: "sinkCapacity", label: "碳汇能力", opts: [["conservative", "保守"], ["baseline", "基准"], ["enhanced", "增强"]] },
+  { key: "methanePath", label: ["甲烷路径", "Methane pathway"], opts: [["low", "低", "Low"], ["medium", "中", "Medium"], ["high", "高", "High"]] },
+  { key: "lulucPath", label: ["土地利用排放", "Land-use emissions"], opts: [["low", "低", "Low"], ["medium", "基准", "Baseline"], ["high", "高", "High"]] },
+  { key: "sinkCapacity", label: ["碳汇能力", "Carbon sink capacity"], opts: [["conservative", "保守", "Conservative"], ["baseline", "基准", "Baseline"], ["enhanced", "增强", "Enhanced"]] },
 ] as const;
-const DEFENSE = [["none", "不防护"], ["fixed", "固定高程（>100 万人口 +2m）"], ["adaptive", "适应（>500 万 +3m / 其余 +1.5m）"]] as const;
+const DEFENSE = [["none", "不防护", "No defense"], ["fixed", "固定高程（>100 万人口 +2m）", "Fixed elevation (>1M population +2m)"], ["adaptive", "适应（>500 万 +3m / 其余 +1.5m）", "Adaptive (>5M +3m / others +1.5m)"]] as const;
 
 const seg = (on: boolean): React.CSSProperties => ({
   padding: "2px 8px", fontSize: 15, cursor: "pointer", border: `1px solid ${on ? "#38bdf8" : "#334155"}`,
@@ -24,9 +25,11 @@ export default function ExperimentEditor(props: {
   onChange: (c: ExperimentControls) => void;
   onExit: () => void;
 }) {
+  const { locale } = useI18n();
+  const en = locale === "en";
   const { controls: c, onChange } = props;
   const [saved, setSaved] = useState<SavedExperiment[]>([]);
-  const [name, setName] = useState("我的实验");
+  const [name, setName] = useState(en ? "My experiment" : "我的实验");
   const [note, setNote] = useState("");
   useEffect(() => {
     try { setSaved(JSON.parse(localStorage.getItem(STORE_KEY) ?? "[]")); } catch { /* 忽略损坏 */ }
@@ -46,55 +49,55 @@ export default function ExperimentEditor(props: {
 
   return (
     <div data-testid="experiment-editor" style={{ fontSize: 16, color: "#94a3b8" }}>
-      <p style={{ color: "#fbbf24" }}>⚠ 教育性实验：排放驱动自由运行，未经 AR6 区间锚定。</p>
+      <p style={{ color: "#fbbf24" }}>⚠ {en ? "Educational experiment: emissions run free, not anchored to AR6 ranges." : "教育性实验：排放驱动自由运行，未经 AR6 区间锚定。"}</p>
       <label style={{ display: "block", margin: "8px 0" }}>
-        排放强度 ×{c.emissionScale.toFixed(2)}
-        <input type="range" min={0.5} max={1.5} step={0.05} value={c.emissionScale} aria-label="排放强度"
+        {en ? `Emission intensity` : "排放强度"} ×{c.emissionScale.toFixed(2)}
+        <input type="range" min={0.5} max={1.5} step={0.05} value={c.emissionScale} aria-label={en ? "Emission intensity" : "排放强度"}
           onChange={(e) => onChange({ ...c, emissionScale: Number(e.target.value) })} style={{ width: "100%" }} />
       </label>
       <label style={{ display: "block", margin: "8px 0" }}>
-        减排起始年 {c.declineStart}
-        <input type="range" min={2025} max={2100} step={5} value={c.declineStart} aria-label="减排起始年"
+        {en ? "Mitigation start year" : "减排起始年"} {c.declineStart}
+        <input type="range" min={2025} max={2100} step={5} value={c.declineStart} aria-label={en ? "Mitigation start year" : "减排起始年"}
           onChange={(e) => onChange({ ...c, declineStart: Math.min(Number(e.target.value), c.netZeroYear - 5) })} style={{ width: "100%" }} />
       </label>
       <label style={{ display: "block", margin: "8px 0" }}>
-        净零年份 {c.netZeroYear}
-        <input type="range" min={2030} max={2200} step={5} value={c.netZeroYear} aria-label="净零年份"
+        {en ? "Net-zero year" : "净零年份"} {c.netZeroYear}
+        <input type="range" min={2030} max={2200} step={5} value={c.netZeroYear} aria-label={en ? "Net-zero year" : "净零年份"}
           onChange={(e) => onChange({ ...c, netZeroYear: Math.max(Number(e.target.value), c.declineStart + 5) })} style={{ width: "100%" }} />
       </label>
       {TIERS.map((t) => (
         <div key={t.key} style={{ margin: "8px 0" }}>
-          {t.label}
+          {en ? t.label[1] : t.label[0]}
           <div style={{ display: "flex", gap: 4, marginTop: 3 }}>
-            {t.opts.map(([v, zh]) => (
+            {t.opts.map(([v, zh, enLabel]) => (
               <button key={v} style={seg(c[t.key] === v)} aria-pressed={c[t.key] === v}
-                onClick={() => onChange({ ...c, [t.key]: v } as ExperimentControls)}>{zh}</button>
+                onClick={() => onChange({ ...c, [t.key]: v } as ExperimentControls)}>{en ? enLabel : zh}</button>
             ))}
           </div>
         </div>
       ))}
       <label style={{ display: "block", margin: "8px 0" }}>
-        海岸防护
-        <select value={c.coastalDefense} aria-label="海岸防护" onChange={(e) => onChange({ ...c, coastalDefense: e.target.value as ExperimentControls["coastalDefense"] })}
+        {en ? "Coastal defense" : "海岸防护"}
+        <select value={c.coastalDefense} aria-label={en ? "Coastal defense" : "海岸防护"} onChange={(e) => onChange({ ...c, coastalDefense: e.target.value as ExperimentControls["coastalDefense"] })}
           style={{ width: "100%", background: "#0f172a", color: "#cbd5e1", border: "1px solid #334155", borderRadius: 6, padding: 4 }}>
-          {DEFENSE.map(([v, zh]) => <option key={v} value={v}>{zh}</option>)}
+          {DEFENSE.map(([v, zh, enLabel]) => <option key={v} value={v}>{en ? enLabel : zh}</option>)}
         </select>
       </label>
       <div style={{ display: "flex", gap: 6, margin: "10px 0" }}>
-        <input value={name} onChange={(e) => setName(e.target.value)} aria-label="实验名称" placeholder="实验名称"
+        <input value={name} onChange={(e) => setName(e.target.value)} aria-label={en ? "Experiment name" : "实验名称"} placeholder={en ? "Experiment name" : "实验名称"}
           style={{ flex: 1, background: "#0f172a", color: "#e2e8f0", border: "1px solid #334155", borderRadius: 6, padding: 4 }} />
-        <button onClick={save} style={seg(false)}>💾 保存</button>
-        <button onClick={() => onChange({ ...DEFAULT_CONTROLS })} style={seg(false)}>↺ 默认</button>
-        <button onClick={props.onExit} style={{ ...seg(false), borderColor: "#f87171", color: "#f87171" }}>退出实验</button>
+        <button onClick={save} style={seg(false)}>💾 {en ? "Save" : "保存"}</button>
+        <button onClick={() => onChange({ ...DEFAULT_CONTROLS })} style={seg(false)}>↺ {en ? "Defaults" : "默认"}</button>
+        <button onClick={props.onExit} style={{ ...seg(false), borderColor: "#f87171", color: "#f87171" }}>{en ? "Exit lab" : "退出实验"}</button>
       </div>
-      <input value={note} onChange={(e) => setNote(e.target.value)} aria-label="备注" placeholder="备注（可选）"
+      <input value={note} onChange={(e) => setNote(e.target.value)} aria-label={en ? "Note" : "备注"} placeholder={en ? "Note (optional)" : "备注（可选）"}
         style={{ width: "100%", background: "#0f172a", color: "#e2e8f0", border: "1px solid #334155", borderRadius: 6, padding: 4, marginBottom: 8 }} />
-      {saved.length > 0 && <b style={{ color: "#cbd5e1" }}>已保存实验（{saved.length}/5）</b>}
+      {saved.length > 0 && <b style={{ color: "#cbd5e1" }}>{en ? `Saved experiments (${saved.length}/5)` : `已保存实验（${saved.length}/5）`}</b>}
       {saved.map((s, i) => (
         <div key={i} style={{ display: "flex", gap: 6, alignItems: "center", margin: "4px 0" }}>
-          <button style={seg(false)} onClick={() => { onChange(s.controls); setName(s.name); setNote(s.note); }}>载入</button>
+          <button style={seg(false)} onClick={() => { onChange(s.controls); setName(s.name); setNote(s.note); }}>{en ? "Load" : "载入"}</button>
           <span style={{ flex: 1 }}>{s.name} <span style={{ color: "#475569" }}>{s.savedAt.slice(0, 10)}</span></span>
-          <button style={{ ...seg(false), borderColor: "#f87171", color: "#f87171" }} onClick={() => del(i)}>删</button>
+          <button style={{ ...seg(false), borderColor: "#f87171", color: "#f87171" }} onClick={() => del(i)}>{en ? "Delete" : "删"}</button>
         </div>
       ))}
     </div>

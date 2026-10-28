@@ -23,6 +23,14 @@ export interface Mission {
   limits: string[];
   /** 推荐下一步 */
   nextMissionId?: string;
+  /** 英文平行内容（locale=en 时 UI 层优先使用） */
+  en?: {
+    title: string; intro: string; goal: string;
+    prediction: { question: string; options: PredictionOption[]; explanation: string };
+    hint: string;
+    reason: { oneLiner: string; causal: string; technical: string };
+    limits: string[];
+  };
 }
 
 export const MISSIONS: Mission[] = [
@@ -51,6 +59,26 @@ export const MISSIONS: Mission[] = [
     },
     limits: ["全球平均不等于每个城市的实际温度（局地有放大系数）", "2100 年后有探索性外推标注"],
     nextMissionId: "m2-scenario-diff",
+    en: {
+      title: "How much warming by 2100?",
+      intro: "SSP2-4.5 is the \"middle road\" scenario. How much do you think the planet will warm by 2100?",
+      goal: "Predict SSP2-4.5 global warming at 2100",
+      prediction: {
+        question: "Roughly how much global mean warming by 2100 under SSP2-4.5?",
+        options: [
+          { id: "a", label: "1–2°C" }, { id: "b", label: "2–3°C" },
+          { id: "c", label: "3–4°C" }, { id: "d", label: "Above 4°C" },
+        ],
+        explanation: "SSP2-4.5 gives ~2.7–2.9°C by 2100 (IPCC AR6 best estimate 2.7°C).",
+      },
+      hint: "Select SSP2-4.5, drag the timeline to 2100, and read ΔT in the metrics bar.",
+      reason: {
+        oneLiner: "More CO₂ slows Earth's heat loss, the system accumulates energy, and temperature rises.",
+        causal: "Emissions → higher CO₂ → stronger radiative forcing → land and ocean absorb heat → global mean temperature rises",
+        technical: "Two-layer ocean energy balance model (eq_11/12): Cs·dTs/dt = F − λ·Ts − γ(Ts−Td). The carbon cycle (eq_15-17) converts emissions to concentrations. Calibration lands 2100 inside IPCC AR6 ranges (gate G4).",
+      },
+      limits: ["The global mean is not each city's actual temperature (local amplification applies)", "Beyond 2100 an exploratory-extrapolation label applies"],
+    },
   },
   {
     id: "m2-scenario-diff",
@@ -77,6 +105,26 @@ export const MISSIONS: Mission[] = [
     },
     limits: ["情景间差异不等于政策效果的全部（未含适应与减缓成本分析）"],
     nextMissionId: "m3-slr-components",
+    en: {
+      title: "How different are the four futures?",
+      intro: "The four SSPs represent four very different futures. How big is the gap?",
+      goal: "Compare SSP1-2.6 vs SSP5-8.5 warming at 2100",
+      prediction: {
+        question: "Roughly how large is the 2100 warming gap between SSP1-2.6 (low) and SSP5-8.5 (high)?",
+        options: [
+          { id: "a", label: "~1°C" }, { id: "b", label: "~2°C" },
+          { id: "c", label: "~3°C" }, { id: "d", label: "~5°C" },
+        ],
+        explanation: "SSP1-2.6 ≈ +1.8°C, SSP5-8.5 ≈ +4.9°C — a gap of ~3°C. Human choices matter enormously.",
+      },
+      hint: "Select SSP1-2.6, drag to 2100 and note ΔT; switch to SSP5-8.5 and repeat, then take the difference.",
+      reason: {
+        oneLiner: "Emission-path differences are amplified by the carbon cycle and climate sensitivity into large temperature gaps.",
+        causal: "Different emission paths → different CO₂ levels → different forcing → the temperature gap keeps widening",
+        technical: "All four scenarios run concentration-driven (Meinshausen 2020 anchored). Concentration differences set radiative forcing (eq_07-09), which the two-layer EBM turns into temperature differences.",
+      },
+      limits: ["Scenario differences are not the whole story of policy outcomes (no adaptation/mitigation cost analysis)"],
+    },
   },
   {
     id: "m3-slr-components",
@@ -103,6 +151,26 @@ export const MISSIONS: Mission[] = [
     },
     limits: ["简化冰盖不含快速动力学断裂", "未含区域海平面差异（如洋流导致的东西差异）"],
     nextMissionId: "m4-experiment",
+    en: {
+      title: "Where does sea level rise come from?",
+      intro: "Sea level rise has no single cause. Open \"Sea Level\" to see the four components.",
+      goal: "Find the largest sea level component at 2100",
+      prediction: {
+        question: "By 2100, which component contributes most to sea level rise?",
+        options: [
+          { id: "a", label: "Thermal expansion" }, { id: "b", label: "Mountain glaciers" },
+          { id: "c", label: "Greenland + Antarctic ice sheets" }, { id: "d", label: "Land water storage" },
+        ],
+        explanation: "By 2100 thermal expansion typically contributes ~40-50%, ice sheets ~30-35%, glaciers ~20%, land water <5%.",
+      },
+      hint: "Open 📊 Analysis → the Sea Level tab; see which color is thickest at 2100 in the stacked chart.",
+      reason: {
+        oneLiner: "The ocean absorbs most of Earth's excess heat, and warm water expanding is the biggest driver of sea level rise.",
+        causal: "Warming → ocean heat uptake → water expands → sea level rises (cryosphere contributions add on top)",
+        technical: "Thermal expansion (eq_14): dS_th/dt = k_th·γ(Ts−Td). Glaciers (eq_26): degree-day model. Ice sheets (eq_27): simplified SMB. Summed in eq_31.",
+      },
+      limits: ["Simplified ice sheets exclude rapid dynamic calving", "No regional sea level differences (e.g. east-west offsets from currents)"],
+    },
   },
   {
     id: "m4-experiment",
@@ -128,8 +196,39 @@ export const MISSIONS: Mission[] = [
       technical: "实验模式使用排放驱动（碳循环自由运行）。与 SSP 浓度驱动（AR6 锚定）形成诚实对照。海洋滞后由两层 EBM 的深层热容量 Cd（~105 W·yr/m²/K）决定。",
     },
     limits: ["教育性实验，未经 AR6 区间锚定", "不含经济成本和政策可行性分析"],
+    en: {
+      title: "Change the future",
+      intro: "Now it's your lab: tune mitigation parameters and see if you can change 2100 warming.",
+      goal: "Use Lab controls to keep 2100 warming below 2°C",
+      prediction: {
+        question: "If emission intensity drops to 0.6× the baseline with net-zero by 2050, roughly how much less warming by 2100?",
+        options: [
+          { id: "a", label: "~0.3°C" }, { id: "b", label: "~0.8°C" },
+          { id: "c", label: "~1.5°C" }, { id: "d", label: "~2.5°C" },
+        ],
+        explanation: "Strong mitigation cuts ~0.7-1.0°C, but ocean heat inertia means already-accumulated warming won't vanish.",
+      },
+      hint: "Click 🧪 Lab, set intensity 0.6 and net-zero 2050, then read ΔT in the metrics bar.",
+      reason: {
+        oneLiner: "Cutting emissions lowers future warming substantially, but ocean inertia delays cooling.",
+        causal: "Lower emissions → slower CO₂ growth → smaller forcing increase → lower peak temperature (absorbed ocean heat releases slowly)",
+        technical: "Lab mode is emissions-driven (free-running carbon cycle), contrasting honestly with SSP concentration-driving (AR6 anchored). Ocean lag is set by the deep-layer heat capacity Cd (~105 W·yr/m²/K).",
+      },
+      limits: ["Educational experiment, not anchored to AR6 ranges", "No economic cost or policy feasibility analysis"],
+    },
   },
 ];
+
+/** locale 视图：en 时优先用英文平行字段（回退中文） */
+export function missionView(m: Mission, locale: "zh" | "en"): Mission {
+  if (locale !== "en" || !m.en) return m;
+  return {
+    ...m,
+    title: m.en.title, intro: m.en.intro, goal: m.en.goal,
+    prediction: { ...m.prediction, question: m.en.prediction.question, options: m.en.prediction.options, explanation: m.en.prediction.explanation },
+    hint: m.en.hint, reason: m.en.reason, limits: m.en.limits,
+  };
+}
 
 /** 从 SimResult 提取任务判定指标 */
 export function extractMissionMetric(sim: SimResult | SimResultWithUncLike, metric: string): number | null {

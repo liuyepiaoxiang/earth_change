@@ -3,17 +3,20 @@
 import { useMemo } from "react";
 import { milestoneEvents } from "@future-earth/engine";
 import type { SimResultWithUnc } from "../lib/sim";
+import { useI18n } from "../lib/i18n";
 
 const COLORS: Record<string, string> = {
   temperature: "#f87171", sea: "#38bdf8", ice: "#a5f3fc", carbon: "#a78bfa", impact: "#fbbf24", ecosystem: "#4ade80",
 };
 
 export default function MilestoneFeed(props: { sim: SimResultWithUnc; year: number; onJump: (y: number) => void }) {
+  const { locale } = useI18n();
+  const en = locale === "en";
   const events = useMemo(() => milestoneEvents(props.sim), [props.sim]);
-  if (events.length === 0) return <div style={{ color: "#64748b", fontSize: 16 }}>该情景在 2025–2500 年内无里程碑事件触发。</div>;
+  if (events.length === 0) return <div style={{ color: "#64748b", fontSize: 16 }}>{en ? "No milestone events triggered within 2025–2500 under this scenario." : "该情景在 2025–2500 年内无里程碑事件触发。"}</div>;
   return (
     <div data-testid="milestone-feed" style={{ fontSize: 16 }}>
-      <p style={{ color: "#94a3b8", marginBottom: 8 }}>共 {events.length} 个里程碑事件——点击跳转到该年份</p>
+      <p style={{ color: "#94a3b8", marginBottom: 8 }}>{en ? `${events.length} milestone events — click to jump to that year` : `共 ${events.length} 个里程碑事件——点击跳转到该年份`}</p>
       <div style={{ display: "grid", gap: 6 }}>
         {events.map((e, i) => {
           const color = COLORS[e.category] ?? "#94a3b8";
@@ -26,8 +29,8 @@ export default function MilestoneFeed(props: { sim: SimResultWithUnc; year: numb
             }}>
               <span style={{ fontSize: 20 }}>{e.icon}</span>
               <div style={{ flex: 1 }}>
-                <div style={{ color: isPast ? color : "#94a3b8", fontSize: 16, fontWeight: isPast ? "bold" : "normal" }}>{e.title}</div>
-                <div style={{ color: "#64748b", fontSize: 16, marginTop: 1 }}>{e.description}</div>
+                <div style={{ color: isPast ? color : "#94a3b8", fontSize: 16, fontWeight: isPast ? "bold" : "normal" }}>{en ? (e.titleEn ?? e.title) : e.title}</div>
+                <div style={{ color: "#64748b", fontSize: 16, marginTop: 1 }}>{en ? (e.descriptionEn ?? e.description) : e.description}</div>
               </div>
               <span style={{ color: isPast ? "#e0f2fe" : "#475569", fontSize: 15, fontVariantNumeric: "tabular-nums" }}>{e.year}</span>
             </button>

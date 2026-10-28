@@ -6,6 +6,8 @@ import type { Mission } from "../lib/missions";
 import PredictionCard from "./PredictionCard";
 import type { Phase } from "./PredictionCard";
 import type { SimResultWithUnc } from "../lib/sim";
+import { useI18n } from "../lib/i18n";
+import { missionView } from "../lib/missions";
 
 const STORE_KEY = "fe-missions-v1";
 interface MissionRecord { missionId: string; completedAt: string; reflection?: string; predictionCorrect: boolean }
@@ -14,6 +16,7 @@ export default function MissionPanel(props: { sim: SimResultWithUnc }) {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [phase, setPhase] = useState<Phase>("intro");
   const [records, setRecords] = useState<MissionRecord[]>([]);
+  const { locale } = useI18n();
 
   useEffect(() => {
     try { setRecords(JSON.parse(localStorage.getItem(STORE_KEY) ?? "[]")); } catch { /* */ }
@@ -33,9 +36,9 @@ export default function MissionPanel(props: { sim: SimResultWithUnc }) {
   if (!active) return (
     <div data-testid="mission-list" style={{ fontSize: 16 }}>
       <div style={{ marginBottom: 12, padding: "8px 12px", background: "#0f172a", borderRadius: 8, border: "1px solid #334155" }}>
-        <span style={{ color: "#e0f2fe", fontWeight: "bold" }}>🎓 未来实验室</span>
-        <span style={{ color: "#94a3b8", marginLeft: 8 }}>已完成 {completedCount}/{MISSIONS.length} 个任务</span>
-        {nextMission && <span style={{ color: "#4ade80", marginLeft: 8 }}>下一个：{nextMission.icon} {nextMission.title}</span>}
+        <span style={{ color: "#e0f2fe", fontWeight: "bold" }}>{locale === "en" ? "🎓 Future Lab" : "🎓 未来实验室"}</span>
+        <span style={{ color: "#94a3b8", marginLeft: 8 }}>{locale === "en" ? `${completedCount}/${MISSIONS.length} missions done` : `已完成 ${completedCount}/${MISSIONS.length} 个任务`}</span>
+        {nextMission && <span style={{ color: "#4ade80", marginLeft: 8 }}>{locale === "en" ? `Next: ${nextMission.icon} ${missionView(nextMission, locale).title}` : `下一个：${nextMission.icon} ${nextMission.title}`}</span>}
       </div>
       <div style={{ display: "grid", gap: 8 }}>
         {MISSIONS.map((m) => {
@@ -51,12 +54,12 @@ export default function MissionPanel(props: { sim: SimResultWithUnc }) {
               <span style={{ fontSize: 24 }}>{m.icon}</span>
               <div style={{ flex: 1 }}>
                 <div style={{ color: rec ? "#4ade80" : "#e0f2fe", fontSize: 15, fontWeight: "bold" }}>
-                  {m.title} {rec && "✓"}
+                  {missionView(m, locale).title} {rec && "✓"}
                 </div>
-                <div style={{ color: "#94a3b8", fontSize: 15, marginTop: 2 }}>{m.goal}</div>
+                <div style={{ color: "#94a3b8", fontSize: 15, marginTop: 2 }}>{missionView(m, locale).goal}</div>
               </div>
               <span style={{ color: cat, fontSize: 16, border: `1px solid ${cat}44`, borderRadius: 4, padding: "2px 6px" }}>
-                {{ concept: "概念", scenario: "情景", city: "城市", impact: "影响" }[m.category]}
+                {locale === "en" ? { concept: "Concept", scenario: "Scenario", city: "City", impact: "Impact" }[m.category] : { concept: "概念", scenario: "情景", city: "城市", impact: "影响" }[m.category]}
               </span>
             </button>
           );
@@ -64,11 +67,11 @@ export default function MissionPanel(props: { sim: SimResultWithUnc }) {
       </div>
       {completedCount > 0 && (
         <div style={{ marginTop: 12, padding: "8px 12px", background: "#1e293b", borderRadius: 8 }}>
-          <b style={{ color: "#e0f2fe", fontSize: 16 }}>🏅 探索徽章</b>
+          <b style={{ color: "#e0f2fe", fontSize: 16 }}>{locale === "en" ? "🏅 Explorer Badges" : "🏅 探索徽章"}</b>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 6 }}>
-            {completedCount >= 1 && <span style={{ fontSize: 20 }} title="首次完成">🥉</span>}
-            {completedCount >= 2 && <span style={{ fontSize: 20 }} title="双任务">🥈</span>}
-            {completedCount >= 4 && <span style={{ fontSize: 20 }} title="全部完成">🥇</span>}
+            {completedCount >= 1 && <span style={{ fontSize: 20 }} title={locale === "en" ? "First mission completed" : "首次完成"}>🥉</span>}
+            {completedCount >= 2 && <span style={{ fontSize: 20 }} title={locale === "en" ? "Two missions completed" : "双任务"}>🥈</span>}
+            {completedCount >= 4 && <span style={{ fontSize: 20 }} title={locale === "en" ? "All missions completed" : "全部完成"}>🥇</span>}
           </div>
         </div>
       )}
@@ -85,12 +88,12 @@ export default function MissionPanel(props: { sim: SimResultWithUnc }) {
   };
   return (
     <div data-testid="mission-active">
-      <button onClick={() => setActiveId(null)} style={{ marginBottom: 12, padding: "4px 10px", borderRadius: 6, border: "1px solid #334155", background: "#0f172a", color: "#94a3b8", cursor: "pointer", fontSize: 16 }}>← 返回列表</button>
+      <button onClick={() => setActiveId(null)} style={{ marginBottom: 12, padding: "4px 10px", borderRadius: 6, border: "1px solid #334155", background: "#0f172a", color: "#94a3b8", cursor: "pointer", fontSize: 16 }}>{locale === "en" ? "← Back to List" : "← 返回列表"}</button>
       <PredictionCard mission={active} phase={phase} onAnswer={handleAnswer} onReflect={handleReflect} onComplete={() => { setActiveId(null); setPhase("intro"); }} />
       {phase === "revealed" && (
         <div style={{ marginTop: 12, textAlign: "center" }}>
           <button onClick={() => setPhase("reflecting")} style={{ padding: "8px 16px", borderRadius: 8, border: "1px solid #38bdf8", background: "#0c4a6e", color: "#e0f2fe", cursor: "pointer", fontSize: 15 }}>
-            → 开始实验探索
+            {locale === "en" ? "→ Start Exploring" : "→ 开始实验探索"}
           </button>
         </div>
       )}

@@ -1,11 +1,14 @@
 "use client";
 /** V02：历史观测 vs 模型对照（GISTEMP 1880-2024） */
 import { useMemo } from "react";
+import { useI18n } from "../lib/i18n";
 import { loadTemperature } from "@future-earth/data";
 import Chart from "./Chart";
 import type { SimResultWithUnc } from "../lib/sim";
 
 export default function ObsCompare({ sim, markerX }: { sim: SimResultWithUnc; markerX?: number }) {
+  const { locale } = useI18n();
+  const en = locale === "en";
   const { years, model, obs } = useMemo(() => {
     const t = loadTemperature();
     const from = t[0]!.year, to = t.at(-1)!.year;
@@ -19,10 +22,10 @@ export default function ObsCompare({ sim, markerX }: { sim: SimResultWithUnc; ma
   }, [sim]);
   return (
     <Chart
-      years={years} unit="°C（相对工业化前）" markerX={markerX}
+      years={years} unit={en ? "°C (vs pre-industrial)" : "°C（相对工业化前）"} markerX={markerX}
       series={[
-        { name: "模型", color: "#f87171", values: model },
-        { name: "GISTEMP 观测", color: "#38bdf8", values: obs, dashed: true },
+        { name: en ? "Model" : "模型", color: "#f87171", values: model },
+        { name: en ? "GISTEMP obs" : "GISTEMP 观测", color: "#38bdf8", values: obs, dashed: true },
       ]}
     />
   );
