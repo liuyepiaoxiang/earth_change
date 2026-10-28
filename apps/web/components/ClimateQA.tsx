@@ -2,6 +2,7 @@
 /** AI 气候问答——规则引擎版 UI */
 import { useMemo, useState } from "react";
 import { answerClimateQuestion, PRESET_QUESTIONS } from "../lib/climate-qa";
+import { useI18n } from "../lib/i18n";
 import type { QAResult } from "../lib/climate-qa";
 import Link from "next/link";
 
@@ -11,6 +12,7 @@ const btn: React.CSSProperties = { padding: "10px 20px", borderRadius: 10, borde
 const chip: React.CSSProperties = { padding: "6px 14px", background: "#0f172a", color: "#94a3b8", borderRadius: 20, border: "1px solid #334155", cursor: "pointer", fontSize: 12 };
 
 export default function ClimateQA() {
+  const { locale } = useI18n();
   const [question, setQuestion] = useState("");
   const [result, setResult] = useState<QAResult | null>(null);
   const [loading, setLoading] = useState(false);
@@ -22,7 +24,7 @@ export default function ClimateQA() {
     setQuestion(q);
     // 模拟异步（未来可接 LLM API）
     setTimeout(() => {
-      const r = answerClimateQuestion(q);
+      const r = answerClimateQuestion(q, locale);
       setResult(r);
       setLoading(false);
       setHistory(prev => [q, ...prev.filter(h => h !== q)].slice(0, 5));
@@ -32,10 +34,11 @@ export default function ClimateQA() {
   const grouped = useMemo(() => {
     const groups: Record<string, typeof PRESET_QUESTIONS> = {};
     for (const q of PRESET_QUESTIONS) {
-      (groups[q.category] ??= []).push(q);
+      const cat = locale === "en" ? q.categoryEn : q.category;
+      (groups[cat] ??= []).push(q);
     }
     return groups;
-  }, []);
+  }, [locale]);
 
   return (
     <div data-testid="climate-qa" style={{ fontSize: 14 }}>
@@ -45,26 +48,27 @@ export default function ClimateQA() {
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && ask(question)}
-          placeholder="输入气候问题，如：上海 2100 年会被淹没吗？"
+          placeholder={locale === "en" ? "Ask a climate question, e.g. Will Shanghai flood by 2100?" : "输入气候问题，如：上海 2100 年会被淹没吗？"}
           style={input}
-          aria-label="气候问题输入"
+          aria-label={locale === "en" ? "Climate question input" : "气候问题输入"}
         />
         <button onClick={() => ask(question)} disabled={loading || !question.trim()} style={{ ...btn, opacity: loading || !question.trim() ? 0.5 : 1 }}>
-          {loading ? "⏳ 计算中…" : "🔍 问"}
+          {loading ? "⏳ …" : locale === "en" ? "🔍 Ask" : "🔍 问"}
         </button>
       </div>
 
       {/* 预设问题 */}
       {!result && !loading && (
         <div>
-          <p style={{ color: "#94a3b8", fontSize: 12, marginBottom: 8 }}>试试这些问题：</p>
+          <p style={{ color: "#94a3b8", fontSize: 12, marginBottom: 8 }}>{locale === "en" ? "Try one of these:" : "试试这些问题："}</p>
           {Object.entries(grouped).map(([cat, qs]) => (
             <div key={cat} style={{ marginBottom: 12 }}>
               <div style={{ color: "#64748b", fontSize: 11, marginBottom: 4 }}>📋 {cat}</div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                {qs.slice(0, 5).map(({ question: q }) => (
-                  <button key={q} onClick={() => ask(q)} style={chip}>{q}</button>
-                ))}
+                {qs.slice(0, 5).map((item) => {
+                  const q = locale === "en" ? item.questionEn : item.question;
+                  return <button key={q} onClick={() => ask(q)} style={chip}>{q}</button>;
+                })}
               </div>
             </div>
           ))}
@@ -75,7 +79,7 @@ export default function ClimateQA() {
       {loading && (
         <div style={{ ...card, textAlign: "center", padding: 30 }}>
           <div style={{ fontSize: 24, marginBottom: 8 }}>🌍</div>
-          <div style={{ color: "#94a3b8" }}>正在运行气候模型…</div>
+          <div style={{ color: "#94a3b8" }}>{locale === "en" ? "Running the climate model…" : "正在运行气候模型…"}</div>
         </div>
       )}
 
@@ -88,7 +92,7 @@ export default function ClimateQA() {
 
           {/* 数据时间线 */}
           <div style={{ ...card, marginTop: 12 }}>
-            <div style={{ color: "#7dd3fc", fontSize: 13, marginBottom: 10 }}>📊 数据（{result.data[0]?.label ?? ""}）</div>
+            <div style={{ color: "#7dd3fc", fontSize: 13, marginBottom: 10 }}>📊 {locale === "en" ? "Data" : "数据"}（{result.data[0]?.label ?? ""}）</div>
             <div style={{ display: "flex", gap: 4, alignItems: "flex-end", height: 80 }}>
               {result.data.map((d, i) => {
                 const max = Math.max(...result.data.map(x => Math.abs(x.value)));
@@ -102,17 +106,17 @@ export default function ClimateQA() {
                 );
               })}
             </div>
-            <div style={{ color: "#475569", fontSize: 10, textAlign: "right", marginTop: 4 }}>单位：{result.data[0]?.unit}</div>
+            <div style={{ color: "#475569", fontSize: 10, textAlign: "right", marginTop: 4 }}>{locale === "en" ? "Unit" : "单位"}：{result.data[0]?.unit}</div>
           </div>
 
           {/* 来源 */}
           <div style={{ marginTop: 10, fontSize: 11, color: "#64748b" }}>
-            📎 数据来源：{result.sources.join(" · ")}
+            📎 {locale === "en" ? "Sources" : "数据来源"}：{result.sources.join(" · ")}
           </div>
 
           {/* 追问 */}
           <div style={{ marginTop: 16 }}>
-            <div style={{ color: "#94a3b8", fontSize: 12, marginBottom: 8 }}>🤔 继续追问：</div>
+            <div style={{ color: "#94a3b8", fontSize: 12, marginBottom: 8 }}>🤔 {locale === "en" ? "Follow up:" : "继续追问："}</div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
               {result.followUps.map(fq => (
                 <button key={fq} onClick={() => ask(fq)} style={{ ...chip, borderColor: "#38bdf844" }}>{fq}</button>
@@ -125,7 +129,7 @@ export default function ClimateQA() {
             href={`/?scenario=${result.scenario}&year=${result.data[Math.floor(result.data.length / 2)]?.year ?? 2100}`}
             style={{ display: "block", marginTop: 16, padding: "10px 20px", textAlign: "center", background: "#0c4a6e", color: "#e0f2fe", borderRadius: 10, textDecoration: "none", fontSize: 13, fontWeight: "bold", border: "1px solid #38bdf8" }}
           >
-            🌍 在 3D 地球上查看 →
+            🌍 {locale === "en" ? "View on the 3D globe →" : "在 3D 地球上查看 →"}
           </Link>
         </div>
       )}
@@ -133,7 +137,7 @@ export default function ClimateQA() {
       {/* 搜索历史 */}
       {history.length > 0 && !loading && (
         <div style={{ marginTop: 16 }}>
-          <div style={{ color: "#64748b", fontSize: 11, marginBottom: 4 }}>🕘 最近提问</div>
+          <div style={{ color: "#64748b", fontSize: 11, marginBottom: 4 }}>🕘 {locale === "en" ? "Recent" : "最近提问"}</div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
             {history.map(h => (
               <button key={h} onClick={() => ask(h)} style={{ ...chip, fontSize: 10, padding: "4px 10px" }}>{h}</button>

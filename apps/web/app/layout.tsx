@@ -47,7 +47,15 @@ export const metadata: Metadata = {
     follow: true,
     googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
   },
-  alternates: { canonical: SITE_URL },
+  alternates: {
+    canonical: SITE_URL,
+    // 客户端 locale 切换（?lang=）——hreflang 声明两个语言版本与默认入口
+    languages: {
+      "zh-CN": SITE_URL,
+      en: `${SITE_URL}?lang=en`,
+      "x-default": SITE_URL,
+    },
+  },
 };
 
 export const viewport: Viewport = {
