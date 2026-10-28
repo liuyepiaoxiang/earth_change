@@ -66,6 +66,7 @@ export default function Dashboard({ embed = false }: { embed?: boolean }) {
     <main
       style={{
         height: "100vh",
+        background: "transparent",
         display: "grid",
         // 非 embed 模式多一行 LiveEarth 卡片，防止地球 section 被挤进隐式 auto 行（高度塌 0）
         gridTemplateRows: embed ? "auto 1fr auto" : "auto auto 1fr auto",
@@ -77,11 +78,11 @@ export default function Dashboard({ embed = false }: { embed?: boolean }) {
           alignItems: "center",
           gap: 16,
           padding: "8px 16px",
-          borderBottom: "1px solid #1e293b",
+          borderBottom: "1px solid rgba(148, 163, 184, 0.14)",
           flexWrap: "wrap",
         }}
       >
-        <strong style={{ color: "#e0f2fe" }}>🌍 {t("app.title")}</strong>
+        <strong style={{ color: "#f1f5f9", letterSpacing: 0.3, fontSize: 15 }}>🌍 {t("app.title")}</strong>
         {!embed && <nav style={{ display: "flex", gap: 6 }}>
           <span
             style={{
@@ -132,8 +133,8 @@ export default function Dashboard({ embed = false }: { embed?: boolean }) {
             borderRadius: 6,
             cursor: "pointer",
             fontSize: 13,
-            border: `1px solid ${uncertain ? "#a78bfa" : "#334155"}`,
-            background: uncertain ? "#4c1d95" : "transparent",
+            border: `1px solid ${uncertain ? "#a78bfa" : "rgba(148, 163, 184, 0.25)"}`,
+            background: uncertain ? "#4c1d95" : "rgba(148, 163, 184, 0.06)",
             color: uncertain ? "#ede9fe" : "#94a3b8",
           }}
         >
@@ -145,8 +146,8 @@ export default function Dashboard({ embed = false }: { embed?: boolean }) {
           title={t("app.btn.analysisTitle")}
           style={{
             padding: "4px 10px", borderRadius: 6, cursor: "pointer", fontSize: 13,
-            border: `1px solid ${showAnalysis ? "#4ade80" : "#334155"}`,
-            background: showAnalysis ? "#14532d" : "transparent",
+            border: `1px solid ${showAnalysis ? "#4ade80" : "rgba(148, 163, 184, 0.25)"}`,
+            background: showAnalysis ? "#14532d" : "rgba(148, 163, 184, 0.06)",
             color: showAnalysis ? "#dcfce7" : "#94a3b8",
           }}
         >
@@ -158,8 +159,8 @@ export default function Dashboard({ embed = false }: { embed?: boolean }) {
           title={t("app.btn.experimentTitle")}
           style={{
             padding: "4px 10px", borderRadius: 6, cursor: "pointer", fontSize: 13,
-            border: `1px solid ${exp ? "#fbbf24" : "#334155"}`,
-            background: exp ? "#78350f" : "transparent",
+            border: `1px solid ${exp ? "#fbbf24" : "rgba(148, 163, 184, 0.25)"}`,
+            background: exp ? "#78350f" : "rgba(148, 163, 184, 0.06)",
             color: exp ? "#fef3c7" : "#94a3b8",
           }}
         >
@@ -185,7 +186,7 @@ export default function Dashboard({ embed = false }: { embed?: boolean }) {
         )}
       </section>
 
-      <footer style={{ padding: "10px 16px", borderTop: "1px solid #1e293b", display: "flex" }}>
+      <footer style={{ padding: "10px 16px", borderTop: "1px solid rgba(148, 163, 184, 0.14)", display: "flex" }}>
         <Timeline year={year} onChange={setYear} disabled={!sim} />
       </footer>
     </main>

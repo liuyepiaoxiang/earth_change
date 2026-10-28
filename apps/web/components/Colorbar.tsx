@@ -10,7 +10,7 @@ export default function Colorbar() {
   const { t } = useI18n();
   const tickPos = (v: number) => `${(((v - D_MIN) / (D_MAX - D_MIN)) * 100).toFixed(1)}%`;
   return (
-    <div className="fe-fade-up" style={{ ...panelStyle, position: "absolute", left: 16, bottom: 16, width: 300, padding: "10px 12px", fontSize: 12 }}>
+    <div className="fe-fade-up" style={{ ...panelStyle, position: "absolute", left: 16, bottom: 16, width: 300, padding: "12px 14px", fontSize: 12 }}>
       <div style={{ color: tokens.textFaint, marginBottom: 6 }}>
         {t("colorbar.title")}
       </div>

@@ -12,22 +12,24 @@ interface LiveData {
 }
 
 const card: React.CSSProperties = {
-  background: "linear-gradient(135deg, #0f172a 0%, #1a1a2e 100%)",
+  background: "linear-gradient(160deg, rgba(21, 27, 43, 0.92) 0%, rgba(13, 18, 34, 0.92) 100%)",
   borderRadius: 12,
-  border: "1px solid #334155",
-  padding: 14,
+  border: "1px solid rgba(148, 163, 184, 0.16)",
+  boxShadow: "0 4px 20px rgba(0, 0, 0, 0.35)",
+  padding: "12px 16px",
   flex: 1,
   minWidth: 130,
+  transition: "border-color 0.2s ease",
 };
 
 function StatCard(props: { icon: string; label: string; value: string; sub: string; color: string; trend?: string }) {
   return (
     <div style={card}>
       <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}>
-        <span style={{ fontSize: 18 }}>{props.icon}</span>
-        <span style={{ fontSize: 11, color: "#94a3b8" }}>{props.label}</span>
+        <span style={{ fontSize: 17, filter: "saturate(1.1)" }}>{props.icon}</span>
+        <span style={{ fontSize: 11, color: "#7c8aa0", letterSpacing: 0.2, textTransform: "uppercase", fontWeight: 600 }}>{props.label}</span>
       </div>
-      <div style={{ fontSize: 20, fontWeight: "bold", color: props.color, fontVariantNumeric: "tabular-nums" }}>
+      <div style={{ fontSize: 22, fontWeight: 700, color: props.color, fontVariantNumeric: "tabular-nums", letterSpacing: 0.3, marginTop: 2 }}>
         {props.value}
         {props.trend && <span style={{ fontSize: 13, marginLeft: 4, opacity: 0.7 }}>{props.trend}</span>}
       </div>
@@ -100,9 +102,10 @@ export default function LiveEarth() {
           <Link
             href="/ask"
             style={{
-              display: "flex", alignItems: "center", gap: 6, padding: "8px 14px",
-              background: "#0c4a6e", color: "#e0f2fe", borderRadius: 10,
-              textDecoration: "none", fontSize: 12, fontWeight: "bold", border: "1px solid #38bdf8",
+              display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "8px 16px", alignSelf: "stretch",
+              background: "linear-gradient(135deg, #0e4a75 0%, #0c3a5e 100%)", color: "#e0f2fe", borderRadius: 12,
+              textDecoration: "none", fontSize: 12, fontWeight: "bold", border: "1px solid rgba(56, 189, 248, 0.45)",
+              boxShadow: "0 4px 16px rgba(14, 74, 117, 0.4)",
               whiteSpace: "nowrap",
             }}
           >

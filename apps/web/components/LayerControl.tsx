@@ -86,7 +86,12 @@ export default function LayerControl({
               }}
             />
             {t(it.labelKey)}
-            <span style={{ marginLeft: "auto", fontSize: 10, color: on ? "#64748b" : "#334155" }}>
+            <span style={{
+              marginLeft: "auto", fontSize: 10, padding: "1px 8px", borderRadius: 8,
+              color: on ? "#4ade80" : "#475569",
+              background: on ? "rgba(74, 222, 128, 0.12)" : "rgba(71, 85, 105, 0.18)",
+              border: `1px solid ${on ? "rgba(74, 222, 128, 0.35)" : "rgba(71, 85, 105, 0.3)"}`,
+            }}>
               {on ? t("layer.on") : t("layer.off")}
             </span>
           </button>

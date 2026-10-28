@@ -96,7 +96,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   };
   return (
     <html lang="zh-CN">
-      <body style={{ margin: 0, background: "#05070f", color: "#e2e8f0", fontFamily: "system-ui, sans-serif" }}>
+      <body style={{ margin: 0, background: "radial-gradient(ellipse 120% 80% at 50% -10%, #101a33 0%, #0b1120 45%, #070b14 100%)", backgroundAttachment: "fixed", color: "#e2e8f0", fontFamily: 'Inter, "SF Pro Text", system-ui, sans-serif' }}>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
         <I18nProvider>{children}</I18nProvider>

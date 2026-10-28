@@ -55,7 +55,7 @@ export default function MetricsBar({
       <Metric
         label="ΔT"
         value={`+${snap.tempAnomaly.toFixed(2)}°C`}
-        color="#f87171"
+        color="#fb7185"
         range={unc ? showT(unc.tempP10, unc.tempP90) : undefined}
       />
       <Metric
@@ -78,7 +78,7 @@ export default function MetricsBar({
         range={unc && unc.tempP90 > unc.tempP10 ? showT(seaIceArea(unc.tempP90), seaIceArea(unc.tempP10)) : undefined}
       />
       {snap.biomass !== undefined && (
-        <Metric label={t("metric.vegetation")} value={`${((snap.biomass / 550) * 100).toFixed(0)}%`} color="#a3e635" />
+        <Metric label={t("metric.vegetation")} value={`${((snap.biomass / 550) * 100).toFixed(0)}%`} color="#4ade80" />
       )}
       {snap.permafrost !== undefined && (
         <Metric label={t("metric.permafrost")} value={`${snap.permafrost.toFixed(0)}Gt`} color="#d8b4fe" />

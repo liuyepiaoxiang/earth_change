@@ -84,9 +84,9 @@ export default function Timeline({
         {[2030, 2050, 2100, 2200, 2500].map((y) => <span key={y}>|{y}</span>)}
       </div>
       <span style={{ fontSize: 12, color: "#64748b" }}>2500</span>
-      <strong style={{ minWidth: 52, textAlign: "center", color: "#e0f2fe", fontVariantNumeric: "tabular-nums" }}>
+      <strong style={{ minWidth: 52, textAlign: "center", color: "#f8fafc", fontSize: 18, letterSpacing: 0.5, fontVariantNumeric: "tabular-nums" }}>
         <span data-testid="timeline-year">{year}</span>{year > 2100 && (
-          <span title="2100 年后为探索性外推，置信度低于 AR6 校准区间" style={{ color: "#f59e0b", fontSize: 11, marginLeft: 6, border: "1px solid #92400e", borderRadius: 6, padding: "1px 6px" }}>{t("timeline.extrapolation")}</span>
+          <span title="2100 年后为探索性外推，置信度低于 AR6 校准区间" style={{ color: "#fbbf24", fontSize: 11, marginLeft: 6, border: "1px solid rgba(251, 191, 36, 0.35)", background: "rgba(251, 191, 36, 0.10)", borderRadius: 6, padding: "1px 6px" }}>{t("timeline.extrapolation")}</span>
         )}
       </strong>
     </div>

@@ -45,7 +45,7 @@ export default function AnalysisDrawer(props: {
   return (
     <aside data-testid="analysis-drawer" style={{
       position: "absolute", top: 0, right: 0, bottom: 0, width: "min(560px, 95vw)",
-      background: "rgba(8, 15, 30, 0.96)", borderLeft: "1px solid #1e293b",
+      background: "rgba(9, 13, 26, 0.94)", backdropFilter: "blur(12px)", borderLeft: "1px solid rgba(148, 163, 184, 0.16)", boxShadow: "-12px 0 40px rgba(0, 0, 0, 0.5)",
       padding: 12, overflowY: "auto", zIndex: 30,
     }}>
       <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 10, alignItems: "center" }}>

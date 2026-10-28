@@ -327,7 +327,7 @@ export default function GlobeView({
   }, [cities, layers.cities, slrBucket]);
 
   return (
-    <div ref={ref} style={{ position: "absolute", inset: 0 }}>
+    <div ref={ref} style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 50% 46%, rgba(56, 189, 248, 0.10) 0%, rgba(56, 189, 248, 0.04) 34%, transparent 62%)" }}>
       {size.w > 0 && (
         <Globe
           width={size.w}

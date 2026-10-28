@@ -16,7 +16,7 @@ export default function ScenarioSelector({
   onChange: (s: ScenarioId) => void;
 }) {
   return (
-    <div style={{ display: "flex", gap: 6 }}>
+    <div style={{ display: "flex", gap: 4, padding: 3, borderRadius: 9, background: "rgba(148, 163, 184, 0.08)", border: "1px solid rgba(148, 163, 184, 0.14)" }}>
       {SCENARIOS.map((s) => {
         const active = value === s.id;
         return (
@@ -24,13 +24,18 @@ export default function ScenarioSelector({
             key={s.id}
             onClick={() => onChange(s.id)}
             style={{
-              padding: "4px 10px",
-              borderRadius: 6,
+              padding: "4px 11px",
+              borderRadius: 7,
               cursor: "pointer",
               fontSize: 13,
-              border: `1px solid ${active ? "#38bdf8" : "#334155"}`,
-              background: active ? "#0c4a6e" : "transparent",
-              color: active ? "#e0f2fe" : "#94a3b8",
+              fontFamily: "inherit",
+              fontVariantNumeric: "tabular-nums",
+              border: `1px solid ${active ? "#2563eb" : "transparent"}`,
+              background: active ? "#1d4ed8" : "transparent",
+              color: active ? "#ffffff" : "#94a3b8",
+              fontWeight: active ? 600 : 400,
+              boxShadow: active ? "0 2px 12px rgba(37, 99, 235, 0.45)" : "none",
+              transition: "all 0.15s ease",
             }}
           >
             {s.label}
