@@ -12,6 +12,10 @@ export interface ImpactMeta {
   source: string;
   validRange: string;
   warnings: string[];
+  /** 英文平行文案（可选）——UI 层 locale=en 时优先使用 */
+  formulaEn?: string;
+  sourceEn?: string;
+  validRangeEn?: string;
 }
 
 const at = (sim: SimLike, year: number, series: number[]): number => {
@@ -39,8 +43,11 @@ export function exposedPopulation(sim: SimLike, year: number, cities: CityRow[],
     exposedPopulation: pop, floodedCount: flooded.length, floodedCities: flooded.slice(0, 10),
     meta: {
       formula: "暴露人口 = Σ 城市人口（高程 + 防护高程 ≤ SLR）",
+      formulaEn: "Exposed pop. = Σ city population (elevation + defense height ≤ SLR)",
       source: "GeoNames 人口/高程 × 引擎海平面",
+      sourceEn: "GeoNames pop./elevation × engine sea level",
       validRange: "城市点级（top 500 城市），非全国/全海岸",
+      validRangeEn: "City-point level (top 500 cities), not national/coast-wide",
       warnings: year > 2100 ? ["2100 年后为探索性外推"] : [],
     },
   };
@@ -66,8 +73,11 @@ export function waterStress(sim: SimLike, year: number): WaterResult {
     globalRunoff: runoff, perCapitaM3: Math.round(pc), stressLevel: stress,
     meta: {
       formula: "人均水资源 = 径流mm × 1.49e11 m³ ÷ 97亿人（Falkenmark 1700/1000/500 m³ 阈值）",
+      formulaEn: "Per-capita water = runoff mm × 1.49e11 m³ ÷ 9.7B people (Falkenmark 1700/1000/500 m³ thresholds)",
       source: "引擎水循环诊断 × UN 人口预测",
+      sourceEn: "Engine water-cycle diagnostics × UN population projection",
       validRange: "全球聚合（非流域级）",
+      validRangeEn: "Global aggregate (not basin-level)",
       warnings: [],
     },
   };
@@ -88,8 +98,11 @@ export function extremeHeat(sim: SimLike, year: number): HeatResult {
     heatwaveDays: days, deltaDays: days - Math.round(12 * Math.exp(0.06 * dT24)),
     meta: {
       formula: "热浪日数 ≈ 12·exp(0.06·ΔT)（均值移位 + CC 变率假设）",
+      formulaEn: "Heatwave days ≈ 12·exp(0.06·ΔT) (mean shift + CC variability assumption)",
       source: "引擎温度 × 文献热浪响应系数",
+      sourceEn: "Engine temperature × literature heatwave response coefficient",
       validRange: "全球平均（非城市热岛/区域分布）",
+      validRangeEn: "Global mean (not urban heat island / regional patterns)",
       warnings: dT > 6 ? ["ΔT > 6°C：超出经验拟合范围"] : [],
     },
   };
@@ -115,8 +128,11 @@ export function agriculture(sim: SimLike, year: number): AgriResult {
     growingDegreeDays: gdd, waterBalance: wb, suitability: suit,
     meta: {
       formula: "GDD 增量 ≈ 0.6·ΔT·365；水分平衡 = P − E",
+      formulaEn: "GDD gain ≈ 0.6·ΔT·365; water balance = P − E",
       source: "引擎温度/水循环诊断 × FAO 生长度日近似",
+      sourceEn: "Engine temp/water-cycle diagnostics × FAO growing-degree-day approximation",
       validRange: "全球平均（非作物/区域/季节）",
+      validRangeEn: "Global mean (not crop/regional/seasonal)",
       warnings: dT > 5 ? ["ΔT > 5°C：农业系统可能发生非线性响应"] : [],
     },
   };
@@ -137,8 +153,11 @@ export function ecology(sim: SimLike, year: number, baseYear = 2024): EcoResult 
     biomeShift: shift, crossings: cy,
     meta: {
       formula: "群系改变 ≈ |ΔT| × 8%/°C（气候带迁移近似，上限 80%）",
+      formulaEn: "Biome shift ≈ |ΔT| × 8%/°C (climate-zone migration approximation, cap 80%)",
       source: "引擎温度 × 生物地理文献迁移速率",
+      sourceEn: "Engine temperature × biogeographic literature migration rates",
       validRange: "全球平均（非物种级/区域格局）",
+      validRangeEn: "Global mean (not species-level / regional patterns)",
       warnings: shift > 50 ? ["群系改变 > 50%：可能跨越临界点"] : [],
     },
   };
@@ -157,8 +176,11 @@ export function oceanAcid(sim: SimLike, year: number): AcidResult {
     ph,
     meta: {
       formula: "pH ≈ 8.25 − 0.3·log₂(C/280)（Revell 因子简化）",
+      formulaEn: "pH ≈ 8.25 − 0.3·log₂(C/280) (simplified Revelle factor)",
       source: "引擎 CO₂ × 文献海洋碳化学响应",
+      sourceEn: "Engine CO₂ × literature ocean carbonate chemistry response",
       validRange: "全球表平均（非深度/区域）",
+      validRangeEn: "Global surface mean (not depth/regional)",
       warnings: ph < 7.7 ? ["pH < 7.7：深海生态系统可能大面积受损"] : [],
     },
   };
@@ -178,8 +200,11 @@ export function economicDamage(sim: SimLike, year: number, adaptation: Adaptatio
     gdpLossPct: +adj.toFixed(1),
     meta: {
       formula: "GDP 损失 ≈ (0.5·ΔT + 0.011·ΔT²) × 适应折扣（DICE 量级）",
+      formulaEn: "GDP loss ≈ (0.5·ΔT + 0.011·ΔT²) × adaptation discount (DICE magnitude)",
       source: "引擎温度 × Nordhaus DICE 损害函数量级",
+      sourceEn: "Engine temperature × Nordhaus DICE damage-function magnitude",
       validRange: "全球聚合（非国家级/行业分解）",
+      validRangeEn: "Global aggregate (not country-level / sectoral)",
       warnings: dT > 5 ? ["ΔT > 5°C：损害函数外推不确定度极大"] : [],
     },
   };
@@ -199,8 +224,11 @@ export function socialCarbonCost(sim: SimLike, year: number, discountRate = 0.03
     scc: Math.round(base / disc * (0.03 / discountRate)),
     meta: {
       formula: `SCC ≈ 50·exp(0.04·ΔT) ÷ exp(r·t)，r=${discountRate}`,
+      formulaEn: `SCC ≈ 50·exp(0.04·ΔT) ÷ exp(r·t), r=${discountRate}`,
       source: "DICE 量级 × 引擎温度",
+      sourceEn: "DICE magnitude × engine temperature",
       validRange: "全球平均（非区域/代际公平分析）",
+      validRangeEn: "Global mean (not regional / intergenerational equity)",
       warnings: ["碳社会成本对折现率高度敏感——本值为教育性估计"],
     },
   };

@@ -17,9 +17,20 @@ const seg = (on: boolean): React.CSSProperties => ({
 const card: React.CSSProperties = { border: "1px solid #1e293b", borderRadius: 8, padding: 10, marginBottom: 8, background: "#0f172a" };
 const warn: React.CSSProperties = { color: "#f59e0b", fontSize: 15 };
 
-function ImpactCard(props: { title: string; value: string; sub?: string; formula: string; source: string; range: string; warnings: string[] }) {
+type ImpactMeta = {
+  formula: string; formulaEn?: string;
+  source: string; sourceEn?: string;
+  validRange: string; validRangeEn?: string;
+  warnings: string[];
+};
+
+function ImpactCard(props: { title: string; value: string; sub?: string; meta: ImpactMeta }) {
   const { locale } = useI18n();
   const en = locale === "en";
+  const m = props.meta;
+  const formula = en && m.formulaEn ? m.formulaEn : m.formula;
+  const source = en && m.sourceEn ? m.sourceEn : m.source;
+  const range = en && m.validRangeEn ? m.validRangeEn : m.validRange;
   return (
     <div style={card} data-testid={`impact-${props.title}`}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
@@ -27,16 +38,26 @@ function ImpactCard(props: { title: string; value: string; sub?: string; formula
         <span style={{ color: "#fbbf24", fontSize: 16, fontVariantNumeric: "tabular-nums" }}>{props.value}</span>
       </div>
       {props.sub && <div style={{ color: "#94a3b8", fontSize: 15, marginTop: 2 }}>{props.sub}</div>}
-      {props.warnings.map((w) => <div key={w} style={warn}>⚠ {w}</div>)}
+      {m.warnings.map((w) => <div key={w} style={warn}>⚠ {en ? (WARN_EN[w] ?? w) : w}</div>)}
       <details style={{ marginTop: 4, fontSize: 16, color: "#475569" }}>
         <summary>{en ? "Formula / source / range" : "公式/来源/范围"}</summary>
-        <div>{props.formula}</div><div>{en ? "Source: " : "来源："}{props.source}</div><div>{en ? "Applies to: " : "适用："}{props.range}</div>
+        <div>{formula}</div><div>{en ? "Source: " : "来源："}{source}</div><div>{en ? "Applies to: " : "适用："}{range}</div>
       </details>
     </div>
   );
 }
 
 const STRESS_EN: Record<string, string> = { "低": "low", "中": "medium", "高": "high", "极高": "extreme" };
+/** engine impact meta.warnings 中文枚举 → 英文 */
+const WARN_EN: Record<string, string> = {
+  "2100 年后为探索性外推": "Exploratory extrapolation beyond 2100",
+  "ΔT > 6°C：超出经验拟合范围": "ΔT > 6°C: beyond empirical fit range",
+  "ΔT > 5°C：农业系统可能发生非线性响应": "ΔT > 5°C: agriculture may respond nonlinearly",
+  "群系改变 > 50%：可能跨越临界点": "Biome shift > 50%: possible tipping-point crossing",
+  "pH < 7.7：深海生态系统可能大面积受损": "pH < 7.7: deep-sea ecosystems may be widely damaged",
+  "ΔT > 5°C：损害函数外推不确定度极大": "ΔT > 5°C: damage-function extrapolation is highly uncertain",
+  "碳社会成本对折现率高度敏感——本值为教育性估计": "SCC is highly sensitive to the discount rate — educational estimate only",
+};
 const SUIT_EN: Record<string, string> = { "改善": "improving", "稳定": "stable", "恶化": "degrading" };
 
 export default function ImpactPanel(props: { sim: SimResultWithUnc; year: number }) {
@@ -54,28 +75,28 @@ export default function ImpactPanel(props: { sim: SimResultWithUnc; year: number
       </div>
       <ImpactCard title={en ? "Exposed population" : "暴露人口"} value={fmtPop(imp.exposure.exposedPopulation)}
         sub={en ? `${imp.exposure.floodedCount} cities flooded (with defenses)` : `${imp.exposure.floodedCount} 城市被淹（含防护）`}
-        formula={imp.exposure.meta.formula} source={imp.exposure.meta.source} range={imp.exposure.meta.validRange} warnings={imp.exposure.meta.warnings} />
+        meta={imp.exposure.meta} />
       <ImpactCard title={en ? "Water resources per capita" : "人均水资源"} value={`${imp.water.perCapitaM3} m³/yr`}
         sub={en ? `${STRESS_EN[imp.water.stressLevel] ?? imp.water.stressLevel} water stress (Falkenmark)` : `${imp.water.stressLevel}水压力（Falkenmark）`}
-        formula={imp.water.meta.formula} source={imp.water.meta.source} range={imp.water.meta.validRange} warnings={imp.water.meta.warnings} />
+        meta={imp.water.meta} />
       <ImpactCard title={en ? "Extreme heat" : "极端高温"} value={en ? `${imp.heat.heatwaveDays} days/yr` : `${imp.heat.heatwaveDays} 天/yr`}
         sub={imp.heat.deltaDays > 0 ? `+${imp.heat.deltaDays} vs 2024` : `${imp.heat.deltaDays} vs 2024`}
-        formula={imp.heat.meta.formula} source={imp.heat.meta.source} range={imp.heat.meta.validRange} warnings={imp.heat.meta.warnings} />
+        meta={imp.heat.meta} />
       <ImpactCard title={en ? "Agricultural suitability" : "农业适宜度"} value={en ? (SUIT_EN[imp.agriculture.suitability] ?? imp.agriculture.suitability) : imp.agriculture.suitability}
         sub={en ? `GDD ${imp.agriculture.growingDegreeDays}°C·d · Water ${imp.agriculture.waterBalance}mm` : `GDD ${imp.agriculture.growingDegreeDays}°C·d · 水分 ${imp.agriculture.waterBalance}mm`}
-        formula={imp.agriculture.meta.formula} source={imp.agriculture.meta.source} range={imp.agriculture.meta.validRange} warnings={imp.agriculture.meta.warnings} />
+        meta={imp.agriculture.meta} />
       <ImpactCard title={en ? "Ecological shift" : "生态迁移"} value={`${imp.ecology.biomeShift}%`}
         sub={en ? "Biome change (vs 2024)" : "群系改变（vs 2024）"}
-        formula={imp.ecology.meta.formula} source={imp.ecology.meta.source} range={imp.ecology.meta.validRange} warnings={imp.ecology.meta.warnings} />
+        meta={imp.ecology.meta} />
       <ImpactCard title={en ? "Ocean acidification" : "海洋酸化"} value={`pH ${imp.oceanAcid.ph}`}
         sub={imp.oceanAcid.ph < 7.8 ? (en ? "Severe threat to coral reefs" : "珊瑚礁严重威胁") : (en ? "Changing" : "变化中")}
-        formula={imp.oceanAcid.meta.formula} source={imp.oceanAcid.meta.source} range={imp.oceanAcid.meta.validRange} warnings={imp.oceanAcid.meta.warnings} />
+        meta={imp.oceanAcid.meta} />
       <ImpactCard title={en ? "Economic damage" : "经济损害"} value={`${imp.damage.gdpLossPct}%`}
         sub={en ? `Global GDP loss (${adaptation === "none" ? "no adaptation" : adaptation === "medium" ? "medium adaptation" : "high adaptation"})` : `全球 GDP 损失（${adaptation === "none" ? "无适应" : adaptation === "medium" ? "中等适应" : "高适应"}）`}
-        formula={imp.damage.meta.formula} source={imp.damage.meta.source} range={imp.damage.meta.validRange} warnings={imp.damage.meta.warnings} />
+        meta={imp.damage.meta} />
       <ImpactCard title={en ? "Social cost of carbon" : "碳社会成本"} value={`$${imp.scc.scc}/tCO₂`}
         sub={en ? "Educational estimate (discount-rate sensitive)" : "教育性估计（折现率敏感）"}
-        formula={imp.scc.meta.formula} source={imp.scc.meta.source} range={imp.scc.meta.validRange} warnings={imp.scc.meta.warnings} />
+        meta={imp.scc.meta} />
     </div>
   );
 }
