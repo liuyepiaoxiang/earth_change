@@ -4,7 +4,7 @@ export const zh = {
   "app.title": "未来地球引擎",
   "app.nav.earth": "地球",
   "app.nav.overview": "要素总览",
-  "app.nav.ask": "AI 问答",
+  "app.nav.ask": "气候问答",
   "app.btn.uncertainty": "±区间",
   "app.btn.range": "区间",
   "app.btn.analysis": "📊 分析",

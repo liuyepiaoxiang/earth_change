@@ -120,7 +120,7 @@ export default function Dashboard({ embed = false }: { embed?: boolean }) {
               textDecoration: "none",
             }}
           >
-            🤖 {t("app.nav.ask")}
+            💬 {t("app.nav.ask")}
           </a>
         </nav>}
         <ScenarioSelector value={scenario} onChange={setScenario} />

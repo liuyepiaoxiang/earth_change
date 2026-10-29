@@ -4,7 +4,7 @@ export const en: Record<TranslationKey, string> = {
   "app.title": "Future Earth Engine",
   "app.nav.earth": "Earth",
   "app.nav.overview": "Overview",
-  "app.nav.ask": "AI Q&A",
+  "app.nav.ask": "Climate Q&A",
   "app.btn.uncertainty": "±Range",
   "app.btn.range": "Range",
   "app.btn.analysis": "📊 Analysis",

@@ -14,13 +14,13 @@ function loadYaml(name: string): unknown {
 
 export interface OverviewData {
   domains: Array<{ id: string; name_zh: string; name_en: string; children: string[] }>;
-  variables: Array<{ id: string; name_zh: string; unit: string; domain: string; impl: string; state: boolean; equations: string[] }>;
-  equations: Array<{ id: string; name_zh: string; formula: string; domain: string; impl: string }>;
-  parameters: Array<{ id: string; name_zh: string; default: number; min: number; max: number; unit: string }>;
+  variables: Array<{ id: string; name_zh: string; name_en?: string; unit: string; domain: string; impl: string; state: boolean; equations: string[] }>;
+  equations: Array<{ id: string; name_zh: string; name_en?: string; formula: string; domain: string; impl: string }>;
+  parameters: Array<{ id: string; name_zh: string; name_en?: string; default: number; min: number; max: number; unit: string }>;
   scenarios: Array<{ id: string; name_zh?: string }>;
   causalEdges: number;
   loops: Array<{ id: string; count: number }>;
-  datasets: Array<{ id: string; name: string }>;
+  datasets: Array<{ id: string; name: string; name_en?: string }>;
 }
 
 /** 构建期/SSR 调用：解析全部规格 YAML 并做 zod 校验，输出总览页所需的轻量数据 */
@@ -48,13 +48,15 @@ export function loadOverviewData(): OverviewData {
 
   // 变量：zod 字段 state_variable → 页面字段 state（映射，保证 UI 契约稳定）
   const rawVars = bundle.variables as unknown as Array<{
-    id: string; name_zh: string; unit?: string; domain: string; impl: string;
+    id: string; name_zh: string; name_en?: string; unit?: string; domain: string; impl: string;
     state_variable: boolean; equations?: string[];
   }>;
   const variables = rawVars.map((v) => ({
-    id: v.id, name_zh: v.name_zh, unit: v.unit ?? "", domain: v.domain,
+    id: v.id, name_zh: v.name_zh, name_en: v.name_en, unit: v.unit ?? "", domain: v.domain,
     impl: v.impl, state: v.state_variable, equations: v.equations ?? [],
   }));
+  const rawDs = (bundle.datasets ?? []) as unknown as Array<{ id: string; name_en?: string }>;
+  const datasets = rawDs.map((d) => ({ id: d.id, name: d.id, name_en: d.name_en }));
   const rawScen = (bundle.scenarios ?? []) as unknown as Array<{ id: string; name_zh?: string }>;
 
   return {
@@ -65,6 +67,6 @@ export function loadOverviewData(): OverviewData {
     scenarios: rawScen as unknown as OverviewData["scenarios"],
     causalEdges: edges.length,
     loops: Object.entries(loops).map(([id, count]) => ({ id, count })),
-    datasets: (bundle.datasets ?? []) as unknown as OverviewData["datasets"],
+    datasets,
   };
 }

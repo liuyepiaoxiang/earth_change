@@ -1,4 +1,4 @@
-/** AI 气候问答——规则引擎版（Phase 1）
+/** 气候问答——规则引擎版（Phase 1，未接 LLM）
  *  理解用户问题 → 提取实体（城市/情景/年份/指标）→ 运行模拟 → 生成回答 + 数据
  *  locale 参数控制回答语言（zh 默认；en 提供全英文模板） */
 import { runScenario, crossingYears, isCityFlooded, localDTs } from "@future-earth/engine";

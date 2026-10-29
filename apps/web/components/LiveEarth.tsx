@@ -109,7 +109,7 @@ export default function LiveEarth() {
               whiteSpace: "nowrap",
             }}
           >
-            🤖 {t("app.nav.ask")}
+            💬 {t("app.nav.ask")}
           </Link>
         </div>
       </div>

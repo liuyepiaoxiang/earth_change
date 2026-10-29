@@ -47,6 +47,7 @@ export const EquationSchema = z.object({
 export const ParameterSchema = z.object({
   id: z.string(),
   symbol: z.string(),
+  name_en: z.string().default(""),
   name_zh: z.string(),
   unit: z.string(),
   default: z.number(),
@@ -81,6 +82,7 @@ export const ScenarioSchema = z.object({
 
 export const DatasetSchema = z.object({
   id: z.string(),
+  name_en: z.string().default(""),
   path: z.string(),
   provider: z.string(),
   url: z.string(),

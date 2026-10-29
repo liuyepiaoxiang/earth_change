@@ -1,5 +1,5 @@
 "use client";
-/** AI 气候问答——规则引擎版 UI */
+/** 气候问答——规则引擎版 UI（Phase 2 可接 LLM） */
 import { useMemo, useState } from "react";
 import { answerClimateQuestion, PRESET_QUESTIONS } from "../lib/climate-qa";
 import { useI18n } from "../lib/i18n";

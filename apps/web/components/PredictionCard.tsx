@@ -27,8 +27,8 @@ export default function PredictionCard(props: {
     <div data-testid="prediction-intro" style={{ padding: 16, background: "#0f172a", borderRadius: 12, border: "1px solid #334155" }}>
       <div style={{ fontSize: 32, textAlign: "center", marginBottom: 8 }}>{mission.icon}</div>
       <h3 style={{ color: "#e0f2fe", textAlign: "center", margin: "0 0 8px" }}>{m.title}</h3>
-      <p style={{ color: "#94a3b8", fontSize: 15, textAlign: "center" }}>{mission.intro}</p>
-      <p style={{ color: "#4ade80", fontSize: 16, textAlign: "center", marginTop: 8 }}>🎯 {mission.goal}</p>
+      <p style={{ color: "#94a3b8", fontSize: 15, textAlign: "center" }}>{m.intro}</p>
+      <p style={{ color: "#4ade80", fontSize: 16, textAlign: "center", marginTop: 8 }}>🎯 {m.goal}</p>
     </div>
   );
 

@@ -12,14 +12,14 @@ export default function AskChrome({ children }: { children: ReactNode }) {
       <header style={{ padding: "12px 20px", borderBottom: "1px solid #1e293b", display: "flex", alignItems: "center", gap: 4 }}>
         <Link href="/" style={{ color: "#38bdf8", textDecoration: "none", fontSize: 14 }}>🌍 {en ? "Future Earth Engine" : "未来地球引擎"}</Link>
         <span style={{ color: "#475569", margin: "0 8px" }}>|</span>
-        <span style={{ color: "#94a3b8", fontSize: 13 }}>{en ? "AI Climate Q&A" : "AI 气候问答"}</span>
+        <span style={{ color: "#94a3b8", fontSize: 13 }}>{en ? "Climate Q&A" : "气候问答"}</span>
         <span style={{ marginLeft: "auto" }} />
         <Link href="/ask?lang=en" style={{ color: locale === "en" ? "#38bdf8" : "#64748b", fontSize: 12, textDecoration: "none", marginRight: 8 }}>EN</Link>
         <Link href="/ask?lang=zh" style={{ color: locale === "zh" ? "#38bdf8" : "#64748b", fontSize: 12, textDecoration: "none" }}>中文</Link>
       </header>
 
       <div style={{ maxWidth: 680, margin: "0 auto", padding: "40px 20px 80px" }}>
-        <h1 style={{ fontSize: 24, color: "#e0f2fe", marginBottom: 6 }}>🤖 {en ? "Ask Climate AI" : "AI 气候问答"}</h1>
+        <h1 style={{ fontSize: 24, color: "#e0f2fe", marginBottom: 6 }}>💬 {en ? "Ask the Climate Model" : "气候问答"}</h1>
         <p style={{ color: "#94a3b8", fontSize: 14, marginBottom: 24, lineHeight: 1.5 }}>
           {en
             ? "Ask any climate question — the system runs a NASA-calibrated climate model in real time and gives a data-driven answer. Topics: city flooding, temperature projections, CO₂, sea level, sea ice, and permafrost carbon."
