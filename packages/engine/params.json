@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-10-17",
+  "generatedAt": "2026-11-01",
   "note": "确定性 Nelder-Mead 三阶段校准（carbon→climate→slr）；重跑 pnpm calibrate 应得到相同结果",
   "values": {
     "lambda": 1.1962765637940183,
