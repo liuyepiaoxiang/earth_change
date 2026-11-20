@@ -101,17 +101,24 @@ export default function CityPage({ params }: { params: { slug: string } }) {
 
         <h2 style={{ fontSize: 18, color: "#7dd3fc", marginTop: 28, marginBottom: 10 }}>Other Cities at Risk</h2>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 12 }}>
-          {[
-            { name: "Shanghai", slug: "shanghai" }, { name: "Miami", slug: "miami" },
-            { name: "Bangkok", slug: "bangkok" }, { name: "Jakarta", slug: "jakarta" },
-            { name: "Manila", slug: "manila" }, { name: "Alexandria", slug: "alexandria" },
-            { name: "Osaka", slug: "osaka" }, { name: "Mumbai", slug: "mumbai" },
-          ].filter(c => c.slug !== params.slug).map(c => (
-            <Link key={c.slug} href={`/city/${c.slug}`} style={{ padding: "6px 14px", background: "#0f172a", color: "#94a3b8", borderRadius: 8, textDecoration: "none", fontSize: 13, border: "1px solid #334155" }}>
-              {c.name}
-            </Link>
-          ))}
+          {/* 审计 SEO-03：数据驱动内链（原硬编码含 Miami 死链——Miami 不在 top500 数据集）。
+              选低海拔高风险城市并保证互链（排除当前页），顺带为城市页矩阵建立内链网 */}
+          {loadCities()
+            .filter((c) => c.elevationSource !== "unknown" && c.elevation < 5 && slugify(c.name) !== params.slug)
+            .slice(0, 8)
+            .map((c) => (
+              <Link key={c.name} href={`/city/${slugify(c.name)}`} style={{ padding: "6px 14px", background: "#0f172a", color: "#94a3b8", borderRadius: 8, textDecoration: "none", fontSize: 13, border: "1px solid #334155" }}>
+                {c.name}
+              </Link>
+            ))}
         </div>
+
+        <footer style={{ marginTop: 40, paddingTop: 16, borderTop: "1px solid #1e293b", display: "flex", gap: 14, fontSize: 13 }}>
+          <a href="/legal" style={{ color: "#64748b", textDecoration: "none" }}>Privacy & Terms</a>
+          <a href="/learn/sea-level-rise" style={{ color: "#64748b", textDecoration: "none" }}>Sea Level Rise Explained</a>
+          <a href="/overview" style={{ color: "#64748b", textDecoration: "none" }}>Model Overview</a>
+          <span style={{ color: "#475569" }}>© 2026 Future Earth Engine · Educational simulation, not a forecast</span>
+        </footer>
       </article>
     </main>
   );

@@ -12,8 +12,8 @@ export const tokens = {
   text: "#e2e8f0",
   textStrong: "#f1f5f9",
   textMuted: "#94a3b8",
-  textFaint: "#64748b",
-  textDisabled: "#475569",
+  textFaint: "#7488a0", // 审计 A11Y-01：5.12:1（原 #64748b 3.92:1 FAIL）
+  textDisabled: "#6b7f96", // 审计 A11Y-01：4.53:1（原 #475569 2.46:1 FAIL，实际用于可见小字）
   accent: "#38bdf8",
   accentSoft: "#5b7fa6",
   /** 语义色板：温度=暖橙红，水/海平面=天蓝，植被=绿（≤3 种语义色，UI 其余用中性灰蓝） */

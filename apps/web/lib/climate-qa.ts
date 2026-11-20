@@ -71,12 +71,18 @@ const SCEN_NAMES_EN: Record<string, string> = {
 
 // ---- 回答生成 ----
 
-export function answerClimateQuestion(question: string, locale: QALocale = "zh"): QAResult {
+export function answerClimateQuestion(question: string, locale: QALocale = "zh"): QAResult | null {
   const en = locale === "en";
   const scenario = extractScenario(question);
   const year = extractYear(question);
   const metric = extractMetric(question);
   const city = extractCity(question);
+  // 审计 AI-01：未匹配任何支持主题（无城市、无显式年份、指标为默认值）→ 返回 null，
+  // 由 UI 明示「超出问答范围」而非静默回退温度模板误导用户
+  const hasExplicitYear = Boolean(question.match(/(20[2-9]\d|21[0-4]\d|2500)/))
+    || question.includes("mid-century") || question.includes("世纪中")
+    || question.includes("end of century") || question.includes("本世纪末");
+  if (!city && metric === "temperature" && !hasExplicitYear) return null;
   const sim = runScenario(scenario, 2500);
   const idx = sim.years.indexOf(year);
   const i = idx >= 0 ? idx : sim.years.length - 1;

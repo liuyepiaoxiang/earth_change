@@ -117,7 +117,7 @@ export const zh = {
   "colorbar.cities": "城市",
   "colorbar.floodedKey": "青 = 已淹没",
   "colorbar.seaIce": "海冰面积（M km²）",
-  "colorbar.sources": "数据：NASA GISTEMP · WorldClim 2.1 · GeoNames · NOAA/AR6 锚点 ｜ 模型 v0.2.0（两层 EBM + 碳循环，G1–G5 定量验收）",
+  "colorbar.sources": "数据：NASA GISTEMP · WorldClim 2.1 · GeoNames · NOAA/AR6 锚点 ｜ 两层 EBM + 碳循环耦合模型（G1–G6 定量验收；版本见「分析 → 结果说明」）",
   // Tooltip
   "tooltip.population": "人口",
   "tooltip.floodedShort": "已淹没",

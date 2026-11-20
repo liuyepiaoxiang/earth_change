@@ -16,6 +16,7 @@ import EventNotification from "./EventNotification";
 import LiveEarth from "./LiveEarth";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { useI18n } from "../lib/i18n";
+import { tokens } from "../lib/design";
 import { milestoneEvents } from "@future-earth/engine";
 import type { MilestoneEvent } from "@future-earth/engine";
 import QuizIntro from "./QuizIntro";
@@ -87,7 +88,8 @@ export default function Dashboard({ embed = false }: { embed?: boolean }) {
           flexWrap: "wrap",
         }}
       >
-        <strong style={{ color: "#f1f5f9", letterSpacing: 0.3, fontSize: 15 }}>🌍 {t("app.title")}</strong>
+        {/* 审计 SEO-01：站点主标题升级为可见 H1（原 H1 在 layout 隐藏 div，已删除） */}
+        <h1 style={{ color: "#f1f5f9", letterSpacing: 0.3, fontSize: 15, margin: 0, fontWeight: 600 }}>🌍 {t("app.title")}</h1>
         {!embed && <nav style={{ display: "flex", gap: 6 }}>
           <span
             style={{
@@ -208,8 +210,16 @@ export default function Dashboard({ embed = false }: { embed?: boolean }) {
         )}
       </section>
 
-      <footer style={{ padding: "10px 16px", borderTop: "1px solid rgba(148, 163, 184, 0.14)", display: "flex" }}>
+      <footer style={{ padding: "10px 16px", borderTop: "1px solid rgba(148, 163, 184, 0.14)", display: "flex", flexWrap: "wrap", alignItems: "center", gap: 12 }}>
         <Timeline year={year} onChange={setYear} disabled={!sim} />
+        {/* 审计 LEG-01：法律页面与免责入口 + 版权行（embed 模式保持纯净不加） */}
+        {!embed && (
+          <div style={{ display: "flex", gap: 14, fontSize: 12, color: tokens.textFaint, marginLeft: "auto", flexShrink: 0 }}>
+            <a href="/legal" style={{ color: tokens.textFaint, textDecoration: "none" }}>隐私与条款</a>
+            <a href="/overview" style={{ color: tokens.textFaint, textDecoration: "none" }}>要素总览</a>
+            <span>© 2026 Future Earth Engine · 教育性模拟，非预报</span>
+          </div>
+        )}
       </footer>
     </main>
   );

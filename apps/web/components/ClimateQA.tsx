@@ -18,6 +18,8 @@ export default function ClimateQA() {
   const [loading, setLoading] = useState(false);
   const [history, setHistory] = useState<string[]>([]);
 
+  const [unsupported, setUnsupported] = useState(false);
+
   const ask = (q: string) => {
     if (!q.trim()) return;
     setLoading(true);
@@ -25,9 +27,11 @@ export default function ClimateQA() {
     // 模拟异步（未来可接 LLM API）
     setTimeout(() => {
       const r = answerClimateQuestion(q, locale);
+      // 审计 AI-01：规则引擎未匹配主题 → 明示范围而非静默回退温度模板
+      setUnsupported(r === null);
       setResult(r);
       setLoading(false);
-      setHistory(prev => [q, ...prev.filter(h => h !== q)].slice(0, 5));
+      if (r) setHistory(prev => [q, ...prev.filter(h => h !== q)].slice(0, 5));
     }, 300);
   };
 
@@ -56,6 +60,20 @@ export default function ClimateQA() {
           {loading ? "⏳ …" : locale === "en" ? "🔍 Ask" : "🔍 问"}
         </button>
       </div>
+
+      {/* 审计 AI-01：未匹配明示 */}
+      {unsupported && !loading && (
+        <div style={{ background: "#1e293b", borderRadius: 12, padding: 14, border: "1px solid #f59e0b55", marginBottom: 16 }}>
+          <div style={{ color: "#fbbf24", fontSize: 14, fontWeight: "bold" }}>
+            {locale === "en" ? "That question is outside my topic range" : "这个问题超出了我能回答的主题范围"}
+          </div>
+          <p style={{ color: "#94a3b8", fontSize: 13, margin: "6px 0 0", lineHeight: 1.6 }}>
+            {locale === "en"
+              ? "I'm a rule-based assistant over the simulation results — I can answer about city flooding, temperature, CO₂, sea level, sea ice, and permafrost. Try one of the examples below."
+              : "我是基于模拟结果的规则式问答，支持：城市淹没、温度预测、CO₂、海平面、海冰、冻土碳。试试下面的示例问题。"}
+          </p>
+        </div>
+      )}
 
       {/* 预设问题 */}
       {!result && !loading && (

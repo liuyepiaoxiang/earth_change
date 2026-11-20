@@ -49,12 +49,8 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: SITE_URL,
-    // 客户端 locale 切换（?lang=）——hreflang 声明两个语言版本与默认入口
-    languages: {
-      "zh-CN": SITE_URL,
-      en: `${SITE_URL}?lang=en`,
-      "x-default": SITE_URL,
-    },
+    // 审计 SEO-04：移除虚假 hreflang——?lang=en 是客户端切换，SSR HTML 恒为中文，
+    // 不满足 hreflang 互惠契约（路由级 i18n 属 Phase 5，届时按 /en 路由声明）
   },
 };
 
@@ -123,14 +119,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <p><a href="/overview">Model Overview</a> | <a href="/api/simulate?scenario=ssp245&amp;horizon=2100">API</a></p>
           </div>
         </noscript>
-        <div style={{ position: "absolute", left: -9999, top: "auto", width: 1, height: 1, overflow: "hidden" }} aria-hidden="true">
-          <h1>{SITE_NAME} — 互动气候模拟器</h1>
-          <p>拖动时间轴看地球从 2026 到 2500 年的变化。3D 地球、城市淹没模拟、气候实验、影响评估。基于 NASA GISTEMP 和 IPCC AR6 数据校准。</p>
-          <h2>功能</h2>
-          <p>四情景（SSP1-2.6 / SSP2-4.5 / SSP3-7.0 / SSP5-8.5）气候预测、500 城市淹没查询、自定义排放实验、蒙特卡洛不确定性分析、影响评估（人口暴露/水资源/经济损害）、临界点诊断（AMOC/冰盖/冻土）、里程碑事件通知。</p>
-          <h2>数据源</h2>
-          <p>NASA GISTEMP v4（温度）、NOAA GML + Law Dome（CO₂）、Global Carbon Project（排放）、IPCC AR6（情景校准）、GeoNames + WorldClim 2.1（城市/高程/气候）。</p>
-        </div>
         <Analytics />
       </body>
     </html>

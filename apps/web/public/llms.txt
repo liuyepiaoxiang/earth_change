@@ -23,12 +23,14 @@ Users drag a timeline from 2026 to 2500 on a 3D globe to see:
 - /learn/sea-level-rise — How much will sea levels rise by 2100? Four-component breakdown
 - /learn/cities-underwater — Which cities will be underwater? Timeline and vulnerability factors
 
-## City Climate Reports (50 cities)
+## City Climate Reports (500 cities, /city/<name-slug>)
 - /city/shanghai — Shanghai climate change and flooding risk
-- /city/miami — Miami sea level rise and limestone geology
-- /city/bangkok — Bangkok flooding timeline (lowest elevation megacity)
+- /city/bangkok — Bangkok flooding timeline (lowest-elevation megacity)
 - /city/jakarta — Jakarta sinking and sea level rise compound crisis
-- /city/manila, /city/alexandria, /city/osaka, /city/mumbai — more city reports
+- /city/manila, /city/alexandria, /city/osaka, /city/mumbai, /city/lagos — more city reports (see sitemap.xml for all 500)
+
+## Disclaimer (important)
+All values after 2026 are educational scenario simulations (What-if), calibrated to IPCC AR6 assessed ranges — NOT forecasts. The city flood check is an elevation-threshold heuristic (no flood defenses, storm surge, or groundwater). Do not use this site for engineering, insurance, or relocation decisions; refer to IPCC reports and your national meteorological service instead.
 
 ## Data Sources
 - Temperature: NASA GISTEMP v4

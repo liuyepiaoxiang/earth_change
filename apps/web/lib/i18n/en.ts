@@ -109,7 +109,7 @@ export const en: Record<TranslationKey, string> = {
   "colorbar.cities": "Cities",
   "colorbar.floodedKey": "blue = flooded",
   "colorbar.seaIce": "Sea ice (M km²)",
-  "colorbar.sources": "Data: NASA GISTEMP · WorldClim 2.1 · GeoNames · NOAA/AR6 anchors | Model v0.2.0 (2-layer EBM + carbon cycle, G1–G5 validated)",
+  "colorbar.sources": "Data: NASA GISTEMP · WorldClim 2.1 · GeoNames · NOAA/AR6 anchors | Two-layer EBM + carbon cycle model (G1–G6 gates; version in Analysis → Result notes)",
   "tooltip.population": "pop.",
   "tooltip.floodedShort": "Flooded",
   "common.loading": "Loading engine…",

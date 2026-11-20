@@ -30,8 +30,8 @@ export default function AskChrome({ children }: { children: ReactNode }) {
           <h2 style={{ fontSize: 16, color: "#7dd3fc", marginBottom: 8 }}>{en ? "How This Works" : "工作原理"}</h2>
           <p style={{ color: "#94a3b8", fontSize: 13, lineHeight: 1.6 }}>
             {en
-              ? "This AI assistant runs a real climate model (two-layer ocean energy balance + carbon cycle + sea level decomposition) calibrated against 175 years of NASA GISTEMP observations. All 2100 projections fall within IPCC AR6 assessed ranges. Unlike static websites, every answer is computed in real-time from the simulation."
-              : "本问答系统运行真实的气候模型（两层海洋能量平衡 + 碳循环 + 海平面四分量分解），经 175 年 NASA GISTEMP 观测数据校准，2100 年预测全部落在 IPCC AR6 评估区间内。与静态网站不同，每个回答都由模拟实时计算得出。"}
+              ? "This is a rule-based Q&A over a real climate model (two-layer ocean energy balance + carbon cycle + sea level decomposition) calibrated against 175 years of NASA GISTEMP observations — not a chatbot AI. It covers city flooding, temperature, CO₂, sea level, sea ice, and permafrost topics; each answer is computed in real-time from the simulation and falls within IPCC AR6 assessed ranges."
+              : "这是基于真实气候模型（两层海洋能量平衡 + 碳循环 + 海平面四分量分解）的规则式问答——不是通用聊天 AI。覆盖城市淹没、温度、CO₂、海平面、海冰、冻土主题；每个回答都由模拟实时计算得出，并落在 IPCC AR6 评估区间内。"}
           </p>
         </div>
       </div>
