@@ -29,6 +29,12 @@ export function isCityFlooded(elevationM: number, slrM: number): boolean {
 export function isLandAboveSea(elevationM: number, slrM: number): boolean {
   return elevationM > slrM;
 }
+/** eq_54: 城市热岛 ΔT_uhi = clamp(0.55·log10(P/10⁴) + 0.5, 0, 3)（Oke 型人口对数经验式，v4 诊断式：
+ *  1 万人 ≈ +0.5°C、百万 ≈ +1.6°C、三千万级 ≈ +2.2°C，钳 3°C；不随情景演化——当代城市属性） */
+export function urbanHeatIsland(population: number): number {
+  if (!Number.isFinite(population) || population <= 0) return 0;
+  return Math.min(3, Math.max(0, 0.55 * Math.log10(population / 1e4) + 0.5));
+}
 /** eq_50: 生物群系判定（年均温 °C + 年降水 mm） */
 export function classifyBiome(annualMeanT: number, annualP: number): string {
   if (annualMeanT < -8) return "冰雪";

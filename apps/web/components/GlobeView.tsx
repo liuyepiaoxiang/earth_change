@@ -76,16 +76,23 @@ const onPointClick = (point: object, onSelectCity: (c: CityRow) => void) => {
   onSelectCity((point as GlobePoint).city);
 };
 
+/** A2 搜索直达暴露的命令句柄：flyTo 飞到城市上空（globe.gl pointOfView） */
+export interface GlobeViewHandle {
+  flyTo: (lat: number, lng: number) => void;
+}
+
 export default function GlobeView({
   snap,
   cities,
   pattern,
   onSelectCity,
+  handleRef,
 }: {
   snap: MetricsSnapshot;
   cities: CityRow[];
   pattern: PatternBand[];
   onSelectCity: (c: CityRow) => void;
+  handleRef?: React.MutableRefObject<GlobeViewHandle | null>;
 }) {
   // 同步最新快照到模块级（getLabel 等 accessor 读取）；并保留组件内 ref 供其他 effect 用
   snapRefCurrent = snap;
@@ -93,6 +100,14 @@ export default function GlobeView({
   dictCurrent = locale === "en" ? en : zh;
   patternRefCurrent = pattern.length ? pattern : [];
   const ref = useRef<HTMLDivElement>(null);
+  const globeRef = useRef<{ pointOfView?: (v: { lat: number; lng: number; altitude?: number }, ms?: number) => void } | null>(null);
+  useEffect(() => {
+    if (!handleRef) return;
+    handleRef.current = {
+      flyTo: (lat: number, lng: number) => globeRef.current?.pointOfView?.({ lat, lng, altitude: 1.6 }, 1100),
+    };
+    return () => { handleRef.current = null; };
+  }, [handleRef]);
   const [size, setSize] = useState({ w: 0, h: 0 });
   const [layers, setLayers] = useState<LayerState>(DEFAULT_LAYERS);
   const toggleLayer = (key: keyof LayerState) => setLayers((s) => ({ ...s, [key]: !s[key] }));
@@ -345,6 +360,7 @@ export default function GlobeView({
     <div ref={ref} className="fe-starfield" style={{ position: "absolute", inset: 0 }}>
       {size.w > 0 && (
         <Globe
+          ref={globeRef as never}
           width={size.w}
           height={size.h}
           globeMaterial={globeMaterial}
@@ -359,6 +375,10 @@ export default function GlobeView({
           pointRadius={getRadius}
           pointLabel={getLabel}
           onPointClick={(point: object) => onPointClick(point, onSelectCity)}
+          onPointHover={(point: object | null) => {
+            // F22 交互反馈：悬停城市点变手型（直接改 DOM，不触发点层重建/重渲）
+            if (ref.current) ref.current.style.cursor = point ? "pointer" : "";
+          }}
         />
       )}
       <LayerControl layers={layers} onToggle={toggleLayer} />

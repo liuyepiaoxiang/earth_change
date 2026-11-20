@@ -1,9 +1,10 @@
 "use client";
-/** V0.3 情景实验室：7 控制项 + 本地保存（最多 5 个） + 恢复默认 */
+/** V0.3 情景实验室：A3 剧本一键卡（顶部四预设）+ 7 控制项 + 本地保存（最多 5 个） + 恢复默认 */
 import { useEffect, useState } from "react";
 import type { ExperimentControls } from "@future-earth/engine";
 import { DEFAULT_CONTROLS } from "@future-earth/engine";
 import { useI18n } from "../lib/i18n";
+import { PRESETS } from "../lib/presets";
 
 const STORE_KEY = "fe-lab-experiments-v1";
 export interface SavedExperiment { name: string; note: string; controls: ExperimentControls; savedAt: string }
@@ -49,6 +50,32 @@ export default function ExperimentEditor(props: {
 
   return (
     <div data-testid="experiment-editor" style={{ fontSize: 16, color: "#94a3b8" }}>
+      <div style={{ marginBottom: 12 }}>
+        <div style={{ color: "#e0f2fe", fontSize: 15, fontWeight: "bold", marginBottom: 6 }}>
+          {en ? "🎬 One-click scenarios" : "🎬 剧本一键卡"}
+        </div>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+          {PRESETS.map((p) => {
+            const active = JSON.stringify(c) === JSON.stringify(p.controls);
+            return (
+              <button
+                key={p.id}
+                onClick={() => onChange(p.controls)}
+                title={en ? p.desc[1] : p.desc[0]}
+                style={{
+                  flex: "1 1 140px", maxWidth: 220, textAlign: "left", padding: "8px 10px", cursor: "pointer",
+                  borderRadius: 10, border: `1px solid ${active ? "#38bdf8" : "#334155"}`,
+                  background: active ? "#0c4a6e" : "rgba(15,23,42,0.7)",
+                  color: "#e2e8f0",
+                }}
+              >
+                <div style={{ fontSize: 15, fontWeight: "bold" }}>{p.icon} {en ? p.name[1] : p.name[0]}</div>
+                <div style={{ fontSize: 11, color: "#94a3b8", marginTop: 2, lineHeight: 1.4 }}>{en ? p.desc[1] : p.desc[0]}</div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
       <p style={{ color: "#fbbf24" }}>⚠ {en ? "Educational experiment: emissions run free, not anchored to AR6 ranges." : "教育性实验：排放驱动自由运行，未经 AR6 区间锚定。"}</p>
       <label style={{ display: "block", margin: "8px 0" }}>
         {en ? `Emission intensity` : "排放强度"} ×{c.emissionScale.toFixed(2)}

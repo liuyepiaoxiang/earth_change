@@ -28,6 +28,12 @@
 }
 .fe-slide-in { animation: fe-slide-in 0.3s ease-out both; }
 
+/* ---- F22 城市富卡片：分区逐层上浮（inline animation-delay 递增形成 stagger） ---- */
+@keyframes fe-card-rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 /* ---- 播放按钮呼吸（自动播放进行中） ---- */
 @keyframes fe-breathe {
   0%, 100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.5); }
@@ -41,6 +47,7 @@
     animation: none !important;
   }
   .fe-layer-btn { transition: none !important; }
+  [style*="fe-card-rise"] { animation: none !important; }
 }
 
 

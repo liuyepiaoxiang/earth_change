@@ -1,7 +1,9 @@
 import { test, expect } from "@playwright/test";
+import { skipIntroQuiz } from "./helpers";
 
 test.describe("v1.0 区域气候场", () => {
   test("GR1：温度场层开启且图例可见（格点纹理升级后仍正常渲染）", async ({ page }) => {
+    await skipIntroQuiz(page);
     await page.goto("/");
     await expect(page.locator("header")).toContainText("ppm", { timeout: 30000 });
     // 温度场图层默认开启（LayerControl 显示为开）
@@ -9,6 +11,7 @@ test.describe("v1.0 区域气候场", () => {
   });
 
   test("GR2：区域面板——点采样与框选统计", async ({ page }) => {
+    await skipIntroQuiz(page);
     await page.goto("/");
     await expect(page.locator("header")).toContainText("ppm", { timeout: 30000 });
     await page.getByRole("button", { name: "📊 分析" }).click();

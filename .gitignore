@@ -18,3 +18,4 @@ apps/web/test-results/
 apps/web/playwright-report/
 # Playwright MCP 浏览器调试日志（本地工具产物）
 .playwright-mcp/
+.zcode/

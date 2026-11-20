@@ -39,9 +39,10 @@ export default function AnalysisDrawer(props: {
   snap?: import("../lib/sim").MetricsSnapshot | null;
   pattern?: Array<{ latMin: number; latMax: number; amp: number }>;
   onSelectCity?: (c: import("@future-earth/data").CityRow) => void;
+  initialTab?: (typeof TABS)[number];
 }) {
   const { t } = useI18n();
-  const [tab, setTab] = useState<(typeof TABS)[number]>("tab.timeseries");
+  const [tab, setTab] = useState<(typeof TABS)[number]>(props.initialTab ?? "tab.timeseries");
   return (
     <aside data-testid="analysis-drawer" style={{
       position: "absolute", top: 0, right: 0, bottom: 0, width: "min(560px, 95vw)",

@@ -90,9 +90,14 @@ export function runScenario(id: ScenarioId, horizon = 2500): SimResult {
 // 降尺度纯函数：web 客户端直接复用（同源实现，避免前端重写公式）
 export {
   patternAmp, localDTs, scaledPrecip,
-  isCityFlooded, isLandAboveSea, classifyBiome,
+  isCityFlooded, isLandAboveSea, classifyBiome, urbanHeatIsland,
 } from "./equations/downscale.js";
 export type { WarmingPatternBand } from "./equations/downscale.js";
+// 海平面重力指纹（eq_55，v4 诊断式）
+export {
+  fingerprintGRIS, fingerprintAIS, regionalSeaLevel, slrComponentsTotal,
+} from "./equations/sealevel.js";
+export type { SlrComponents } from "./equations/sealevel.js";
 // 海冰与冰-反照率诊断（eq_28–30，ADR-001）
 export { seaIceArea, surfaceAlbedo, iceAlbedoFeedback } from "./equations/seaice.js";
 // 不确定性量化（v1）

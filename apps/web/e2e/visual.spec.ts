@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { skipIntroQuiz } from "./helpers";
 import { PNG } from "pngjs";
 
 // 对应 docs/05 §6 此前的两个测试缺口：
@@ -22,6 +23,7 @@ test.describe("S3 淹没视觉（像素统计对照）", () => {
   test("SSP5-8.5：2500 年淹没像素显著多于 2100 年（同视角同裁剪区）", async ({ page }) => {
     const pageErrors: string[] = [];
     page.on("pageerror", (e) => pageErrors.push(String(e)));
+    await skipIntroQuiz(page);
     await page.goto("/");
     await expect(page.getByRole("button", { name: "SSP5-8.5" })).toBeVisible({ timeout: 20_000 });
 
@@ -53,42 +55,21 @@ test.describe("S3 淹没视觉（像素统计对照）", () => {
 });
 
 test.describe("S4 画布点选城市", () => {
-  test("放大后点击西非海岸城市点弹出 CityPanel", async ({ page }) => {
+  test("搜索直达城市：输入 Lagos → CityPanel 弹出（F23-A2 语义路径，替代概率性画布扫描）", async ({ page }) => {
     const pageErrors: string[] = [];
     page.on("pageerror", (e) => pageErrors.push(String(e)));
+    await skipIntroQuiz(page);
     await page.goto("/");
     await expect(page.locator("header")).toContainText("ppm", { timeout: 20_000 });
 
-    // 露出城市点：关温度场与淹没模拟
-    await page.getByRole("button", { name: /温度场/ }).click();
-    await page.getByRole("button", { name: /淹没模拟/ }).click();
+    // A2 搜索直达：语义定位（500 城数据驱动，不依赖渲染投影坐标）
+    const box = page.getByLabel(/你的城市|Search 500/);
+    await box.fill("Lagos");
+    await page.getByText(/^Lagos/).first().click();
 
-    // 放大 ×6（确定性视角：初始 (0°E,0°N)，滚轮沿视线 dolly）
-    for (let i = 0; i < 6; i++) {
-      await page.evaluate(`(() => {
-        const c = document.querySelector('canvas');
-        c.dispatchEvent(new WheelEvent('wheel', { bubbles: true, cancelable: true, deltaY: -600, clientX: 640, clientY: 360 }));
-        return 1;
-      })()`);
-      await page.waitForTimeout(300);
-    }
-
-    // 网格扫描 + click，命中判定：CityPanel 出现「本地升温」（任意城市即可）。
-    // 扫描窗口不依赖本地实测的精确像素位置（CI 的字体/布局渲染有细微差异会平移投影），
-    // 覆盖中央大区域、由内向外扫描，控制总耗时 < 40s。
-    let hit = false;
-    const targets: Array<[number, number]> = [];
-    for (let y = 160; y <= 400; y += 40) for (let x = 340; x <= 940; x += 40) targets.push([x, y]);
-    for (const [x, y] of targets) {
-      await page.mouse.move(x, y);
-      await page.mouse.click(x, y);
-      if ((await page.getByText(/本地升温/).count()) > 0) {
-        hit = true;
-        break;
-      }
-      await page.waitForTimeout(80);
-    }
-    expect(hit).toBe(true);
+    // CityPanel 出现且包含城市关键信息（F22 富卡片）
+    await expect(page.getByText(/Lagos/).first()).toBeVisible();
+    await expect(page.getByText(/本地升温/)).toBeVisible();
     await expect(page.getByText(/已被海平面淹没|未淹没/)).toBeVisible();
     await expect(page.getByText(/群系/)).toBeVisible();
     expect(pageErrors).toEqual([]);

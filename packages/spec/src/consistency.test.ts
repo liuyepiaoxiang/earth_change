@@ -10,9 +10,9 @@ describe("spec 内部一致性", () => {
     expect([...V0_EQUATIONS].sort()).toEqual(yamlV0);
     expect(V0_EQUATION_COUNT).toBe(yamlV0.length);
   });
-  it("方程编号连续覆盖 eq_01..eq_53", () => {
+  it("方程编号连续覆盖 eq_01..eq_55", () => {
     expect(spec.equations.map((e) => e.id)).toEqual(
-      Array.from({ length: 53 }, (_, i) => `eq_${String(i + 1).padStart(2, "0")}` as EquationId),
+      Array.from({ length: 55 }, (_, i) => `eq_${String(i + 1).padStart(2, "0")}` as EquationId),
     );
   });
   it("每个状态变量的 equations 字段引用的方程都存在，且 v0 方程的 outputs 覆盖了对应变量", () => {

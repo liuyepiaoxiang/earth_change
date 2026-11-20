@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { skipIntroQuiz } from "./helpers";
 
 // 对应 docs/05-测试策略与用例矩阵.md §5 冒烟清单中可自动化的部分（S1/S2/R1）；
 // S3 淹没视觉与 S4 画布点选城市属视觉/坐标断言，仍走手工冒烟。
@@ -27,6 +28,7 @@ test.describe("S2 仪表盘交互", () => {
     const pageErrors: string[] = [];
     page.on("pageerror", (e) => pageErrors.push(String(e)));
 
+    await skipIntroQuiz(page);
     await page.goto("/");
     const header = page.locator("header");
     // 引擎动态加载 + 模拟完成后指标栏出现 CO₂ 数值
@@ -55,6 +57,7 @@ test.describe("R1 图层开关回归", () => {
   const LAYERS = ["温度场", "城市点", "淹没模拟", "降水图层", "卫星底图", "大气辉光"];
 
   test("每个图层切换一轮，状态文本正确翻转（初始开或关均可）", async ({ page }) => {
+    await skipIntroQuiz(page);
     await page.goto("/");
     await expect(page.getByRole("button", { name: /温度场/ })).toBeVisible({ timeout: 20_000 });
     for (const name of LAYERS) {
@@ -69,6 +72,7 @@ test.describe("R1 图层开关回归", () => {
   });
 
   test("底图两次关→开循环后仍恢复（FLOW-20261011-004 回归点）", async ({ page }) => {
+    await skipIntroQuiz(page);
     await page.goto("/");
     const btn = page.getByRole("button", { name: /卫星底图/ });
     await expect(btn).toBeVisible({ timeout: 20_000 });

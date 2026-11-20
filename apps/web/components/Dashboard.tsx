@@ -18,6 +18,9 @@ import LanguageSwitcher from "./LanguageSwitcher";
 import { useI18n } from "../lib/i18n";
 import { milestoneEvents } from "@future-earth/engine";
 import type { MilestoneEvent } from "@future-earth/engine";
+import QuizIntro from "./QuizIntro";
+import CityQuickSearch from "./CityQuickSearch";
+import type { GlobeViewHandle } from "./GlobeView";
 
 const centerStyle = { height: "100%", display: "grid", placeItems: "center", color: "#475569" } as const;
 
@@ -30,6 +33,8 @@ export default function Dashboard({ embed = false }: { embed?: boolean }) {
   const [exp, setExp] = useState<ExperimentControls | undefined>(undefined);
   const [city, setCity] = useState<CityRow | null>(null);
   const [showAnalysis, setShowAnalysis] = useState(false);
+  const [analysisTab, setAnalysisTab] = useState<"tab.timeseries" | "tab.games">("tab.timeseries");
+  const globeHandle = useRef<GlobeViewHandle | null>(null);
   const { sim, error } = useSimulation(scenario, uncertain, exp);
   const cities = useMemo(() => loadCities(), []);
   const pattern = useMemo(() => loadWarmingPattern(), []);
@@ -170,19 +175,36 @@ export default function Dashboard({ embed = false }: { embed?: boolean }) {
         {!embed && <LanguageSwitcher />}
       </header>
 
+      {!embed && (
+        <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "4px 16px", flexWrap: "wrap" }}>
+          <CityQuickSearch
+            cities={cities}
+            onSelect={(c) => {
+              setCity(c);
+              globeHandle.current?.flyTo(c.lat, c.lon);
+            }}
+          />
+        </div>
+      )}
+
       {!embed && <LiveEarth />}
 
       <section style={{ position: "relative", minHeight: 0 }}>
         {sim && snap ? (
-          <GlobeView snap={snap} cities={cities} pattern={pattern} onSelectCity={setCity} />
+          <GlobeView snap={snap} cities={cities} pattern={pattern} onSelectCity={setCity} handleRef={globeHandle} />
         ) : (
           <div style={centerStyle}>{error ? `${t("common.loadFail")}：${error}` : t("common.loading")}</div>
         )}
-        {city && snap && <CityPanel city={city} snap={snap} pattern={pattern} onClose={() => setCity(null)} />}
+        {city && snap && sim && (
+          <CityPanel city={city} snap={snap} sim={sim} year={year} cities={cities} onSelectCity={setCity} pattern={pattern} onClose={() => setCity(null)} />
+        )}
         <EventNotification event={activeEvent} onDismiss={() => setActiveEvent(null)} />
         {showAnalysis && sim && (
-          <AnalysisDrawer sim={sim} year={year} onClose={() => setShowAnalysis(false)}
+          <AnalysisDrawer sim={sim} year={year} onClose={() => setShowAnalysis(false)} initialTab={analysisTab}
             exp={exp} onExpChange={setExp} onExitExp={() => setExp(undefined)} onJumpYear={setYear} snap={snap} pattern={pattern} onSelectCity={setCity} />
+        )}
+        {!embed && (
+          <QuizIntro sim={sim} year={year} onClose={() => {}} onMore={() => { setAnalysisTab("tab.games"); setShowAnalysis(true); }} />
         )}
       </section>
 

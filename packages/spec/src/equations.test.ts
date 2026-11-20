@@ -6,11 +6,11 @@ describe("equations", () => {
   const varIds = new Set(spec.variables.map((v) => v.id));
   const paramIds = new Set(spec.parameters.map((p) => p.id));
 
-  it("方程数 = 53 且 id 唯一且为 eq_01..eq_53", () => {
-    expect(spec.equations).toHaveLength(53);
+  it("方程数 = 55 且 id 唯一且为 eq_01..eq_55", () => {
+    expect(spec.equations).toHaveLength(55);
     const ids = spec.equations.map((e) => e.id);
-    expect(new Set(ids).size).toBe(53);
-    expect(ids).toEqual(Array.from({ length: 53 }, (_, i) => `eq_${String(i + 1).padStart(2, "0")}`));
+    expect(new Set(ids).size).toBe(55);
+    expect(ids).toEqual(Array.from({ length: 55 }, (_, i) => `eq_${String(i + 1).padStart(2, "0")}`));
   });
   it("inputs/outputs 引用的变量必须存在", () => {
     for (const e of spec.equations)

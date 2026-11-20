@@ -1,9 +1,11 @@
 import { test, expect } from "@playwright/test";
+import { skipIntroQuiz } from "./helpers";
 
 test.describe("v0.2 UX 验收门", () => {
   test("UX-01：30 秒内可见当前年份、情景与三项核心指标", async ({ page }) => {
     const errors: string[] = [];
     page.on("pageerror", (e) => errors.push(String(e)));
+    await skipIntroQuiz(page);
     await page.goto("/");
     // noscript 的 SEO H1 也含同名文本，限定 header 内品牌（strict mode 安全）
     await expect(page.locator("header").getByText("未来地球引擎")).toBeVisible({ timeout: 30000 });
@@ -20,6 +22,7 @@ test.describe("v0.2 UX 验收门", () => {
   });
 
   test("UX-02：分析面板内一屏可见历史/2100/2500 差异与置信说明", async ({ page }) => {
+    await skipIntroQuiz(page);
     await page.goto("/");
     await page.getByRole("button", { name: "📊 分析" }).click();
     const drawer = page.getByTestId("analysis-drawer");
@@ -36,6 +39,7 @@ test.describe("v0.2 UX 验收门", () => {
   });
 
   test("UX-02b：2100 后时间轴出现探索性外推标签", async ({ page }) => {
+    await skipIntroQuiz(page);
     await page.goto("/");
     const range = page.locator('footer input[type="range"]');
     await range.waitFor({ timeout: 30000 });

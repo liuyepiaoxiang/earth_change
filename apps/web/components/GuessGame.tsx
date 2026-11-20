@@ -1,41 +1,17 @@
 "use client";
-/** 🎮 猜猜看小游戏——拖到温度到目标线，看你能多准（15 秒一局） */
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+/** 🎮 猜猜看小游戏——拖到温度到目标线，看你能多准（15 秒一局）；核心逻辑在 lib/guess-core.ts（与进站弹层共用） */
+import { useCallback, useState } from "react";
 import type { SimResultWithUnc } from "../lib/sim";
 import { useI18n } from "../lib/i18n";
-
-interface Round { targetYear: number; targetDT: number; scenario: string; label: string }
-const SCENARIOS = ["ssp126", "ssp245", "ssp370", "ssp585"] as const;
-const SCEN_NAME: Record<string, Record<string, string>> = {
-  zh: { ssp126: "SSP1-2.6（低排放）", ssp245: "SSP2-4.5（中间路线）", ssp370: "SSP3-7.0（中高排放）", ssp585: "SSP5-8.5（高排放）" },
-  en: { ssp126: "SSP1-2.6 (Low emissions)", ssp245: "SSP2-4.5 (Middle road)", ssp370: "SSP3-7.0 (High emissions)", ssp585: "SSP5-8.5 (Very high emissions)" },
-};
-
-function makeRound(sim: SimResultWithUnc, locale: "zh" | "en"): Round {
-  const years = [2030, 2040, 2050, 2060, 2075, 2090, 2100, 2120, 2150];
-  const y = years[Math.floor(Math.random() * years.length)]!;
-  const i = sim.years.indexOf(y);
-  const dT = sim.metrics.tempAnomaly[i]!;
-  // 找一个有数据的情景
-  const sc = SCENARIOS[Math.floor(Math.random() * 4)] ?? "ssp245";
-  return { targetYear: y, targetDT: dT, scenario: sc, label: `${SCEN_NAME[locale]![sc] ?? sc} ${locale === "en" ? y : `${y} 年`}` };
-}
-
-type GameState = "idle" | "playing" | "result";
-const DIFFS: Record<string, string[]> = {
-  zh: ["完美！", "非常接近！", "还不错", "有点偏", "差很远..."],
-  en: ["Perfect!", "Very close!", "Not bad", "A bit off", "Way off..."],
-};
-const MEDALS = ["🏆", "🥇", "🥈", "🥉", "😅"];
+import { makeRound, gradeDiff, POINTS, MEDALS, DIFFS, type Round } from "../lib/guess-core";
 
 export default function GuessGame(props: { sim: SimResultWithUnc; currentYear: number; onJumpYear: (y: number) => void }) {
-  const [state, setState] = useState<GameState>("idle");
+  const [state, setState] = useState<"idle" | "playing" | "result">("idle");
   const [round, setRound] = useState<Round | null>(null);
   const [guess, setGuess] = useState(0);
   const [score, setScore] = useState(0);
   const [streak, setStreak] = useState(0);
   const [bestStreak, setBestStreak] = useState(0);
-  const sliderRef = useRef<HTMLDivElement>(null);
   const { locale } = useI18n();
 
   const start = useCallback(() => {
@@ -50,9 +26,8 @@ export default function GuessGame(props: { sim: SimResultWithUnc; currentYear: n
     const i = props.sim.years.indexOf(guess);
     if (i < 0) return;
     const myDT = props.sim.metrics.tempAnomaly[i]!;
-    const diff = Math.abs(myDT - round.targetDT);
-    const idx = diff < 0.1 ? 0 : diff < 0.3 ? 1 : diff < 0.6 ? 2 : diff < 1.5 ? 3 : 4;
-    const points = [100, 70, 40, 15, 0][idx]!;
+    const idx = gradeDiff(Math.abs(myDT - round.targetDT));
+    const points = POINTS[idx];
     setScore((s) => s + points);
     setStreak((s) => { const ns = idx <= 1 ? s + 1 : 0; setBestStreak((b) => Math.max(b, ns)); return ns; });
     setState("result");
@@ -61,11 +36,6 @@ export default function GuessGame(props: { sim: SimResultWithUnc; currentYear: n
   }, [round, guess, props]);
 
   const next = () => { start(); };
-
-  const timeSlider = useMemo(() => ({
-    min: 2026, max: 2150, step: 1, value: guess,
-    onChange: (v: number) => setGuess(v),
-  }), [guess]);
 
   if (state === "idle") return (
     <div data-testid="guess-game" style={{ textAlign: "center", padding: 20 }}>
@@ -108,7 +78,7 @@ export default function GuessGame(props: { sim: SimResultWithUnc; currentYear: n
     const myDT = i >= 0 ? props.sim.metrics.tempAnomaly[i]! : 0;
     const actualYear = props.sim.years[props.sim.metrics.tempAnomaly.findIndex((t) => Math.abs(t - round.targetDT) < 0.05)] ?? round.targetYear;
     const diff = Math.abs(myDT - round.targetDT);
-    const idx = diff < 0.1 ? 0 : diff < 0.3 ? 1 : diff < 0.6 ? 2 : diff < 1.5 ? 3 : 4;
+    const idx = gradeDiff(diff);
     return (
       <div data-testid="guess-result" style={{ padding: 16, textAlign: "center" }}>
         <div style={{ fontSize: 48, marginBottom: 4 }}>{MEDALS[idx]}</div>
@@ -121,7 +91,7 @@ export default function GuessGame(props: { sim: SimResultWithUnc; currentYear: n
             <div><div style={{ color: "#94a3b8", fontSize: 12 }}>{locale === "en" ? "Off by" : "偏差"}</div><div style={{ color: diff < 0.3 ? "#4ade80" : "#f87171", fontSize: 18, fontWeight: "bold" }}>{diff.toFixed(1)}°C</div></div>
           </div>
         </div>
-        <div style={{ color: "#fbbf24", fontSize: 14, marginTop: 10 }}>{locale === "en" ? `Score +${[100, 70, 40, 15, 0][idx]} · Streak ${streak}` : `得分 +${[100, 70, 40, 15, 0][idx]} · 连对 ${streak}`}</div>
+        <div style={{ color: "#fbbf24", fontSize: 14, marginTop: 10 }}>{locale === "en" ? `Score +${POINTS[idx]} · Streak ${streak}` : `得分 +${POINTS[idx]} · 连对 ${streak}`}</div>
         <button onClick={next} style={{ marginTop: 14, padding: "10px 24px", fontSize: 15, borderRadius: 10, border: "2px solid #4ade80", background: "#14532d", color: "#dcfce7", cursor: "pointer", fontWeight: "bold" }}>
           {locale === "en" ? "🔄 Play Again" : "🔄 再来一局"}
         </button>

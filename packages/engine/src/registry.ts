@@ -39,6 +39,9 @@ export const REGISTRY: Partial<Record<EquationId, EqFn>> = {
   eq_51: downscale.localDTs as EqFn,
   eq_52: downscale.scaledPrecip as EqFn,
   eq_53: downscale.isCityFlooded as EqFn,
+  // v4 影响侧诊断（ADR-001）：城市热岛 + 海平面重力指纹
+  eq_54: downscale.urbanHeatIsland as EqFn,
+  eq_55: sealevel.regionalSeaLevel as EqFn,
   // 诊断式（v1.x 收尾批）：辐射能量收支，UI 直接调用，不接入 solver RHS
   eq_01: energy.qIn as EqFn,
   eq_02: energy.qRef as EqFn,

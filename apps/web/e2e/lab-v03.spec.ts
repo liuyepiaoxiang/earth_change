@@ -1,9 +1,11 @@
 import { test, expect } from "@playwright/test";
+import { skipIntroQuiz } from "./helpers";
 
 test.describe("v0.3 情景实验室与分享", () => {
   test("L1：开启实验 → 编辑器可见 → 改排放强度 → 指标变化且 URL 含 exp", async ({ page }) => {
     const errors: string[] = [];
     page.on("pageerror", (e) => errors.push(String(e)));
+    await skipIntroQuiz(page);
     await page.goto("/");
     await expect(page.locator("header")).toContainText("ppm", { timeout: 30000 });
     await page.getByRole("button", { name: "🧪 实验" }).click();
@@ -22,6 +24,7 @@ test.describe("v0.3 情景实验室与分享", () => {
   });
 
   test("L2：分享 tab 展示可复现链接", async ({ page }) => {
+    await skipIntroQuiz(page);
     await page.goto("/");
     await expect(page.locator("header")).toContainText("ppm", { timeout: 30000 });
     await page.getByRole("button", { name: "📊 分析" }).click();
@@ -32,6 +35,7 @@ test.describe("v0.3 情景实验室与分享", () => {
   });
 
   test("L3：/embed 无编辑器但保留指标与时间轴", async ({ page }) => {
+    await skipIntroQuiz(page);
     await page.goto("/embed?scenario=ssp370&year=2100");
     await expect(page.locator("header")).toContainText("ppm", { timeout: 30000 });
     await expect(page.getByRole("button", { name: "🧪 实验" })).toHaveCount(0);
@@ -43,6 +47,7 @@ test.describe("v0.3 情景实验室与分享", () => {
     // 与 lib/url-state 编码一致的最小实验（默认 controls 编码）
     const res = await page.request.get("/api/simulate?scenario=ssp245&horizon=2100");
     expect(res.status()).toBe(200); // 前置：服务可用
+    await skipIntroQuiz(page);
     await page.goto("/");
     await page.getByRole("button", { name: "🧪 实验" }).click();
     await expect.poll(async () => page.url(), { timeout: 5000 }).toContain("exp=");
