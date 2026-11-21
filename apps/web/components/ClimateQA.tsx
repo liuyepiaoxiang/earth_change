@@ -7,7 +7,7 @@ import type { QAResult } from "../lib/climate-qa";
 import Link from "next/link";
 
 const card: React.CSSProperties = { background: "#0f172a", borderRadius: 12, border: "1px solid #334155", padding: 16 };
-const input: React.CSSProperties = { width: "100%", background: "#0f172a", color: "#e2e8f0", border: "2px solid #38bdf8", borderRadius: 12, padding: "14px 18px", fontSize: 15, outline: "none", boxSizing: "border-box" };
+const input: React.CSSProperties = { width: "100%", background: "#0f172a", color: "#e2e8f0", border: "2px solid #38bdf8", borderRadius: 12, padding: "14px 18px", fontSize: 15, boxSizing: "border-box" };
 const btn: React.CSSProperties = { padding: "10px 20px", borderRadius: 10, border: "none", background: "#0c4a6e", color: "#e0f2fe", fontSize: 14, fontWeight: "bold", cursor: "pointer" };
 const chip: React.CSSProperties = { padding: "6px 14px", background: "#0f172a", color: "#94a3b8", borderRadius: 20, border: "1px solid #334155", cursor: "pointer", fontSize: 12 };
 

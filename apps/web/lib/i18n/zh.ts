@@ -4,6 +4,7 @@ export const zh = {
   "app.title": "未来地球引擎",
   "app.nav.earth": "地球",
   "app.nav.overview": "要素总览",
+  "app.nav.learn": "气候学习",
   "app.nav.ask": "气候问答",
   "app.btn.uncertainty": "±区间",
   "app.btn.range": "区间",
@@ -97,6 +98,8 @@ export const zh = {
   // Live（今日地球实时卡片）
   "live.title": "今日地球",
   "live.loading": "正在获取实时数据…",
+  "live.retryHint": "今日地球数据暂时不可用",
+  "live.retry": "重试",
   "live.co2": "CO₂ 浓度",
   "live.preindustrial": "工业化前 280",
   "live.temp": "温度异常",

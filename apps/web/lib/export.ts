@@ -43,7 +43,7 @@ export function exportPngCard(sim: SimResultLike, year: number, slrAt: (y: numbe
   const gl = Array.from(document.querySelectorAll("canvas")).find((c) => c.width > 200 && c.height > 200);
   if (gl) { try { ctx.drawImage(gl, W / 2 - 220, 60, 440, 440); } catch { /* 跨域污染时跳过快照 */ } }
   ctx.fillStyle = "#e0f2fe"; ctx.font = "bold 30px system-ui";
-  ctx.fillText("🌍 未来地球引擎", 30, 50);
+  ctx.fillText("🌍 未来地球引擎 Future Earth Engine", 30, 50);
   ctx.font = "16px system-ui"; ctx.fillStyle = "#94a3b8";
   const label = sim.experiment ? `${sim.scenario} 教育性实验（排放驱动）` : `${sim.scenario}（IPCC AR6 锚定）`;
   ctx.fillText(`${label} · 模型 ${sim.modelVersion}`, 30, 78);

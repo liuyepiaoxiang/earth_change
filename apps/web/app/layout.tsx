@@ -79,22 +79,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       "影响评估（人口暴露/水资源/经济损害）",
     ],
   };
-  const faqJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: [
-      { "@type": "Question", name: "What is the Future Earth Engine?", acceptedAnswer: { "@type": "Answer", text: "An interactive climate simulator that lets you drag a timeline from 2026 to 2500 on a 3D globe to see temperature, sea level, and city flooding changes. Based on NASA and IPCC AR6 data." } },
-      { "@type": "Question", name: "How accurate is the model?", acceptedAnswer: { "@type": "Answer", text: "Calibrated against 175 years of NASA GISTEMP observations with RMSE under 0.2°C. 2100 projections fall within IPCC AR6 ranges for all four SSP scenarios." } },
-      { "@type": "Question", name: "What are SSP scenarios?", acceptedAnswer: { "@type": "Answer", text: "SSP (Shared Socioeconomic Pathway) are standardized climate scenarios used by IPCC. SSP1-2.6 is low emissions, SSP2-4.5 intermediate, SSP3-7.0 medium-high, SSP5-8.5 high emissions." } },
-      { "@type": "Question", name: "Will my city flood?", acceptedAnswer: { "@type": "Answer", text: "Click any of 500 major cities to see elevation, local warming, and flooding status at any year through 2500." } },
-      { "@type": "Question", name: "Can I run my own experiments?", acceptedAnswer: { "@type": "Answer", text: "Yes. The Lab feature lets you adjust emission intensity, net-zero year, methane paths, and coastal defense to see how choices affect outcomes." } },
-    ],
-  };
   return (
     <html lang="zh-CN">
       <body style={{ margin: 0, background: "radial-gradient(ellipse 120% 80% at 50% -10%, #101a33 0%, #0b1120 45%, #070b14 100%)", backgroundAttachment: "fixed", color: "#e2e8f0", fontFamily: 'Inter, "SF Pro Text", system-ui, sans-serif' }}>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
         <I18nProvider>{children}</I18nProvider>
         <noscript>
           <div style={{ padding: 40, maxWidth: 640, margin: "0 auto" }}>

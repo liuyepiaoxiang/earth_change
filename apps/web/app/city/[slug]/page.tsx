@@ -47,7 +47,7 @@ export default function CityPage({ params }: { params: { slug: string } }) {
       <header style={{ padding: "12px 20px", borderBottom: "1px solid #1e293b" }}>
         <Link href="/" style={{ color: "#38bdf8", textDecoration: "none", fontSize: 14 }}>🌍 未来地球引擎</Link>
         <span style={{ color: "#475569", margin: "0 8px" }}>|</span>
-        <span style={{ color: "#94a3b8", fontSize: 13 }}>城市气候报告</span>
+        <span style={{ color: "#94a3b8", fontSize: 13 }}>城市气候报告 · City Climate Report</span>
       </header>
 
       <article style={{ maxWidth: 680, margin: "0 auto", padding: "40px 20px 80px" }}>

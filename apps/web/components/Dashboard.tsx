@@ -129,6 +129,19 @@ export default function Dashboard({ embed = false }: { embed?: boolean }) {
           >
             💬 {t("app.nav.ask")}
           </a>
+          <a
+            href="/learn/ssp-scenarios"
+            style={{
+              padding: "4px 10px",
+              borderRadius: 6,
+              fontSize: 13,
+              border: "1px solid #4ade8088",
+              color: "#bef264",
+              textDecoration: "none",
+            }}
+          >
+            📚 {t("app.nav.learn")}
+          </a>
         </nav>}
         <ScenarioSelector value={scenario} onChange={setScenario} />
         {!embed && <button
@@ -214,7 +227,7 @@ export default function Dashboard({ embed = false }: { embed?: boolean }) {
         <Timeline year={year} onChange={setYear} disabled={!sim} />
         {/* 审计 LEG-01：法律页面与免责入口 + 版权行（embed 模式保持纯净不加） */}
         {!embed && (
-          <div style={{ display: "flex", gap: 14, fontSize: 12, color: tokens.textFaint, marginLeft: "auto", flexShrink: 0 }}>
+          <div style={{ display: "flex", gap: 14, fontSize: 12, color: tokens.textFaint, marginLeft: "auto", flexShrink: 0, flexWrap: "wrap" }}>
             <a href="/legal" style={{ color: tokens.textFaint, textDecoration: "none" }}>隐私与条款</a>
             <a href="/overview" style={{ color: tokens.textFaint, textDecoration: "none" }}>要素总览</a>
             <span>© 2026 Future Earth Engine · 教育性模拟，非预报</span>

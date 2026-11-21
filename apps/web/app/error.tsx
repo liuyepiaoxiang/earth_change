@@ -1,6 +1,8 @@
 "use client";
+import { track } from "@vercel/analytics";
 /** 审计 SEC-03：路由级错误边界——渲染异常时给出可恢复 UI（重试/回首页），替代 Next 默认崩溃页 */
 export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
+  if (typeof window !== "undefined") track("app_error", { digest: error.digest ?? "unknown" });
   return (
     <main style={{ minHeight: "70vh", display: "grid", placeItems: "center", padding: 40, textAlign: "center" }}>
       <div>

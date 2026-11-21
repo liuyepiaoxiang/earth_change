@@ -6,6 +6,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { SimResultWithUnc } from "../lib/sim";
 import { useI18n } from "../lib/i18n";
 import { tempQuestion, gradeDiff, MEDALS, DIFFS } from "../lib/guess-core";
+import { track } from "@vercel/analytics";
 import { panelStyle, tokens } from "../lib/design";
 
 const LS_KEY = "fe-quiz-intro-v1";
@@ -100,7 +101,7 @@ export default function QuizIntro({
               <span>+0°C</span><span>+3°C</span><span>+6°C</span>
             </div>
             <button
-              onClick={() => { setRevealed(true); markSeen(); }}
+              onClick={() => { setRevealed(true); markSeen(); track("quiz_complete", { off: Math.round(Math.abs(guess - q!.actualDT) * 10) / 10 }); }}
               style={{ width: "100%", marginTop: 14, padding: "11px 0", fontSize: 15, borderRadius: tokens.radiusSm, border: `1.5px solid ${tokens.accent}`, background: "#0c4a6e", color: tokens.text, cursor: "pointer", fontWeight: 700 }}
             >
               🔍 {t("quiz.reveal")}

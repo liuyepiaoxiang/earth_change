@@ -41,6 +41,14 @@
 }
 .fe-breathe { animation: fe-breathe 1.6s ease-in-out infinite; }
 
+/* ---- UX-01：横向溢出裁剪兜底（装饰环/极端窄视口的边缘出血不可达，垂直滚动不受影响） ---- */
+html, body { overflow-x: clip; }
+.overview-page { overflow-x: clip; }
+
+/* ---- A11Y-03：全局键盘焦点指示（WCAG 2.4.7）——outline:none 的输入框由本规则兜底 ---- */
+:focus-visible { outline: 2px solid #38bdf8; outline-offset: 2px; border-radius: 4px; }
+input:focus-visible, textarea:focus-visible { outline: 2px solid #38bdf8; outline-offset: 0; }
+
 /* ---- 减少动态偏好：全部动画瞬时化 ---- */
 @media (prefers-reduced-motion: reduce) {
   .fe-fade-up, .fe-value-pulse, .fe-slide-in, .fe-breathe {
@@ -99,7 +107,9 @@
 .overview-layer-number { font-family: ui-monospace, monospace; font-size: 12px; }
 .overview-layer-detail { border-top: 1px solid #1e293b; padding: 14px 17px 16px 54px; color: #94a3b8; line-height: 1.7; font-size: 13px; }
 .overview-layer-detail p { margin: 0 0 8px; }
-.overview-pipeline { display: flex; align-items: center; gap: 7px; overflow-x: auto; padding: 16px 0 24px; }
+.overview-pipeline { display: flex; align-items: center; gap: 7px; overflow-x: auto; padding: 16px 0 24px; max-width: 100%; min-width: 0; }
+/* 审计 UX-01 复验修正：pipeline 是父级 grid/flex 子项时 min-width:auto 被内容撑开——钳到视口内滚动 */
+.overview-section > div:has(> .overview-pipeline) { min-width: 0; max-width: 100%; }
 .overview-pipeline-step { display: flex; align-items: center; gap: 7px; min-width: 145px; flex: 1; }
 .overview-pipeline-node { display: grid; gap: 4px; width: 100%; min-height: 89px; border: 1px solid; background: #0b1220; border-radius: 11px; padding: 12px; }
 .overview-pipeline-node span { font-family: ui-monospace, monospace; font-size: 10px; opacity: .75; }
@@ -121,6 +131,10 @@
   .overview-pipeline-step { min-width: 135px; }
 }
 @media (max-width: 640px) {
+  /* 审计 UX-01：375px 视口横向溢出 36px——section-nav（nowrap 链接）允许横滚、stat 卡收缩 */
+  .overview-section-nav { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .overview-section-nav::-webkit-scrollbar { display: none; }
+  .overview-stat-strip > div { min-width: 84px; }
   .overview-header { padding: 0 14px; gap: 8px; }
   .overview-header-brand strong { font-size: 13px; }
   .overview-main-nav { display: none; }

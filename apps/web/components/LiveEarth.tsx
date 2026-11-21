@@ -42,13 +42,29 @@ export default function LiveEarth() {
   const { t } = useI18n();
   const [data, setData] = useState<LiveData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [failed, setFailed] = useState(false); // 审计 UX-02：失败不再静默消失，给重试入口
 
-  useEffect(() => {
+  const load = () => {
+    setLoading(true); setFailed(false);
     fetch("/api/live")
       .then((r) => r.json())
       .then((d: LiveData) => { setData(d); setLoading(false); })
-      .catch(() => setLoading(false));
-  }, []);
+      .catch(() => { setFailed(true); setLoading(false); });
+  };
+
+  useEffect(() => { load(); /* eslint-disable-line react-hooks/exhaustive-deps */ }, []);
+
+  if (failed) {
+    return (
+      <div data-testid="live-earth" style={{ padding: "8px 16px", background: "#0f172a", borderBottom: "1px solid #1e293b", display: "flex", gap: 10, alignItems: "center", fontSize: 12, color: "#7488a0" }}>
+        <span>🌍</span>
+        <span>{t("live.retryHint")}</span>
+        <button onClick={load} style={{ padding: "2px 10px", fontSize: 12, borderRadius: 8, border: "1px solid #334155", background: "transparent", color: "#7dd3fc", cursor: "pointer" }}>
+          ↻ {t("live.retry")}
+        </button>
+      </div>
+    );
+  }
 
   if (loading) {
     return (

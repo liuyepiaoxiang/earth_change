@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { classifyBiome, isCityFlooded, localDTs, scaledPrecip, urbanHeatIsland } from "@future-earth/engine";
 import type { WarmingPatternBand } from "@future-earth/engine";
 import type { CityRow } from "@future-earth/data";
@@ -9,6 +9,7 @@ import { useI18n } from "../lib/i18n";
 import { biomeName } from "../lib/biome-i18n";
 import Sparkline from "./Sparkline";
 import { generateCityCard } from "../lib/city-card";
+import { track } from "@vercel/analytics";
 
 /** 高程 → 淹没风险分档（与 /city/[slug] SEO 页同口径：<2 危急 / <5 高 / <20 中 / 其余低） */
 function riskBand(elevation: number): { key: "critical" | "high" | "moderate" | "low"; color: string } {
@@ -59,6 +60,8 @@ export default function CityPanel({
   const risk = riskBand(city.elevation);
 
   // 城市级时间序列（整条 sim 逐年派生）：年均温与淹没余量
+  // DATA-01 埋点：城市卡片打开（一次挂载一次事件）
+  useEffect(() => { track("city_open", { city: city.name }); }, [city.name]);
   const { years, tempSeries, marginSeries, firstFlood } = useMemo(() => {
     const ys = sim.years;
     const temps: Array<number | null> = [];
@@ -173,7 +176,7 @@ export default function CityPanel({
 
       <div style={{ ...rise(0.25), borderTop: `1px solid ${tokens.panelBorder}`, paddingTop: 8 }}>
         <button
-          onClick={() => generateCityCard({ city, sim, pattern: pattern.length ? pattern : [], firstFlood, year }, locale === "en" ? "en" : "zh")}
+          onClick={() => { generateCityCard({ city, sim, pattern: pattern.length ? pattern : [], firstFlood, year }, locale === "en" ? "en" : "zh"); track("share_card", { city: city.name }); }}
           style={{ width: "100%", marginBottom: 10, padding: "8px 0", fontSize: 13, borderRadius: tokens.radiusSm, border: `1px solid ${tokens.accent}55`, background: "rgba(56,189,248,0.10)", color: tokens.accent, cursor: "pointer", fontWeight: 600 }}
         >
           🖼 {t("city.shareCard")}
@@ -195,7 +198,7 @@ export default function CityPanel({
           onChange={(e) => setQuery(e.target.value)}
           placeholder={t("city.searchPlaceholder")}
           aria-label={t("city.searchPlaceholder")}
-          style={{ width: "100%", boxSizing: "border-box", padding: "4px 8px", fontSize: 12, borderRadius: tokens.radiusSm, border: `1px solid ${tokens.panelBorder}`, background: "rgba(7,11,20,0.6)", color: tokens.text, outline: "none" }}
+          style={{ width: "100%", boxSizing: "border-box", padding: "4px 8px", fontSize: 12, borderRadius: tokens.radiusSm, border: `1px solid ${tokens.panelBorder}`, background: "rgba(7,11,20,0.6)", color: tokens.text }}
         />
         {results.length > 0 && (
           <div style={{ marginTop: 4 }}>

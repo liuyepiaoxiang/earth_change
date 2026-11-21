@@ -9,7 +9,7 @@ export default function Chart(props: {
 }) {
   const { years, series, band, unit, markerX, height = 280, yZero } = props;
   const W = 640, H = height, L = 44, R = 10, T = 10, B = 24;
-  if (years.length === 0) return <div>无数据</div>;
+  if (years.length === 0) return <div style={{ color: "#7488a0", fontSize: 12 }}>No data / 暂无数据</div>;
   const x0 = years[0]!, x1 = years[years.length - 1]!;
   const all = series.flatMap((s) => s.values).concat(band ? [...band.p10, ...band.p90] : [], yZero ? [0] : []);
   const yMin = Math.min(...all), yMax = Math.max(...all);
@@ -23,7 +23,7 @@ export default function Chart(props: {
     : "";
   const ticks = [lo, (lo + hi) / 2, hi];
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "auto" }} role="img" aria-label={`图表 ${series.map((s) => s.name).join("，")} 单位 ${unit}`}>
+    <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "auto" }} role="img" aria-label={`Chart: ${series.map((s) => s.name).join(", ")} (${unit})`}>
       {ticks.map((t, i) => (
         <g key={i}>
           <line x1={L} x2={W - R} y1={Y(t)} y2={Y(t)} stroke="#1e293b" strokeWidth={0.5} />

@@ -5,7 +5,7 @@ export default function NotFound() {
     <main style={{ minHeight: "100vh", background: "#05070f", color: "#e2e8f0", fontFamily: "system-ui, sans-serif", display: "grid", placeItems: "center" }}>
       <div style={{ textAlign: "center", maxWidth: 480, padding: 40 }}>
         <div style={{ fontSize: 64, marginBottom: 16 }}>🌍</div>
-        <h1 style={{ fontSize: 28, color: "#e0f2fe", marginBottom: 8 }}>404 — 页面未找到</h1>
+        <h1 style={{ fontSize: 28, color: "#e0f2fe", marginBottom: 8 }}>404 — 页面未找到 · Page Not Found</h1>
         <p style={{ color: "#94a3b8", fontSize: 15, lineHeight: 1.6, marginBottom: 24 }}>
           这个页面可能已被移动或从未存在。
           你可以回到地球模拟器，或者浏览我们的气候教育内容。

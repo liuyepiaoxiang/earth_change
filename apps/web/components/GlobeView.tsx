@@ -313,7 +313,7 @@ export default function GlobeView({
   }, [applyBasemap]);
   useEffect(() => {
     const loader = new TextureLoader();
-    loader.load("/earth-blue-marble.jpg", (tex) => {
+    loader.load("/earth-blue-marble.webp", (tex) => {
       tex.colorSpace = SRGBColorSpace;
       basemapTex.current = tex;
       applyBasemapRef.current();
@@ -349,7 +349,9 @@ export default function GlobeView({
         city: c,
         dtLocal: 0, // tooltip 展示值改由 snapRef 读取（见 getLabel），不参与重建
         flooded,
-        alt: flooded ? 0.016 : Math.min(0.14, 0.012 + (aboveM / 8848) * 0.12),
+        // A11Y-02：高度作第二通道——淹没点贴海面（0.016），安全城市最低抬升 0.05，
+        // 低海拔城市肉眼即可分辨「浮起/贴水」两种状态（颜色不再是唯一判据）
+        alt: flooded ? 0.016 : Math.min(0.14, 0.05 + (aboveM / 8848) * 0.1),
         radius: 0.22 + 0.5 * Math.sqrt(c.population / maxPop(cities)),
       };
     });

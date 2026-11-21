@@ -25,7 +25,7 @@ export default function CityQuickSearch({
         onChange={(e) => setQuery(e.target.value)}
         placeholder={t("search.cityPlaceholder")}
         aria-label={t("search.cityPlaceholder")}
-        style={{ width: "100%", boxSizing: "border-box", padding: "5px 10px", fontSize: 13, borderRadius: tokens.radiusSm, border: `1px solid ${tokens.panelBorder}`, background: "rgba(7,11,20,0.6)", color: tokens.text, outline: "none" }}
+        style={{ width: "100%", boxSizing: "border-box", padding: "5px 10px", fontSize: 13, borderRadius: tokens.radiusSm, border: `1px solid ${tokens.panelBorder}`, background: "rgba(7,11,20,0.6)", color: tokens.text }}
       />
       {results.length > 0 && (
         <div

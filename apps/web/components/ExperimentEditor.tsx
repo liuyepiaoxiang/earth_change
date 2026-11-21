@@ -5,6 +5,7 @@ import type { ExperimentControls } from "@future-earth/engine";
 import { DEFAULT_CONTROLS } from "@future-earth/engine";
 import { useI18n } from "../lib/i18n";
 import { PRESETS } from "../lib/presets";
+import { track } from "@vercel/analytics";
 
 const STORE_KEY = "fe-lab-experiments-v1";
 export interface SavedExperiment { name: string; note: string; controls: ExperimentControls; savedAt: string }
@@ -60,7 +61,7 @@ export default function ExperimentEditor(props: {
             return (
               <button
                 key={p.id}
-                onClick={() => onChange(p.controls)}
+                onClick={() => { onChange(p.controls); track("preset_click", { preset: p.id }); }}
                 title={en ? p.desc[1] : p.desc[0]}
                 style={{
                   flex: "1 1 140px", maxWidth: 220, textAlign: "left", padding: "8px 10px", cursor: "pointer",

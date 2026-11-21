@@ -16,7 +16,14 @@ export function GET(request: Request): NextResponse {
     if (!expRaw) return NextResponse.json({ error: "exp 参数无效（base64 解码或 schema 校验失败）" }, { status: 400 });
     exp = expRaw;
   }
-  const sim = exp ? runExperiment(q.scenario, exp, q.horizon) : runScenario(q.scenario, q.horizon);
+  // 审计 SEC-04：exp 的 zod 校验发生在引擎 .parse（抛异常）——包 try/catch 归一为 400，
+  // 与注释宣称一致（原行为：非法 exp → ZodError → 500 空白体）
+  let sim;
+  try {
+    sim = exp ? runExperiment(q.scenario, exp, q.horizon) : runScenario(q.scenario, q.horizon);
+  } catch {
+    return NextResponse.json({ error: "exp 参数无效（超出实验控制项合法域）" }, { status: 400 });
+  }
   // uncertainty=mc：确定性蒙特卡洛区间（实验模式暂不提供）
   const body =
     q.uncertainty === "mc" && !exp
